@@ -19,4 +19,8 @@ public class Game {
 
     @Getter
     private List<Card> deck = new ArrayList<>();
+
+    private int turnIndex = 0;
+    private boolean clockwise = true;
+
 }

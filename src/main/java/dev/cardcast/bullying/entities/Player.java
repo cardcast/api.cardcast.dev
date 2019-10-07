@@ -9,4 +9,6 @@ public class Player {
 
     @Getter
     private Hand hand;
+
+
 }
