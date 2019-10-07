@@ -1,10 +1,11 @@
 package dev.cardcast.bullying.interfaces;
 
+import dev.cardcast.bullying.entities.Game;
 import dev.cardcast.bullying.entities.Lobby;
 import dev.cardcast.bullying.entities.Player;
 
 public interface IGameManagerLogic {
-    Lobby findLobbyByCode(String code);
+    Lobby tryJoinLobby(Player player, String code);
 
     Lobby createLobby(boolean isPublic, int maxPlayers);
 
@@ -12,5 +13,7 @@ public interface IGameManagerLogic {
 
     void removePlayer(Lobby lobby, Player player);
 
-    void startGame(Lobby lobby);
+    boolean playerReadyUp(Lobby lobby, Player player);
+
+    Game startGame(Lobby lobby);
 }

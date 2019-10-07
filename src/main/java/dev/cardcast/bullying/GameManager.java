@@ -17,10 +17,15 @@ public class GameManager implements IGameManagerLogic {
     @Getter
     private List<Lobby> lobbies = new ArrayList<>();
 
-
     @Override
-    public Lobby findLobbyByCode(String code) {
-        return this.lobbies.stream().filter(lobby -> lobby.getCode().equals(code)).findFirst().orElse(null);
+    public Lobby tryJoinLobby(Player player, String code){
+        for (Lobby lobby: this.lobbies) {
+            if(lobby.getCode().equals(code)){
+                lobby.getQueued().put(player, false);
+                return lobby;
+            }
+        }
+        return null;
     }
 
     @Override
@@ -32,21 +37,34 @@ public class GameManager implements IGameManagerLogic {
 
     @Override
     public void addPlayer(Lobby lobby, Player player) {
-        if(lobby.getMaxPlayers() >= lobby.queued.size()){
+        if(lobby.getMaxPlayers() >= lobby.getQueued().size()){
             return;
         }
 
-        lobby.queued.add(player);
+        lobby.getQueued().put(player, false);
     }
 
     @Override
     public void removePlayer(Lobby lobby, Player player) {
-        lobby.queued.remove(player);
+        lobby.getQueued().remove(player);
     }
 
     @Override
-    public void startGame(Lobby lobby) {
-        this.games.add(new Game(lobby.queued));
+    public boolean playerReadyUp(Lobby lobby, Player player){
+        lobby.getQueued().put(player, true);
+        return lobby.getQueued().get(player);
+    }
+
+    @Override
+    public Game startGame(Lobby lobby) {
+        for (boolean isReady : lobby.getQueued().values()) {
+            if(!isReady){
+                return null;
+            }
+        }
+        Game game = new Game(new ArrayList<>(lobby.getQueued().keySet()));
+        this.games.add(game);
         lobbies.remove(lobby);
+        return game;
     }
 }
