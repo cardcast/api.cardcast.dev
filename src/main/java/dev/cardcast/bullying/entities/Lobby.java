@@ -3,14 +3,15 @@ package dev.cardcast.bullying.entities;
 import lombok.Getter;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class Lobby {
-
     @Getter
     private String code;
 
-    public List<Player> queued = new ArrayList<>();
+    @Getter
+    private HashMap<Player, Boolean> queued = new HashMap<>();
 
     @Getter
     private int maxPlayers;
