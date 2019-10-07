@@ -1,6 +1,5 @@
 package dev.cardcast.bullying.entities;
 
-import dev.cardcast.bullying.interfaces.ILobbyLogic;
 import lombok.Getter;
 
 import java.util.ArrayList;
@@ -9,22 +8,18 @@ import java.util.List;
 public class Lobby {
 
     @Getter
-    private Game game;
-
-    @Getter
     private String code;
 
-    @Getter
-    private List<Player> queued = new ArrayList<>();
+    public List<Player> queued = new ArrayList<>();
 
     @Getter
-    private LobbySettings lobbySettings;
+    private int maxPlayers;
 
-    public Lobby(LobbySettings settings) {
-        this.lobbySettings = settings;
-    }
+    @Getter
+    private boolean isPublic;
 
-    public Lobby() {
-        this.lobbySettings = new LobbySettings();
+    public Lobby(boolean isPublic, int maxPlayers) {
+        this.maxPlayers = maxPlayers;
+        this.isPublic = isPublic;
     }
 }

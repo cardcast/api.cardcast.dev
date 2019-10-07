@@ -1,13 +1,15 @@
 package dev.cardcast.bullying.entities;
 
 import dev.cardcast.bullying.entities.card.Card;
-import dev.cardcast.bullying.interfaces.IGameLogic;
 import lombok.Getter;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class Game implements IGameLogic {
+public class Game {
+    public Game(List<Player> players){
+        this.players = players;
+    }
 
     @Getter
     private List<Player> players = new ArrayList<>();
