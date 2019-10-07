@@ -37,7 +37,7 @@ public class GameManager implements IGameManagerLogic {
 
     @Override
     public void addPlayer(Lobby lobby, Player player) {
-        if(lobby.getMaxPlayers() >= lobby.getQueued().size()){
+        if(lobby.getMaxPlayers() <= lobby.getQueued().size()){
             return;
         }
 
