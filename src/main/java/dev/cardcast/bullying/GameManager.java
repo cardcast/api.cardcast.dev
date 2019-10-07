@@ -56,14 +56,15 @@ public class GameManager implements IGameManagerLogic {
     }
 
     @Override
-    public void startGame(Lobby lobby) {
+    public Game startGame(Lobby lobby) {
         for (boolean isReady : lobby.getQueued().values()) {
             if(!isReady){
-                return;
+                return null;
             }
         }
-
-        this.games.add(new Game(new ArrayList<>(lobby.getQueued().keySet())));
+        Game game = new Game(new ArrayList<>(lobby.getQueued().keySet()));
+        this.games.add(game);
         lobbies.remove(lobby);
+        return game;
     }
 }

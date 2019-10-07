@@ -1,5 +1,6 @@
 package dev.cardcast.bullying.interfaces;
 
+import dev.cardcast.bullying.entities.Game;
 import dev.cardcast.bullying.entities.Lobby;
 import dev.cardcast.bullying.entities.Player;
 
@@ -14,5 +15,5 @@ public interface IGameManagerLogic {
 
     boolean playerReadyUp(Lobby lobby, Player player);
 
-    void startGame(Lobby lobby);
+    Game startGame(Lobby lobby);
 }
