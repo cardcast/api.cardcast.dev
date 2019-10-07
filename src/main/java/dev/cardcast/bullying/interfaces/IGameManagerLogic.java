@@ -1,14 +1,12 @@
 package dev.cardcast.bullying.interfaces;
 
 import dev.cardcast.bullying.entities.Lobby;
-import dev.cardcast.bullying.entities.LobbySettings;
 import dev.cardcast.bullying.entities.Player;
 
-public interface ILobbyLogic {
-
+public interface IGameManagerLogic {
     Lobby findLobbyByCode(String code);
 
-    Lobby createLobby(LobbySettings settings);
+    Lobby createLobby(boolean isPublic, int maxPlayers);
 
     void addPlayer(Lobby lobby, Player player);
 
