@@ -1,5 +1,6 @@
 package dev.cardcast.bullying.entities;
 
+import dev.cardcast.bullying.GameLogic;
 import dev.cardcast.bullying.entities.card.Card;
 import dev.cardcast.bullying.interfaces.IGameLogic;
 import lombok.Getter;
