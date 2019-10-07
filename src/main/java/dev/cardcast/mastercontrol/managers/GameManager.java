@@ -32,7 +32,11 @@ public class GameManager {
         String jsonString = Utils.readResource("gameservers.json", Charsets.UTF_8);
         JsonObject jsonObject = new JsonParser().parse(jsonString).getAsJsonObject();
         JsonArray array = jsonObject.getAsJsonArray("servers");
+        System.out.println("Loading config");
+        array.forEach(jsonElement -> {
+            GameConnectionPool.addGame(Utils.getGson().fromJson(jsonElement.toString(), Game.class));
 
-        array.forEach(jsonElement -> GameConnectionPool.addGame(Utils.getGson().fromJson(jsonElement.toString(), Game.class)));
+        });
+
     }
 }

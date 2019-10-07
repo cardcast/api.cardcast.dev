@@ -56,6 +56,7 @@ public class SocketManager {
             out = new PrintWriter(clientSocket.getOutputStream(), true);
             in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
 
+            //todo find gamename or id
             GameServerConnector server = GameConnectionPool.findGameConnectorByName(null);
 
             String inputLine;

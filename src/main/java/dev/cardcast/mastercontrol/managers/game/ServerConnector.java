@@ -1,5 +1,6 @@
 package dev.cardcast.mastercontrol.managers.game;
 
+import dev.cardcast.mastercontrol.GameConnectionPool;
 import lombok.Getter;
 import lombok.SneakyThrows;
 
@@ -23,13 +24,16 @@ public abstract class ServerConnector extends Thread {
     @Getter
     private Socket socket;
 
-    public ServerConnector(String host, int port) {
+    ServerConnector(String host, int port) {
         this.host = host;
         this.port = port;
+
+        this.start();
     }
 
     @Override
     public void run() {
+        GameConnectionPool.getLogger().info("Starting game connector: " + this.host + ":" + this.port);
         try {
             this.socket = new Socket(this.host, this.port);
             this.dataInputStream = new DataInputStream(socket.getInputStream());
