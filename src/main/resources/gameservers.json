@@ -1,9 +1,0 @@
-{
-  "servers": [
-    {
-      "name": "Pesten",
-      "host": "localhost",
-      "port": 42069
-    }
-  ]
-}
