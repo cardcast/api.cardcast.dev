@@ -1,10 +1,9 @@
 package dev.cardcast.bullying.entities;
 
+import dev.cardcast.bullying.util.AccessCodeGenerator;
 import lombok.Getter;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 public class Lobby {
     @Getter
@@ -22,5 +21,6 @@ public class Lobby {
     public Lobby(boolean isPublic, int maxPlayers) {
         this.maxPlayers = maxPlayers;
         this.isPublic = isPublic;
+        this.code = AccessCodeGenerator.generate();
     }
 }
