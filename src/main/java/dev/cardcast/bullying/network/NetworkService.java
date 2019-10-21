@@ -47,7 +47,6 @@ public class NetworkService {
             final List<Method> allMethods = new ArrayList<>(Arrays.asList(klass.getDeclaredMethods()));
             for (final Method method : allMethods) {
                 if (method.isAnnotationPresent(EventHandler.class)) {
-                    Annotation annotInstance = method.getAnnotation(EventHandler.class);
                     methods.add(method);
                 }
             }
