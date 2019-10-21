@@ -1,11 +1,12 @@
 package dev.cardcast.bullying.network;
 
 import com.google.gson.JsonObject;
-import dev.cardcast.bullying.network.annotations.EventHandler;
+import dev.cardcast.bullying.network.events.annotations.EventHandler;
+import dev.cardcast.bullying.network.events.EventListener;
 import dev.cardcast.bullying.network.messages.serverbound.ServerBoundWSMessage;
 import dev.cardcast.bullying.network.messages.serverbound.lobby.SB_RequestLobbyMessage;
 
-import java.lang.annotation.Annotation;
+import javax.websocket.Session;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -20,7 +21,7 @@ public class NetworkService {
 
     private static List<Class<? extends ServerBoundWSMessage>> messages = new ArrayList<>();
 
-    public static Class<? extends ServerBoundWSMessage> getMessageType(JsonObject json) {
+    public static Class<? extends ServerBoundWSMessage> getMessageEvent(JsonObject json) {
         String type = json.get("type").getAsString();
         for (Class<? extends ServerBoundWSMessage> messageType : messages) {
             if (messageType.getSimpleName().equals(type)) {
@@ -55,18 +56,16 @@ public class NetworkService {
         return methods;
     }
 
-    public void handleEvent(ServerBoundWSMessage message) {
+    public void handleEvent(Session session, ServerBoundWSMessage message) {
         for (EventListener listener : listeners) {
             List<Method> eventMethods = getEventHandlerMethods(listener.getClass());
             for (Method eventMethod : eventMethods) {
                 try {
-                    eventMethod.invoke(null, message);
+                    eventMethod.invoke(null, session, message.getEvent());
                 } catch (IllegalAccessException | InvocationTargetException e) {
                     e.printStackTrace();
                 }
             }
         }
     }
-
-
 }

@@ -7,7 +7,6 @@ import dev.cardcast.bullying.Bullying;
 import dev.cardcast.bullying.entities.Game;
 import dev.cardcast.bullying.network.messages.serverbound.ServerBoundWSMessage;
 import dev.cardcast.bullying.util.Utils;
-import jdk.nashorn.internal.parser.JSONParser;
 
 import javax.websocket.OnMessage;
 import javax.websocket.OnOpen;
@@ -42,13 +41,13 @@ public class GameConnector {
         try {
             JsonParser parser = new JsonParser();
             JsonObject jsonMessage = (JsonObject) parser.parse(message);
-            Class<? extends ServerBoundWSMessage> messageType = NetworkService.getMessageType(jsonMessage);
+            Class<? extends ServerBoundWSMessage> messageType = NetworkService.getMessageEvent(jsonMessage);
             if (messageType == null) {
                 Bullying.getLogger().warning("UNKNOWN MESSAGE TYPE FOUND");
                 return;
             }
             wbMessage = Utils.GSON.fromJson(message, messageType);
-            Bullying.getNetworkService().handleEvent(wbMessage);
+            Bullying.getNetworkService().handleEvent(session, wbMessage);
         } catch (JsonSyntaxException ex) {
             System.out.println("[WebSocket ERROR: cannot parse Json message " + message);
         }

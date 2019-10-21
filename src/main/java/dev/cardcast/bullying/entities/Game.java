@@ -1,13 +1,17 @@
 package dev.cardcast.bullying.entities;
 
 import dev.cardcast.bullying.entities.card.Card;
+import dev.cardcast.bullying.network.events.EventListener;
+import dev.cardcast.bullying.network.events.annotations.EventHandler;
+import dev.cardcast.bullying.network.messages.serverbound.lobby.SB_RequestLobbyMessage;
 import lombok.Getter;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class Game {
-    public Game(List<Player> players){
+public class Game implements EventListener {
+
+    public Game(List<Player> players) {
         this.players = players;
     }
 
@@ -19,4 +23,9 @@ public class Game {
 
     @Getter
     private List<Card> deck = new ArrayList<>();
+
+    @EventHandler
+    public void eventHandler(SB_RequestLobbyMessage message) {
+
+    }
 }
