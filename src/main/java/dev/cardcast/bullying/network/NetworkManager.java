@@ -8,9 +8,6 @@ import dev.cardcast.bullying.Bullying;
 import dev.cardcast.bullying.network.messages.serverbound.ServerBoundWSMessage;
 import lombok.Getter;
 
-import java.net.http.WebSocket;
-import java.util.ArrayList;
-
 public class NetworkManager {
 
     @Getter
