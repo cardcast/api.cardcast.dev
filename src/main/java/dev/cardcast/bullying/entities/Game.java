@@ -10,8 +10,10 @@ import java.util.List;
 
 public class Game {
 
+
     public Game(List<Player> players){
         this.players = players;
+
         for (Suit suit : Suit.values()) {
             for (Rank rank : Rank.values()) {
                 deck.add(new Card(suit,rank));
@@ -34,5 +36,4 @@ public class Game {
 
     private int turnIndex = 0;
     private boolean clockwise = true;
-
 }
