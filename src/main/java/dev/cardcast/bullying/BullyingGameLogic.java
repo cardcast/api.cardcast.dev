@@ -15,37 +15,30 @@ public class BullyingGameLogic implements IGameLogic {
 
     private Card drawTopCard(Game game){
         if (game.getDeck().isEmpty()) {
-            shuffleStackToDeck(game);
+            onDeckEmpty(game);
         }
         Card topCard = game.getDeck().get(game.getDeck().size()-1);
         game.getDeck().remove(topCard);
         return topCard;
     }
 
-    private void shuffleStackToDeck(Game game) {
+    private void onDeckEmpty(Game game) {
         Card lastCard = game.getTopCardFromStack();
         game.getDeck().addAll(game.getStack());
         game.getDeck().remove(lastCard);
 
         game.getStack().clear();
         game.getStack().add(lastCard);
-        shuffleDeck(game);
-    }
-
-    @Override
-    public void shuffleStack(Game game){
-        Collections.shuffle(game.getStack());
-    }
-
-    @Override
-    public void shuffleDeck(Game game) {
         Collections.shuffle(game.getDeck());
     }
 
-    @Override
-    public void distributeCards(Game game){
+//    public void shuffleStack(Game game){
+//        Collections.shuffle(game.getStack());
+//    }
+
+    private void distributeCards(Game game){
         for (Player player : game.getPlayers()) {
-            drawCard(game, player, AMOUNT_OF_CARDS_PER_PLAYER);
+            drawCard(game, player);
         }
     }
 
@@ -53,33 +46,17 @@ public class BullyingGameLogic implements IGameLogic {
     public boolean playCard(Game game, Player player, Card card){
         if (!player.getHand().getCards().contains(card)) return false;
 
-        // TODO: ADD ALL MUTATIONS TO THE GAME OF EVERY CARD THAT AFFECTS GAMEPLAY;
-        
+        return true;
     }
 
     @Override
-    public void drawCard(Game game, Player player, int amount){
-        for(int i=0;i<=amount;i++){
-            player.getHand().getCards().add(drawTopCard(game));
-        }
+    public boolean drawCard(Game game, Player player){
+        player.getHand().getCards().add(drawTopCard(game));
+
+        return true;
     }
 
     @Override
     public void startGame(Game game) {
-    }
-
-    @Override
-    public void initializeGame(Game game) {
-
-    }
-
-    @Override
-    public void setNextPlayer(Game game) {
-
-    }
-
-    @Override
-    public void endGame(Game game) {
-
     }
 }
