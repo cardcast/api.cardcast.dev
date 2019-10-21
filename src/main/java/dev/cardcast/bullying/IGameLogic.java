@@ -15,11 +15,11 @@ public interface IGameLogic {
 
     boolean playCard(Game game, Player player, Card card);
 
-    void drawCard(Game game, Player player, int amount);
+    boolean drawCard(Game game, Player player);
+
+    boolean endTurn(Game game, Player player);
 
     void initializeGame(Game game);
-
-    void setNextPlayer(Game game);
 
     void endGame(Game game);
 }

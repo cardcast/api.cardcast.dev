@@ -7,4 +7,5 @@ import lombok.Setter;
 public class Player {
     private String name;
     private Hand hand;
+    private boolean hasDrawn;
 }

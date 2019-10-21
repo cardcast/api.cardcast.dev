@@ -30,10 +30,15 @@ public class Game {
     @Getter
     private List<Card> deck = new ArrayList<>();
 
+    public boolean hisTurn (Player player) {
+        return turnIndex == players.indexOf(player);
+    }
+
     public Card getTopCardFromStack(){
         return stack.get(stack.size()-1);
     }
 
     private int turnIndex = 0;
+    public int numberToDraw = 0;
     private boolean clockwise = true;
 }
