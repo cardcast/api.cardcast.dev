@@ -13,37 +13,34 @@ public class BullyingGameLogic implements IGameLogic {
 
     private BullyingGameLogic(){}
 
-    private void shuffleStackToDeck(Game game) {
-        Card lastCard = game.getTopCardFromStack();
-        game.getDeck().addAll(game.getStack());
-        game.getDeck().remove(lastCard);
+    public static BullyingGameLogic getInstance()
+    {
+        if (instance == null)
+            instance = new BullyingGameLogic();
 
-        game.getStack().clear();
-        game.getStack().add(lastCard);
-        shuffleDeck(game);
+        return instance;
     }
 
     private Card drawTopCard(Game game){
         if (game.getDeck().isEmpty()) {
-            shuffleStackToDeck(game);
+            onDeckEmpty(game);
         }
         Card topCard = game.getDeck().get(game.getDeck().size()-1);
         game.getDeck().remove(topCard);
         return topCard;
     }
 
-    @Override
-    public void shuffleStack(Game game){
-        Collections.shuffle(game.getStack());
-    }
+    private void onDeckEmpty(Game game) {
+        Card lastCard = game.getTopCardFromStack();
+        game.getDeck().addAll(game.getStack());
+        game.getDeck().remove(lastCard);
 
-    @Override
-    public void shuffleDeck(Game game) {
+        game.getStack().clear();
+        game.getStack().add(lastCard);
         Collections.shuffle(game.getDeck());
     }
 
-    @Override
-    public void distributeCards(Game game){
+    private void distributeCards(Game game){
         for (Player player : game.getPlayers()) {
             for (int i = 0; i < AMOUNT_OF_CARDS_PER_PLAYER; i++) {
                 player.getHand().getCards().add(drawTopCard(game));
@@ -101,10 +98,12 @@ public class BullyingGameLogic implements IGameLogic {
     @Override
     public void initializeGame(Game game) {
 
+        return true;
     }
 
     @Override
-    public void endGame(Game game) {
-
+    public void startGame(Game game) {
+        Collections.shuffle(game.getDeck());
+        distributeCards(game);
     }
 }
