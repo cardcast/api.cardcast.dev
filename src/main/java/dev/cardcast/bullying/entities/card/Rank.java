@@ -3,7 +3,6 @@ package dev.cardcast.bullying.entities.card;
 import lombok.Getter;
 
 public enum Rank {
-
     TWO(2),
     THREE(3),
     FOUR(4),
@@ -18,8 +17,6 @@ public enum Rank {
     KING(13),
     ACE(14),
     SANDER(15);
-
-
     @Getter
     private final int rank;
 
