@@ -24,6 +24,7 @@ public class NetworkService {
     public static Class<? extends ServerBoundWSMessage> getMessageEvent(JsonObject json) {
         String type = json.get("type").getAsString();
         for (Class<? extends ServerBoundWSMessage> messageType : messages) {
+            //todo check
             if (messageType.getSimpleName().equals(type)) {
                 return messageType;
             }
