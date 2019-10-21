@@ -3,6 +3,7 @@ package dev.cardcast.bullying;
 import dev.cardcast.bullying.entities.Game;
 import dev.cardcast.bullying.entities.Player;
 import dev.cardcast.bullying.entities.card.Card;
+import dev.cardcast.bullying.util.CardStackGenerator;
 
 import java.util.Collections;
 
@@ -93,6 +94,7 @@ public class BullyingGameLogic implements IGameLogic {
 
     @Override
     public void startGame(Game game) {
+        game.getDeck().addAll(CardStackGenerator.generateBullyingStack());
         Collections.shuffle(game.getDeck());
         distributeCards(game);
     }

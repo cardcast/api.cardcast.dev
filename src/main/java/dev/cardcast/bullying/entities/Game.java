@@ -13,12 +13,6 @@ public class Game {
 
     public Game(List<Player> players){
         this.players = players;
-
-        for (Suit suit : Suit.values()) {
-            for (Rank rank : Rank.values()) {
-                deck.add(new Card(suit,rank));
-            }
-        }
     }
 
     @Getter
@@ -35,7 +29,7 @@ public class Game {
     }
 
     public Card getTopCardFromStack(){
-        return stack.get(stack.size()-1);
+        return stack.get(stack.size() - 1);
     }
 
     private int turnIndex = 0;
