@@ -40,13 +40,11 @@ public class BullyingGameLogic implements IGameLogic {
         Collections.shuffle(game.getDeck());
     }
 
-//    public void shuffleStack(Game game){
-//        Collections.shuffle(game.getStack());
-//    }
-
     private void distributeCards(Game game){
         for (Player player : game.getPlayers()) {
-            drawCard(game, player);
+            for (int i = 0; i < AMOUNT_OF_CARDS_PER_PLAYER; i++) {
+                player.getHand().getCards().add(drawTopCard(game));
+            }
         }
     }
 
@@ -66,5 +64,7 @@ public class BullyingGameLogic implements IGameLogic {
 
     @Override
     public void startGame(Game game) {
+        Collections.shuffle(game.getDeck());
+        distributeCards(game);
     }
 }
