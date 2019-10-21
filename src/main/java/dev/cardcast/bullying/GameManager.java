@@ -40,7 +40,6 @@ public class GameManager implements IGameManagerLogic {
         if(lobby.getMaxPlayers() <= lobby.getQueued().size()){
             return;
         }
-
         lobby.getQueued().put(player, false);
     }
 
