@@ -1,3 +1,7 @@
 /.idea/
 /mastercontrol.iml
 /.settings/
+/target/classes/dev/cardcast/bullying/
+/.classpath
+/.factorypath
+/.project
