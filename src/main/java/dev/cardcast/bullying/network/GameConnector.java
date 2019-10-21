@@ -48,7 +48,7 @@ public class GameConnector {
                 return;
             }
             wbMessage = Utils.GSON.fromJson(message, messageType);
-
+            Bullying.getNetworkService().handleEvent(wbMessage);
         } catch (JsonSyntaxException ex) {
             System.out.println("[WebSocket ERROR: cannot parse Json message " + message);
         }
