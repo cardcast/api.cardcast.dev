@@ -13,6 +13,14 @@ public class BullyingGameLogic implements IGameLogic {
 
     private BullyingGameLogic(){}
 
+    public static BullyingGameLogic getInstance()
+    {
+        if (instance == null)
+            instance = new BullyingGameLogic();
+
+        return instance;
+    }
+
     private Card drawTopCard(Game game){
         if (game.getDeck().isEmpty()) {
             onDeckEmpty(game);
