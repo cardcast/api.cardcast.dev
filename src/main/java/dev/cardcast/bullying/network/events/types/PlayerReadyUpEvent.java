@@ -5,9 +5,9 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @AllArgsConstructor
-public class LobbyRequestEvent extends Event {
+public class PlayerReadyUpEvent extends Event {
 
     @Getter
-    private final String code;
+    private final boolean ready;
 
 }

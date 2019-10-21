@@ -3,6 +3,7 @@ package dev.cardcast.bullying.entities;
 import dev.cardcast.bullying.entities.card.Card;
 import dev.cardcast.bullying.network.events.EventListener;
 import dev.cardcast.bullying.network.events.annotations.EventHandler;
+import dev.cardcast.bullying.network.events.types.PlayerReadyUpEvent;
 import dev.cardcast.bullying.network.messages.serverbound.lobby.SB_RequestLobbyMessage;
 import lombok.Getter;
 
@@ -16,7 +17,7 @@ public class Game implements EventListener {
     }
 
     @Getter
-    private List<Player> players = new ArrayList<>();
+    private List<Player> players;
 
     @Getter
     private List<Card> stack = new ArrayList<>();
@@ -25,7 +26,7 @@ public class Game implements EventListener {
     private List<Card> deck = new ArrayList<>();
 
     @EventHandler
-    public void eventHandler(SB_RequestLobbyMessage message) {
+    public void readyUp(PlayerReadyUpEvent message) {
 
     }
 }

@@ -11,23 +11,27 @@ import dev.cardcast.bullying.util.Utils;
 import javax.websocket.OnMessage;
 import javax.websocket.OnOpen;
 import javax.websocket.Session;
+import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@ServerEndpoint(value = "/game")
+@ServerEndpoint(value = "/game/{token}")
 public class GameConnector {
 
-    private static final List<Session> SESSIONS = new ArrayList<>();
-
-    private static final Map<Game, List<Session>> GAME_SESSIONS = new HashMap<>();
+    private static final Map<String, List<Session>> GAME_SESSIONS = new HashMap<>();
 
     @OnOpen
-    public void onConnect(Session session) {
+    public void onConnect(Session session, @PathParam("token") String token) {
         Bullying.getLogger().info("New connection: " + session.getId());
-        SESSIONS.add(session);
+
+        if (GAME_SESSIONS.get(token) == null) {
+            GAME_SESSIONS.put(token, new ArrayList<>());
+        } else {
+            GAME_SESSIONS.get(token).add(session);
+        }
     }
 
     @OnMessage
