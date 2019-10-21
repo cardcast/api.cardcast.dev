@@ -69,7 +69,7 @@ public class GameLogicTest {
         int deckCardAmount = game.getDeck().size();
         int stackCardAmount = game.getStack().size();
         Assertions.assertEquals(playerCardAmount, 7);
-        Assertions.assertEquals(deckCardAmount, 51);
+        Assertions.assertEquals(deckCardAmount, 53);
         Assertions.assertEquals(stackCardAmount, 1);
     }
 }
