@@ -93,16 +93,6 @@ public class BullyingGameLogic implements IGameLogic {
 
     @Override
     public void startGame(Game game) {
-    }
-
-    @Override
-    public void initializeGame(Game game) {
-
-        return true;
-    }
-
-    @Override
-    public void startGame(Game game) {
         Collections.shuffle(game.getDeck());
         distributeCards(game);
     }
