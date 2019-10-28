@@ -3,13 +3,13 @@ package dev.cardcast.bullying;
 import dev.cardcast.bullying.entities.Game;
 import dev.cardcast.bullying.entities.Lobby;
 import dev.cardcast.bullying.entities.Player;
-import dev.cardcast.bullying.interfaces.IGameManagerLogic;
+import dev.cardcast.bullying.util.CardStackGenerator;
 import lombok.Getter;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class GameManager implements IGameManagerLogic {
+public class GameManager implements IGameManager {
 
     @Getter
     private List<Game> games = new ArrayList<>();
