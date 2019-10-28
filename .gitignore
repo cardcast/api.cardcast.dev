@@ -1,6 +1,14 @@
+/.idea/
+/mastercontrol.iml
+/.settings/
+/target/classes/dev/cardcast/bullying/
+/.classpath
+/.factorypath
+/.project
 
-# Created by https://www.gitignore.io/api/java,maven,intellij+all
-# Edit at https://www.gitignore.io/?templates=java,maven,intellij+all
+
+# Created by https://www.gitignore.io/api/java,maven,intellij+all,visualstudiocode
+# Edit at https://www.gitignore.io/?templates=java,maven,intellij+all,visualstudiocode
 
 ### Intellij+all ###
 # Covers JetBrains IDEs: IntelliJ, RubyMine, PhpStorm, AppCode, PyCharm, CLion, Android Studio and WebStorm
@@ -126,4 +134,15 @@ buildNumber.properties
 .mvn/wrapper/maven-wrapper.jar
 .flattened-pom.xml
 
-# End of https://www.gitignore.io/api/java,maven,intellij+all
+### VisualStudioCode ###
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+### VisualStudioCode Patch ###
+# Ignore all local history of files
+.history
+
+# End of https://www.gitignore.io/api/java,maven,intellij+all,visualstudiocode

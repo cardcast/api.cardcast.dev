@@ -14,7 +14,7 @@ public class GameManagerTest {
     public GameManagerTest(){
         gameManager = new GameManager();
         lobby = gameManager.createLobby(true, 2);
-        player = new Player();
+//        player = new Player();
     }
 
     @Test
