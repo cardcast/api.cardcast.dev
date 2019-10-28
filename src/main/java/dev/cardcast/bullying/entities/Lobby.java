@@ -3,9 +3,10 @@ package dev.cardcast.bullying.entities;
 import dev.cardcast.bullying.util.AccessCodeGenerator;
 import lombok.Getter;
 
+import java.io.Serializable;
 import java.util.HashMap;
 
-public class Lobby {
+public class Lobby implements Serializable {
     @Getter
     private String code;
 

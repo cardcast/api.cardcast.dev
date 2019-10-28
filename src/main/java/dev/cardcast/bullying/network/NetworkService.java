@@ -3,6 +3,7 @@ package dev.cardcast.bullying.network;
 import com.google.gson.JsonObject;
 import dev.cardcast.bullying.Bullying;
 import dev.cardcast.bullying.listeners.GameListener;
+import dev.cardcast.bullying.network.events.Event;
 import dev.cardcast.bullying.network.events.annotations.EventHandler;
 import dev.cardcast.bullying.network.events.EventListener;
 import dev.cardcast.bullying.network.messages.serverbound.ServerBoundWSMessage;
@@ -88,16 +89,19 @@ public class NetworkService {
         for (EventListener listener : listeners) {
             List<Method> eventMethods = getEventHandlerMethods(listener.getClass());
             for (Method eventMethod : eventMethods) {
-                try {
-                    eventMethod.invoke(listener, session, message.getEvent());
-                } catch (IllegalAccessException | InvocationTargetException e) {
-                    e.printStackTrace();
+                Event event = message.getEvent();
+                if (Arrays.stream(eventMethod.getParameters()).anyMatch(parameter -> parameter.getType() == event.getClass())) {
+                    try {
+                        eventMethod.invoke(listener, session, event);
+                    } catch (IllegalAccessException | InvocationTargetException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         }
     }
 
-    private static Pattern messagePattern = Pattern.compile("^SB_([A-Za-z]+)Message$");
+    private static Pattern messagePattern = Pattern.compile("^SB_(?<messageName>[A-Za-z]+)Message$");
 
     static Class<? extends ServerBoundWSMessage> getMessageEvent(JsonObject json) {
         String type = json.get("type").getAsString();
