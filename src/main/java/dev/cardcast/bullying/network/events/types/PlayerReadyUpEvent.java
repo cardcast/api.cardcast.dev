@@ -8,6 +8,6 @@ import lombok.Getter;
 public class PlayerReadyUpEvent extends Event {
 
     @Getter
-    private final boolean ready;
+    private final String name;
 
 }

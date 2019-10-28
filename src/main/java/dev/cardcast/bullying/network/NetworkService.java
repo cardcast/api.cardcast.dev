@@ -7,7 +7,6 @@ import dev.cardcast.bullying.network.messages.serverbound.ServerBoundWSMessage;
 import dev.cardcast.bullying.network.messages.serverbound.game.SB_PlayerDrawCardMessage;
 import dev.cardcast.bullying.network.messages.serverbound.game.SB_PlayerPlayCardMessage;
 import dev.cardcast.bullying.network.messages.serverbound.game.SB_PlayerReadyUpMessage;
-import dev.cardcast.bullying.network.messages.serverbound.lobby.SB_RequestLobbyMessage;
 
 import javax.websocket.server.ServerContainer;
 
@@ -42,7 +41,6 @@ public class NetworkService {
     private List<EventListener> listeners = new ArrayList<>();
 
     public NetworkService() {
-        NetworkService.messages.add(SB_RequestLobbyMessage.class);
         NetworkService.messages.add(SB_PlayerReadyUpMessage.class);
         NetworkService.messages.add(SB_PlayerDrawCardMessage.class);
         NetworkService.messages.add(SB_PlayerPlayCardMessage.class);

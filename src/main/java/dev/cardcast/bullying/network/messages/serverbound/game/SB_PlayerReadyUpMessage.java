@@ -6,14 +6,14 @@ import dev.cardcast.bullying.network.messages.serverbound.ServerBoundWSMessage;
 
 public class SB_PlayerReadyUpMessage extends ServerBoundWSMessage {
 
-    private boolean ready;
+    private String name;
 
-    public SB_PlayerReadyUpMessage(boolean ready) {
-        this.ready = ready;
+    public SB_PlayerReadyUpMessage(String name) {
+        this.name = name;
     }
 
     @Override
     public Event getEvent() {
-        return new PlayerReadyUpEvent(this.ready);
+        return new PlayerReadyUpEvent(this.name);
     }
 }
