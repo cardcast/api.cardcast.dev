@@ -23,18 +23,17 @@ public class GameLogicTest {
         GameManager gameManager = new GameManager();
         Lobby lobby = gameManager.createLobby(true, 2);
 
-        player = new Player(null);
+        this.player = new Player(null);
         gameManager.addPlayer(lobby, player);
 
-        playerTwo = new Player(null);
+        this.playerTwo = new Player(null);
         gameManager.addPlayer(lobby, playerTwo);
 
         gameManager.playerReadyUp(lobby, player);
         gameManager.playerReadyUp(lobby, playerTwo);
 
-        game = gameManager.startGame(lobby);
-        gameLogic = BullyingGameLogic.getInstance();
-
+        this.game = gameManager.startGame(lobby);
+        this.gameLogic = BullyingGameLogic.getInstance();
     }
 
 //    @Test
