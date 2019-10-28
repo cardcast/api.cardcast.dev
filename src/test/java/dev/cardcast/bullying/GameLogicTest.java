@@ -10,10 +10,8 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.List;
-
 public class GameLogicTest {
-    private Player player;
+    private Player playerOne;
     private Player playerTwo;
     private BullyingGameLogic gameLogic;
     private Game game;
@@ -23,13 +21,13 @@ public class GameLogicTest {
         GameManager gameManager = new GameManager();
         Lobby lobby = gameManager.createLobby(true, 2);
 
-        this.player = new Player(null);
-        gameManager.addPlayer(lobby, player);
+        this.playerOne = new Player(null);
+        gameManager.addPlayer(lobby, playerOne);
 
         this.playerTwo = new Player(null);
         gameManager.addPlayer(lobby, playerTwo);
 
-        gameManager.playerReadyUp(lobby, player);
+        gameManager.playerReadyUp(lobby, playerOne);
         gameManager.playerReadyUp(lobby, playerTwo);
 
         this.game = gameManager.startGame(lobby);
@@ -48,18 +46,18 @@ public class GameLogicTest {
     public void testDistributeCards(){
         gameLogic.startGame(game);
 
-        Assertions.assertEquals(player.getHand().getCards().size() + playerTwo.getHand().getCards().size(), 7 + 7);
+        Assertions.assertEquals(playerOne.getHand().getCards().size() + playerTwo.getHand().getCards().size(), 7 + 7);
     }
 
     @Test
     public void testDrawCard(){
         gameLogic.startGame(game);
-        int playerCardAmount = player.getHand().getCards().size();
+        int playerCardAmount = playerOne.getHand().getCards().size();
         int deckCardAmount = game.getDeck().size();
 
-        gameLogic.drawCard(game, player);
+        gameLogic.drawCard(game, playerOne);
 
-        Assertions.assertEquals(player.getHand().getCards().size(), playerCardAmount + 1);
+        Assertions.assertEquals(playerOne.getHand().getCards().size(), playerCardAmount + 1);
         Assertions.assertEquals(game.getDeck().size(), deckCardAmount - 1);
     }
 
@@ -68,12 +66,25 @@ public class GameLogicTest {
     void testPlayCardCannotPlayNonBullyingCardOnBullyingCard(){
         gameLogic.startGame(game);
 
-        gameLogic.playCard(game, player, new Card(Suit.CLUBS, Rank.TWO));
+        gameLogic.playCard(game, playerOne, new Card(Suit.CLUBS, Rank.TWO));
         boolean doesAllowCardPlay = CardRules.getInstance().validPlay(game, playerTwo, new Card(Suit.SPADES, Rank.THREE));
 
         Assertions.assertFalse(doesAllowCardPlay);
     }
-    
+
+    // @Test
+    void testPlayCardCannotEndWithBullyCard(){
+        gameLogic.startGame(game);
+        
+        playerOne.getHand().getCards().clear();
+        Card card = new Card(Suit.JOKER, Rank.JOKER);
+        playerOne.getHand().getCards().add(card);
+
+        boolean isPlacable = gameLogic.playCard(game, playerOne, card);
+
+        Assertions.assertFalse(isPlacable);
+    }
+
 
 //    @Test
 //    public void testPlayCard(){
@@ -92,7 +103,7 @@ public class GameLogicTest {
     void testStartGamePlayerRightCardAmount(){
         gameLogic.startGame(game);
 
-        int playerCardAmount = player.getHand().getCards().size();
+        int playerCardAmount = playerOne.getHand().getCards().size();
 
         Assertions.assertEquals(7, playerCardAmount);
     }
@@ -100,7 +111,7 @@ public class GameLogicTest {
     @Test
     void testStartGameDeckRightCardAmount(){
         gameLogic.startGame(game);
-        int playerCardAmount = player.getHand().getCards().size();
+        int playerCardAmount = playerOne.getHand().getCards().size();
         int playerTwoCardAmount = playerTwo.getHand().getCards().size();
         int deckCardAmount = game.getDeck().size();
 
