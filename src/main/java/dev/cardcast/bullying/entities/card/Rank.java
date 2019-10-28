@@ -1,9 +1,10 @@
 package dev.cardcast.bullying.entities.card;
 
 import lombok.Getter;
+import lombok.AllArgsConstructor;
 
+@Getter @AllArgsConstructor
 public enum Rank {
-
     TWO(2),
     THREE(3),
     FOUR(4),
@@ -14,16 +15,10 @@ public enum Rank {
     NINE(9),
     TEN(10),
     JACK(11),
-    WOMAN(12),
+    QUEEN(12),
     KING(13),
     ACE(14),
-    SANDER(15);
+    JOKER(15);
 
-
-    @Getter
     private final int rank;
-
-    Rank(int rank) {
-        this.rank = rank;
-    }
 }

@@ -1,6 +1,8 @@
 package dev.cardcast.bullying.entities;
 
 import dev.cardcast.bullying.entities.card.Card;
+import dev.cardcast.bullying.entities.card.Rank;
+import dev.cardcast.bullying.entities.card.Suit;
 import dev.cardcast.bullying.network.events.EventListener;
 import dev.cardcast.bullying.network.events.annotations.EventHandler;
 import dev.cardcast.bullying.network.events.types.PlayerReadyUpEvent;
@@ -23,9 +25,21 @@ public class Game {
 
     @Getter
     private List<Card> deck = new ArrayList<>();
-
+  
     public Game(String token) {
         this.token = token;
         this.players = new ArrayList<>();
     }
+
+    public boolean hisTurn (Player player) {
+        return turnIndex == players.indexOf(player);
+    }
+
+    public Card getTopCardFromStack(){
+        return stack.get(stack.size() - 1);
+    }
+
+    private int turnIndex = 0;
+    public int numberToDraw = 0;
+    private boolean clockwise = true;
 }

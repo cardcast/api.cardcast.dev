@@ -2,14 +2,11 @@ package dev.cardcast.bullying.entities.card;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.AllArgsConstructor;
 
-@AllArgsConstructor
+@Getter @AllArgsConstructor
 public class Card {
-
-    @Getter
     private Suit suit;
-
-    @Getter
     private Rank rank;
 
     public static Card getCard(String cardString) {
