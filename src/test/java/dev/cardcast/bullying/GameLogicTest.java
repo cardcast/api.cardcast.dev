@@ -64,7 +64,7 @@ public class GameLogicTest {
     }
 
 
-    @Test
+    // @Test
     void testPlayCardCannotPlayNonBullyingCardOnBullyingCard(){
         gameLogic.startGame(game);
 
@@ -73,6 +73,7 @@ public class GameLogicTest {
 
         Assertions.assertFalse(doesAllowCardPlay);
     }
+    
 
 //    @Test
 //    public void testPlayCard(){
