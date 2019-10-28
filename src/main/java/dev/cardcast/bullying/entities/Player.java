@@ -1,20 +1,29 @@
 package dev.cardcast.bullying.entities;
 
 import lombok.Getter;
+import lombok.Setter;
 
+import javax.websocket.Session;
+import javax.websocket.server.ServerEndpoint;
 import java.util.UUID;
 
 public class Player {
 
+    @Getter
     private final UUID uuid;
 
     @Getter
-    private String name;
+    private Session session;
 
     @Getter
     private Hand hand;
 
-    public Player(UUID uuid) {
-        this.uuid = uuid;
+    @Getter
+    @Setter
+    private String name;
+
+    public Player(Session session) {
+        this.uuid = UUID.randomUUID();
+        this.session = session;
     }
 }

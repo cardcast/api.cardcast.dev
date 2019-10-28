@@ -1,4 +1,4 @@
-package dev.cardcast.bullying.network.annotations;
+package dev.cardcast.bullying.network.events.annotations;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
