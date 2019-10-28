@@ -6,9 +6,7 @@ import dev.cardcast.bullying.listeners.GameListener;
 import dev.cardcast.bullying.network.events.annotations.EventHandler;
 import dev.cardcast.bullying.network.events.EventListener;
 import dev.cardcast.bullying.network.messages.serverbound.ServerBoundWSMessage;
-import dev.cardcast.bullying.network.messages.serverbound.game.SB_PlayerDrawCardMessage;
-import dev.cardcast.bullying.network.messages.serverbound.game.SB_PlayerPlayCardMessage;
-import dev.cardcast.bullying.network.messages.serverbound.game.SB_PlayerReadyUpMessage;
+import dev.cardcast.bullying.network.messages.serverbound.game.*;
 
 import javax.websocket.server.ServerContainer;
 
@@ -52,6 +50,9 @@ public class NetworkService {
         NetworkService.messages.add(SB_PlayerReadyUpMessage.class);
         NetworkService.messages.add(SB_PlayerDrawCardMessage.class);
         NetworkService.messages.add(SB_PlayerPlayCardMessage.class);
+        NetworkService.messages.add(SB_PlayerCreateGameMessage.class);
+        NetworkService.messages.add(SB_HostKickPlayerMessage.class);
+        NetworkService.messages.add(SB_HostStartGameMessage.class);
 
         Server webSocketServer = new Server();
         ServerConnector connector = new ServerConnector(webSocketServer);
