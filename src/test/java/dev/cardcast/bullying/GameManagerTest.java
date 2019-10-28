@@ -16,7 +16,7 @@ public class GameManagerTest {
     public void beforeEach(){
         gameManager = new GameManager();
         lobby = gameManager.createLobby(true, 2);
-        player = new Player(null);
+        player = new Player(null, "Mark");
     }
 
     @Test

@@ -23,10 +23,10 @@ public class GameLogicTest {
         GameManager gameManager = new GameManager();
         Lobby lobby = gameManager.createLobby(true, 2);
 
-        this.player = new Player(null);
+        this.player = new Player(null, "Mark");
         gameManager.addPlayer(lobby, player);
 
-        this.playerTwo = new Player(null);
+        this.playerTwo = new Player(null, "Steven");
         gameManager.addPlayer(lobby, playerTwo);
 
         gameManager.playerReadyUp(lobby, player);

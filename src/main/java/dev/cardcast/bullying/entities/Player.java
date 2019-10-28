@@ -24,6 +24,7 @@ public class Player {
     private String name;
 
     public Player(Session session, String name) {
+        this.hand = new Hand();
         this.uuid = UUID.randomUUID();
         this.name = name;
         this.session = session;
