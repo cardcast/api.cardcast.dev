@@ -32,9 +32,8 @@ public class GameConnector {
 
         if (GAME_SESSIONS.get(token) == null) {
             GAME_SESSIONS.put(token, new Game(token));
-        } else {
-            GAME_SESSIONS.get(token).getPlayers().add(new Player(session));
         }
+        GAME_SESSIONS.get(token).getPlayers().add(new Player(session));
     }
 
     @OnMessage
@@ -43,7 +42,7 @@ public class GameConnector {
     }
 
     private void handleMessage(Session session, String message) {
-        ServerBoundWSMessage wbMessage = null;
+        ServerBoundWSMessage wbMessage;
 
         try {
             JsonParser parser = new JsonParser();

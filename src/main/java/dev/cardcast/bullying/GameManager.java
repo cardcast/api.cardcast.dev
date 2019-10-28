@@ -18,9 +18,9 @@ public class GameManager implements IGameManagerLogic {
     private List<Lobby> lobbies = new ArrayList<>();
 
     @Override
-    public Lobby tryJoinLobby(Player player, String code){
-        for (Lobby lobby: this.lobbies) {
-            if(lobby.getCode().equals(code)){
+    public Lobby tryJoinLobby(Player player, String code) {
+        for (Lobby lobby : this.lobbies) {
+            if (lobby.getCode().equals(code)) {
                 lobby.getQueued().put(player, false);
                 return lobby;
             }
@@ -37,7 +37,7 @@ public class GameManager implements IGameManagerLogic {
 
     @Override
     public void addPlayer(Lobby lobby, Player player) {
-        if(lobby.getMaxPlayers() <= lobby.getQueued().size()){
+        if (lobby.getMaxPlayers() <= lobby.getQueued().size()) {
             return;
         }
         lobby.getQueued().put(player, false);
@@ -49,7 +49,7 @@ public class GameManager implements IGameManagerLogic {
     }
 
     @Override
-    public boolean playerReadyUp(Lobby lobby, Player player){
+    public boolean playerReadyUp(Lobby lobby, Player player) {
         lobby.getQueued().put(player, true);
         return lobby.getQueued().get(player);
     }
@@ -57,11 +57,11 @@ public class GameManager implements IGameManagerLogic {
     @Override
     public Game startGame(Lobby lobby) {
         for (boolean isReady : lobby.getQueued().values()) {
-            if(!isReady){
+            if (!isReady) {
                 return null;
             }
         }
-        Game game = new Game(new ArrayList<>(lobby.getQueued().keySet()));
+        Game game = new Game(lobby.getCode());
         this.games.add(game);
         lobbies.remove(lobby);
         return game;
