@@ -39,6 +39,10 @@ public class Game implements EventListener {
         return stack.get(stack.size() - 1);
     }
 
+    public Card getTopCardFromDeck(){
+        return deck.get(deck.size() - 1);
+    }
+
     private int turnIndex = 0;
     public int numberToDraw = 0;
     private boolean clockwise = true;

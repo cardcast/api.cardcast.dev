@@ -31,9 +31,7 @@ public class BullyingGameLogic implements IGameLogic {
         if (game.getDeck().isEmpty()) {
             onDeckEmpty(game);
         }
-        if (Math.random() < 0.0001) {
-            return new Card(Suit.JOKER, Rank.UNOREVERSE);
-        }
+
         Card topCard = game.getDeck().get(game.getDeck().size()-1);
         game.getDeck().remove(topCard);
         return topCard;
@@ -49,15 +47,7 @@ public class BullyingGameLogic implements IGameLogic {
         stack.add(lastCard);
 
         deck.remove(lastCard);
-        List<Card> memes = new ArrayList<>();
-        for(Card card : deck){
-            if (card.getRank() == Rank.UNOREVERSE) {
-                memes.add(card);
-            }
-        }
-        for (Card card : memes){
-            deck.remove(card);
-        }
+
         Collections.shuffle(deck);
     }
 
@@ -71,7 +61,7 @@ public class BullyingGameLogic implements IGameLogic {
 
     @Override
     public boolean playCard(Game game, Player player, Card card){
-        if (!player.getHand().getCards().contains(card)) return false;
+        if (player.getHand().getCards().stream().noneMatch(card1 -> card1.equals(card))) return false;
 
         rules.playCard(game, player, card);
 
@@ -118,5 +108,7 @@ public class BullyingGameLogic implements IGameLogic {
         game.getDeck().addAll(CardStackGenerator.generateBullyingStack());
         Collections.shuffle(game.getDeck());
         distributeCards(game);
+
+        game.getStack().add(drawTopCard(game));
     }
 }

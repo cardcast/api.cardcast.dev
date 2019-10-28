@@ -19,4 +19,10 @@ public class Card {
         }
         throw new IllegalArgumentException("NO CARD FOUND BY ID: " + cardString);
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        Card cardTwo = (Card) obj;
+        return cardTwo.rank == this.rank && cardTwo.suit == this.suit;
+    }
 }

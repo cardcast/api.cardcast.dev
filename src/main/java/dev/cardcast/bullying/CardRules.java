@@ -26,7 +26,7 @@ public class CardRules {
         Card topCard = game.getTopCardFromStack();
 
         if (game.numberToDraw > 0) {
-            if (!(rank == Rank.TWO || rank == Rank.JOKER || rank == Rank.UNOREVERSE)){
+            if (!(rank == Rank.TWO || rank == Rank.JOKER )){
                 return false; // while being bullied you can't play normal cards
             }
             if (rank.getRank() < topCard.getRank().getRank()){

@@ -18,8 +18,7 @@ public enum Rank {
     QUEEN(12),
     KING(13),
     ACE(14),
-    JOKER(15),
-    UNOREVERSE(9001);
+    JOKER(15);
 
     private final int rank;
 }
