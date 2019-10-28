@@ -8,14 +8,15 @@ import dev.cardcast.bullying.entities.Game;
 import dev.cardcast.bullying.entities.Player;
 import dev.cardcast.bullying.network.messages.serverbound.ServerBoundWSMessage;
 import dev.cardcast.bullying.util.Utils;
-import lombok.Getter;
 
 import javax.websocket.OnMessage;
 import javax.websocket.OnOpen;
 import javax.websocket.Session;
 import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
-import java.util.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 @ServerEndpoint(value = "/game/{token}")
 public class GameConnector {
@@ -23,7 +24,7 @@ public class GameConnector {
     private static final Map<String, Game> GAME_SESSIONS = new HashMap<>();
 
     public static Map<String, Game> getGameSessions() {
-        return Collections.unmodifiableMap(GAME_SESSIONS);
+        return GAME_SESSIONS;
     }
 
     @OnOpen

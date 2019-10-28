@@ -2,6 +2,7 @@ package dev.cardcast.bullying.network;
 
 import com.google.gson.JsonObject;
 import dev.cardcast.bullying.Bullying;
+import dev.cardcast.bullying.listeners.GameListener;
 import dev.cardcast.bullying.network.events.annotations.EventHandler;
 import dev.cardcast.bullying.network.events.EventListener;
 import dev.cardcast.bullying.network.messages.serverbound.ServerBoundWSMessage;
@@ -31,7 +32,6 @@ public class NetworkService {
     static Class<? extends ServerBoundWSMessage> getMessageEvent(JsonObject json) {
         String type = json.get("type").getAsString();
         for (Class<? extends ServerBoundWSMessage> messageType : messages) {
-            //todo check
             String simpleName = messageType.getSimpleName();
             simpleName = simpleName.substring(3);
             simpleName = simpleName.substring(0, simpleName.length() - 7);
@@ -61,6 +61,8 @@ public class NetworkService {
         webSocketContext.setContextPath("/");
         webSocketServer.setHandler(webSocketContext);
 
+        this.registerEventListener(new GameListener());
+
         try {
             ServerContainer wscontainer = WebSocketServerContainerInitializer.configureContext(webSocketContext);
             wscontainer.addEndpoint(GameConnector.class);
@@ -69,6 +71,7 @@ public class NetworkService {
         } catch (Throwable t) {
             t.printStackTrace(System.err);
         }
+
 
     }
 
@@ -96,7 +99,7 @@ public class NetworkService {
             List<Method> eventMethods = getEventHandlerMethods(listener.getClass());
             for (Method eventMethod : eventMethods) {
                 try {
-                    eventMethod.invoke(null, session, message.getEvent());
+                    eventMethod.invoke(listener, session, message.getEvent());
                 } catch (IllegalAccessException | InvocationTargetException e) {
                     e.printStackTrace();
                 }

@@ -10,7 +10,7 @@ import javax.websocket.Session;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Game implements EventListener {
+public class Game {
 
     @Getter
     private final String token;
@@ -27,13 +27,5 @@ public class Game implements EventListener {
     public Game(String token) {
         this.token = token;
         this.players = new ArrayList<>();
-    }
-
-    @EventHandler
-    public void readyUp(Session session, PlayerReadyUpEvent event) {
-        Player sessionPlayer = players.stream().filter(player -> player.getSession().equals(session)).findFirst().orElse(null);
-        if (sessionPlayer != null) {
-            sessionPlayer.setName(event.getName());
-        }
     }
 }
