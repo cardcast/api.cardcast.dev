@@ -1,6 +1,7 @@
 package dev.cardcast.bullying.network;
 
 import com.google.gson.JsonObject;
+import dev.cardcast.bullying.Bullying;
 import dev.cardcast.bullying.network.events.annotations.EventHandler;
 import dev.cardcast.bullying.network.events.EventListener;
 import dev.cardcast.bullying.network.messages.serverbound.ServerBoundWSMessage;
@@ -25,12 +26,16 @@ import java.util.List;
 
 public class NetworkService {
     private static List<Class<? extends ServerBoundWSMessage>> messages = new ArrayList<>();
+    public static NetworkService INSTANCE;
 
     static Class<? extends ServerBoundWSMessage> getMessageEvent(JsonObject json) {
         String type = json.get("type").getAsString();
         for (Class<? extends ServerBoundWSMessage> messageType : messages) {
             //todo check
-            if (messageType.getSimpleName().equals(type)) {
+            String simpleName = messageType.getSimpleName();
+            simpleName = simpleName.substring(3);
+            simpleName = simpleName.substring(0, simpleName.length() - 7);
+            if (simpleName.equals(type)) {
                 return messageType;
             }
         }
@@ -41,6 +46,8 @@ public class NetworkService {
     private List<EventListener> listeners = new ArrayList<>();
 
     public NetworkService() {
+        INSTANCE = this;
+        Bullying.getLogger().info("STARTED NETWORK SERVICE");
         NetworkService.messages.add(SB_PlayerReadyUpMessage.class);
         NetworkService.messages.add(SB_PlayerDrawCardMessage.class);
         NetworkService.messages.add(SB_PlayerPlayCardMessage.class);

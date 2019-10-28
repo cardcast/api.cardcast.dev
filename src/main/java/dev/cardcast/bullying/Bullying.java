@@ -10,11 +10,8 @@ public class Bullying {
     @Getter
     private static final Logger logger = Logger.getLogger("BULLYING");
 
-    @Getter
-    private static NetworkService networkService;
-
     Bullying(String[] args) {
-        networkService = new NetworkService();
+        NetworkService networkService = new NetworkService();
     }
 
 

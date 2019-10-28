@@ -2,7 +2,7 @@ package dev.cardcast.bullying.network.messages;
 
 import lombok.Getter;
 
-public class WSMessage {
+public abstract class WSMessage {
 
     @Getter
     private String type;

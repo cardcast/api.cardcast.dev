@@ -42,8 +42,6 @@ public class GameConnector {
     }
 
     private void handleMessage(Session session, String message) {
-        ServerBoundWSMessage wbMessage;
-
         try {
             JsonParser parser = new JsonParser();
             JsonObject jsonMessage = (JsonObject) parser.parse(message);
@@ -52,8 +50,8 @@ public class GameConnector {
                 Bullying.getLogger().warning("UNKNOWN MESSAGE TYPE FOUND");
                 return;
             }
-            wbMessage = Utils.GSON.fromJson(message, messageType);
-            Bullying.getNetworkService().handleEvent(session, wbMessage);
+            ServerBoundWSMessage wbMessage = Utils.GSON.fromJson(message, messageType);
+            NetworkService.INSTANCE.handleEvent(session, wbMessage);
         } catch (JsonSyntaxException ex) {
             System.out.println("[WebSocket ERROR: cannot parse Json message " + message);
         }
