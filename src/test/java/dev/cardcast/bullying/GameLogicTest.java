@@ -46,19 +46,27 @@ public class GameLogicTest {
     public void testDistributeCards(){
         gameLogic.startGame(game);
 
-        Assertions.assertEquals(playerOne.getHand().getCards().size() + playerTwo.getHand().getCards().size(), 7 + 7);
+        int expected = 7 + 7;
+        int sizeOne = playerOne.getHand().getCards().size();
+        int sizeTwo = playerTwo.getHand().getCards().size();
+        Assertions.assertEquals(expected, sizeOne + sizeTwo);
     }
 
     @Test
     public void testDrawCard(){
         gameLogic.startGame(game);
-        int playerCardAmount = playerOne.getHand().getCards().size();
-        int deckCardAmount = game.getDeck().size();
+        int oldHandSize = playerOne.getHand().getCards().size();
+        int oldDeckSize = game.getDeck().size();
 
-        gameLogic.drawCard(game, playerOne);
+        // TODO: THIS TEST SOMETIMES FAILS AND SOMETIMES IT DOESN'T. NO REAL IDEA WHY YET.
+        Assertions.assertTrue(game.isTheirTurn(playerOne));
+        Assertions.assertFalse(playerOne.isDoneDrawing());
+        Assertions.assertTrue(gameLogic.drawCard(game, playerOne));
+        Assertions.assertTrue(game.isTheirTurn(playerOne));
+        Assertions.assertTrue(playerOne.isDoneDrawing());
 
-        Assertions.assertEquals(playerOne.getHand().getCards().size(), playerCardAmount + 1);
-        Assertions.assertEquals(game.getDeck().size(), deckCardAmount - 1);
+        Assertions.assertEquals(oldHandSize + 1, playerOne.getHand().getCards().size());
+        Assertions.assertEquals(oldDeckSize - 1, game.getDeck().size());
     }
 
 
@@ -103,20 +111,21 @@ public class GameLogicTest {
     void testStartGamePlayerRightCardAmount(){
         gameLogic.startGame(game);
 
+        int expected = 7;
         int playerCardAmount = playerOne.getHand().getCards().size();
 
-        Assertions.assertEquals(7, playerCardAmount);
+        Assertions.assertEquals(expected, playerCardAmount);
     }
 
     @Test
     void testStartGameDeckRightCardAmount(){
         gameLogic.startGame(game);
-        int playerCardAmount = playerOne.getHand().getCards().size();
-        int playerTwoCardAmount = playerTwo.getHand().getCards().size();
-        int deckCardAmount = game.getDeck().size();
+        int cardsPlayerOne = playerOne.getHand().getCards().size();
+        int cardsPlayerTwo = playerTwo.getHand().getCards().size();
 
-        // 54 cards in total on deck minus the cards taken by the players minus the first card drawn to the middle.
-        int expectedAmount = 54 - playerCardAmount - playerTwoCardAmount - 1;
+        // 54 cards in total on deck minus the cards taken by the players minus the first card put on the stack
+        int expectedAmount = 54 - cardsPlayerOne - cardsPlayerTwo - 1;
+        int deckCardAmount = game.getDeck().size();
 
         Assertions.assertEquals(expectedAmount, deckCardAmount);
     }

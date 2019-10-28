@@ -10,22 +10,20 @@ public class Player {
 
     @Getter
     private final UUID uuid;
-
     @Getter
     private Session session;
 
-    @Getter
-    private Hand hand;
-
-    @Getter @Setter
-    private boolean hasDrawn;
-
     @Getter @Setter
     private String name;
+    @Getter
+    private Hand hand;
+    @Getter @Setter
+    private boolean doneDrawing;
 
     public Player(Session session) {
-        this.hand = new Hand();
-        this.uuid = UUID.randomUUID();
+        uuid = UUID.randomUUID();
         this.session = session;
+        hand = new Hand();
+        doneDrawing = false;
     }
 }
