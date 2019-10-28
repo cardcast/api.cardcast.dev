@@ -10,4 +10,7 @@ public class PlayerReadyUpEvent extends Event {
     @Getter
     private final String name;
 
+    @Getter
+    private final String token;
+
 }

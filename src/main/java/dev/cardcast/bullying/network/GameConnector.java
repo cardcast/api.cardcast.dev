@@ -18,23 +18,12 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-@ServerEndpoint(value = "/game/{token}")
+@ServerEndpoint(value = "/game")
 public class GameConnector {
 
-    private static final Map<String, Game> GAME_SESSIONS = new HashMap<>();
-
-    public static Map<String, Game> getGameSessions() {
-        return GAME_SESSIONS;
-    }
-
     @OnOpen
-    public void onConnect(Session session, @PathParam("token") String token) {
+    public void onConnect(Session session) {
         Bullying.getLogger().info("New connection: " + session.getId());
-
-        if (GAME_SESSIONS.get(token) == null) {
-            GAME_SESSIONS.put(token, new Game(token));
-        }
-        GAME_SESSIONS.get(token).getPlayers().add(new Player(session));
     }
 
     @OnMessage

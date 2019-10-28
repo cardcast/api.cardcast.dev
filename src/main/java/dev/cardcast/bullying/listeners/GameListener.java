@@ -1,6 +1,9 @@
 package dev.cardcast.bullying.listeners;
 
+import dev.cardcast.bullying.GameManager;
 import dev.cardcast.bullying.entities.Game;
+import dev.cardcast.bullying.entities.Player;
+import dev.cardcast.bullying.interfaces.IGameManagerLogic;
 import dev.cardcast.bullying.network.GameConnector;
 import dev.cardcast.bullying.network.NetworkService;
 import dev.cardcast.bullying.network.events.EventListener;
@@ -11,15 +14,11 @@ import javax.websocket.Session;
 
 public class GameListener implements EventListener {
 
+    private final IGameManagerLogic gameManagerLogic = new GameManager();
 
     @EventHandler
     public void readyUp(Session session, PlayerReadyUpEvent event) {
-
-
-//        Player sessionPlayer = players.stream().filter(player -> player.getSession().equals(session)).findFirst().orElse(null);
-//        if (sessionPlayer != null) {
-//            sessionPlayer.setName(event.getName());
-//        }
+        gameManagerLogic.tryJoinLobby(new Player(session, event.getName()), event.getToken());
     }
 
     @EventHandler

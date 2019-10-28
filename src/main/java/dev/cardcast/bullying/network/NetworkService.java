@@ -48,6 +48,7 @@ public class NetworkService {
     public NetworkService() {
         INSTANCE = this;
         Bullying.getLogger().info("STARTED NETWORK SERVICE");
+
         NetworkService.messages.add(SB_PlayerReadyUpMessage.class);
         NetworkService.messages.add(SB_PlayerDrawCardMessage.class);
         NetworkService.messages.add(SB_PlayerPlayCardMessage.class);

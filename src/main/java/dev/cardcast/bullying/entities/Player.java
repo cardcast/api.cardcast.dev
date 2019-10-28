@@ -22,8 +22,9 @@ public class Player {
     @Setter
     private String name;
 
-    public Player(Session session) {
+    public Player(Session session, String name) {
         this.uuid = UUID.randomUUID();
+        this.name = name;
         this.session = session;
     }
 }
