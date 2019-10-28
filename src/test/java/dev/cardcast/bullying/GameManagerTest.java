@@ -4,6 +4,7 @@ import dev.cardcast.bullying.entities.Game;
 import dev.cardcast.bullying.entities.Lobby;
 import dev.cardcast.bullying.entities.Player;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 public class GameManagerTest {
@@ -11,10 +12,11 @@ public class GameManagerTest {
     private Lobby lobby;
     private Player player;
 
-    public GameManagerTest(){
+    @BeforeEach
+    public void beforeEach(){
         gameManager = new GameManager();
         lobby = gameManager.createLobby(true, 2);
-//        player = new Player();
+        player = new Player(null);
     }
 
     @Test
