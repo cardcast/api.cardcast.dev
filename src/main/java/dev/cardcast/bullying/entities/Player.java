@@ -6,7 +6,6 @@ import javax.websocket.Session;
 import javax.websocket.server.ServerEndpoint;
 import java.util.UUID;
 
-@Getter @Setter
 public class Player {
 
     @Getter
@@ -18,8 +17,10 @@ public class Player {
     @Getter
     private Hand hand;
 
-    @Getter
-    @Setter
+    @Getter @Setter
+    private boolean hasDrawn;
+
+    @Getter @Setter
     private String name;
 
     public Player(Session session) {

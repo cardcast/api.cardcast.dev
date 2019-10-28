@@ -21,7 +21,7 @@ public class GameLogicTest {
     public void beforeEach(){
         GameManager gameManager = new GameManager();
         Lobby lobby = gameManager.createLobby(true, 2);
-        player = new Player();
+        player = new Player(null);
         gameManager.addPlayer(lobby, player);
         gameManager.playerReadyUp(lobby, player);
         game = gameManager.startGame(lobby);
