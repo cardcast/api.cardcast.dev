@@ -23,4 +23,17 @@ public class Lobby {
         this.isPublic = isPublic;
         this.code = AccessCodeGenerator.generate();
     }
+
+    public boolean addPlayer(Player player){
+        if(this.queued.size() >= this.maxPlayers){
+            return false;
+        }
+
+        if(this.queued.get(player) != null){
+            return false;
+        }
+
+        this.queued.put(player, false);
+        return true;
+    }
 }

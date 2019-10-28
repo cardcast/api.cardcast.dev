@@ -37,10 +37,7 @@ public class GameManager implements IGameManager {
 
     @Override
     public void addPlayer(Lobby lobby, Player player) {
-        if (lobby.getMaxPlayers() <= lobby.getQueued().size()) {
-            return;
-        }
-        lobby.getQueued().put(player, false);
+        lobby.addPlayer(player);
     }
 
     @Override
@@ -62,6 +59,7 @@ public class GameManager implements IGameManager {
             }
         }
         Game game = new Game(lobby.getCode());
+        game.getPlayers().addAll(lobby.getQueued().keySet());
         this.games.add(game);
         lobbies.remove(lobby);
         return game;
