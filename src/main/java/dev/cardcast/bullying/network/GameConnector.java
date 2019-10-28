@@ -28,22 +28,15 @@ public class GameConnector {
 
     @OnMessage
     public void onMessage(Session session, String message) {
-        this.handleMessage(session, message);
+        JsonParser parser = new JsonParser();
+        JsonObject jsonMessage = (JsonObject) parser.parse(message);
+        Class<? extends ServerBoundWSMessage> messageType = NetworkService.getMessageEvent(jsonMessage);
+        if (messageType == null) {
+            Bullying.getLogger().warning("UNKNOWN MESSAGE TYPE FOUND");
+            return;
+        }
+        ServerBoundWSMessage wbMessage = Utils.GSON.fromJson(message, messageType);
+        NetworkService.INSTANCE.handleEvent(session, wbMessage);
     }
 
-    private void handleMessage(Session session, String message) {
-        try {
-            JsonParser parser = new JsonParser();
-            JsonObject jsonMessage = (JsonObject) parser.parse(message);
-            Class<? extends ServerBoundWSMessage> messageType = NetworkService.getMessageEvent(jsonMessage);
-            if (messageType == null) {
-                Bullying.getLogger().warning("UNKNOWN MESSAGE TYPE FOUND");
-                return;
-            }
-            ServerBoundWSMessage wbMessage = Utils.GSON.fromJson(message, messageType);
-            NetworkService.INSTANCE.handleEvent(session, wbMessage);
-        } catch (JsonSyntaxException ex) {
-            System.out.println("[WebSocket ERROR: cannot parse Json message " + message);
-        }
-    }
 }

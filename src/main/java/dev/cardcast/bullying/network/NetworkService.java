@@ -22,24 +22,12 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class NetworkService {
-    private static List<Class<? extends ServerBoundWSMessage>> messages = new ArrayList<>();
-    public static NetworkService INSTANCE;
 
-    static Class<? extends ServerBoundWSMessage> getMessageEvent(JsonObject json) {
-        String type = json.get("type").getAsString();
-        for (Class<? extends ServerBoundWSMessage> messageType : messages) {
-            String simpleName = messageType.getSimpleName();
-            simpleName = simpleName.substring(3);
-            simpleName = simpleName.substring(0, simpleName.length() - 7);
-            if (simpleName.equals(type)) {
-                return messageType;
-            }
-        }
-        return null;
-    }
-
+    static NetworkService INSTANCE;
 
     private List<EventListener> listeners = new ArrayList<>();
 
@@ -73,9 +61,9 @@ public class NetworkService {
         } catch (Throwable t) {
             t.printStackTrace(System.err);
         }
-
-
     }
+
+    private static List<Class<? extends ServerBoundWSMessage>> messages = new ArrayList<>();
 
     public void registerEventListener(EventListener listenerClass) {
         this.listeners.add(listenerClass);
@@ -107,5 +95,18 @@ public class NetworkService {
                 }
             }
         }
+    }
+
+    private static Pattern messagePattern = Pattern.compile("^SB_([A-Za-z]+)Message$");
+
+    static Class<? extends ServerBoundWSMessage> getMessageEvent(JsonObject json) {
+        String type = json.get("type").getAsString();
+        for (Class<? extends ServerBoundWSMessage> messageType : messages) {
+            Matcher matcher = messagePattern.matcher(messageType.getSimpleName());
+            if (matcher.matches() && matcher.group("messageName").equals(type)) {
+                return messageType;
+            }
+        }
+        return null;
     }
 }
