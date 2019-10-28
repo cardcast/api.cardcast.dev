@@ -11,9 +11,12 @@ public class CardStackGenerator {
     public static List<Card> generateBullyingStack(){
         List<Card> deck = new ArrayList<>();
         for (Suit suit : Suit.values()) {
-            for (Rank rank : Rank.values()) {
-                if(rank != Rank.JOKER && suit != Suit.JOKER){
-                    deck.add(new Card(suit,rank));
+            if (suit != Suit.JOKER) {
+                for (Rank rank : Rank.values()) {
+                    //
+                    if (rank.getRank() < Rank.JOKER.getRank()) {
+                        deck.add(new Card(suit, rank));
+                    }
                 }
             }
         }

@@ -3,14 +3,19 @@ package dev.cardcast.bullying;
 import dev.cardcast.bullying.entities.Game;
 import dev.cardcast.bullying.entities.Player;
 import dev.cardcast.bullying.entities.card.Card;
+import dev.cardcast.bullying.entities.card.Rank;
+import dev.cardcast.bullying.entities.card.Suit;
 import dev.cardcast.bullying.util.CardStackGenerator;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 public class BullyingGameLogic implements IGameLogic {
     private final int AMOUNT_OF_CARDS_PER_PLAYER = 7;
 
     private static BullyingGameLogic instance = null;
+    private static CardRules rules = new CardRules();
 
     private BullyingGameLogic(){}
 
@@ -26,6 +31,9 @@ public class BullyingGameLogic implements IGameLogic {
         if (game.getDeck().isEmpty()) {
             onDeckEmpty(game);
         }
+        if (Math.random() < 0.0001) {
+            return new Card(Suit.JOKER, Rank.UNOREVERSE);
+        }
         Card topCard = game.getDeck().get(game.getDeck().size()-1);
         game.getDeck().remove(topCard);
         return topCard;
@@ -33,12 +41,24 @@ public class BullyingGameLogic implements IGameLogic {
 
     private void onDeckEmpty(Game game) {
         Card lastCard = game.getTopCardFromStack();
-        game.getDeck().addAll(game.getStack());
-        game.getDeck().remove(lastCard);
+        List<Card> deck = game.getDeck();
+        List<Card> stack = game.getStack();
 
-        game.getStack().clear();
-        game.getStack().add(lastCard);
-        Collections.shuffle(game.getDeck());
+        deck.addAll(stack);
+        stack.clear();
+        stack.add(lastCard);
+
+        deck.remove(lastCard);
+        List<Card> memes = new ArrayList<>();
+        for(Card card : deck){
+            if (card.getRank() == Rank.UNOREVERSE) {
+                memes.add(card);
+            }
+        }
+        for (Card card : memes){
+            deck.remove(card);
+        }
+        Collections.shuffle(deck);
     }
 
     private void distributeCards(Game game){
@@ -53,9 +73,10 @@ public class BullyingGameLogic implements IGameLogic {
     public boolean playCard(Game game, Player player, Card card){
         if (!player.getHand().getCards().contains(card)) return false;
 
-        // TODO: ADD ALL MUTATIONS TO THE GAME OF EVERY CARD THAT AFFECTS GAMEPLAY;
+        rules.playCard(game, player, card);
 
         // playing a card should automatically call endTurn(), unless the player is allowed to do something else
+
         return false;
     }
 
