@@ -12,7 +12,7 @@ import javax.websocket.Session;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Game implements EventListener {
+public class Game {
 
     @Getter
     private final String token;
@@ -42,13 +42,4 @@ public class Game implements EventListener {
     private int turnIndex = 0;
     public int numberToDraw = 0;
     private boolean clockwise = true;
-
-  
-    @EventHandler
-    public void readyUp(Session session, PlayerReadyUpEvent event) {
-        Player sessionPlayer = players.stream().filter(player -> player.getSession().equals(session)).findFirst().orElse(null);
-        if (sessionPlayer != null) {
-            sessionPlayer.setName(event.getName());
-        }
-    }
 }
