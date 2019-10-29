@@ -1,10 +1,14 @@
 package dev.cardcast.bullying;
 
 import dev.cardcast.bullying.entities.Game;
+import dev.cardcast.bullying.entities.Hand;
 import dev.cardcast.bullying.entities.Player;
 import dev.cardcast.bullying.entities.card.Card;
 import dev.cardcast.bullying.entities.card.Rank;
 import dev.cardcast.bullying.entities.card.Suit;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class CardRules {
     private static CardRules instance = null;
@@ -53,14 +57,90 @@ public class CardRules {
         boolean valid = validPlay(game, player, playedCard);
         if (!valid) { return false; } // gotta play valid cards bro
 
-        // TODO: IMPLEMENT THE DIFFERENT RULES DIFFERENT CARDS HAVE. WHAT HAPPENS WHEN YOU PLAY THEM?
-        // now every card is just regarded as being a non-special card for the purpose of what happens after playing it
-
-        player.getHand().getCards().remove(playedCard); // there are certain cards you can play where it would not work like this!
+        player.getHand().getCards().remove(playedCard);
         game.getStack().add(playedCard);
 
-        passTurn(game); // there are certain cards you can play where this should NOT be called!
+        // TODO: IMPLEMENT THE CHECK FOR VICTORY FOR THE CURRENT PLAYER
+
+        switch (playedCard.getRank()){
+            case TWO:
+                // the next player will have to draw two (extra) cards
+                game.setNumberToDraw(game.getNumberToDraw() + 2);
+                passTurn(game);
+                break;
+            case JOKER:
+                // the next player will have to draw five (extra) cards
+                game.setNumberToDraw(game.getNumberToDraw() + 5);
+                passTurn(game);
+                break;
+            case SEVEN:
+                // you can play another card (essentially, your turn restarts)
+                player.setDoneDrawing(false);
+                // notice how the turn isn't passed here!
+                break;
+            case EIGHT:
+                // the next player will have to skip their turn
+                passTurn(game);
+                passTurn(game);
+                break;
+            case ACE:
+                // turn around the rotation of the players
+                game.setClockwise(!game.isClockwise());
+                passTurn(game);
+                break;
+            case TEN:
+                // all players give their cards to the player on their left (if clockwise) or their right (if counter-clockwise)
+                List<Player> players = game.getPlayers();
+                List<Card> newCards = new ArrayList<>();
+                if (game.isClockwise()){
+                    fillListWithOtherList(players.get(players.size() - 1).getHand().getCards(), newCards);
+                    for(int i = 0; i < players.size(); i++){
+                        swapHandWithPreviousHand(players.get(i), newCards);
+                    }
+                }
+                else {
+                    fillListWithOtherList(players.get(0).getHand().getCards(), newCards);
+                    for(int i = players.size() - 1; i >= 0; i--){
+                        swapHandWithPreviousHand(players.get(i), newCards);
+                    }
+                }
+                passTurn(game);
+                break;
+            case JACK:
+                // This is a tricky one, the original rules say that you can play this card on anything
+                // and then you get to choose what suit it becomes. will we keep this rule though...
+                // TODO: IMPLEMENT THE EFFECTS OF JACK CARDS
+
+                boolean doSomething = true;
+                passTurn(game);
+                break;
+            case THREE:
+            case FOUR:
+            case FIVE:
+            case SIX:
+            case NINE:
+            case QUEEN:
+            case KING:
+                // nothing special with these ranks
+                passTurn(game);
+                break;
+        }
         return true;
+    }
+
+    private void fillListWithOtherList(List<Card> stuffToAdd, List<Card> listToFill){
+        for (int i = 0; i < stuffToAdd.size(); i++){
+            listToFill.add(stuffToAdd.get(i));
+        }
+        stuffToAdd.clear();
+    }
+    private void swapHandWithPreviousHand(Player player, List<Card> newCards){
+        Hand hand = player.getHand();
+        List<Card> oldCards = new ArrayList<>();
+
+        fillListWithOtherList(hand.getCards(), oldCards);
+        fillListWithOtherList(newCards, hand.getCards());
+        fillListWithOtherList(oldCards, newCards);
     }
 
     public void passTurn(Game game){
