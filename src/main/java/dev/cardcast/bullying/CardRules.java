@@ -23,6 +23,37 @@ public class CardRules {
         return instance;
     }
 
+    private void fillListWithOtherList(List<Card> stuffToAdd, List<Card> listToFill){
+        for (int i = 0; i < stuffToAdd.size(); i++){
+            listToFill.add(stuffToAdd.get(i));
+        }
+        stuffToAdd.clear();
+    }
+    private void swapHandWithPreviousHand(Player player, List<Card> newCards){
+        Hand hand = player.getHand();
+        List<Card> oldCards = new ArrayList<>();
+
+        fillListWithOtherList(hand.getCards(), oldCards);
+        fillListWithOtherList(newCards, hand.getCards());
+        fillListWithOtherList(oldCards, newCards);
+    }
+    private void rotateAllHands(Game game){
+        List<Player> players = game.getPlayers();
+        List<Card> newCards = new ArrayList<>();
+        if (game.isClockwise()){
+            fillListWithOtherList(players.get(players.size() - 1).getHand().getCards(), newCards);
+            for(int i = 0; i < players.size(); i++){
+                swapHandWithPreviousHand(players.get(i), newCards);
+            }
+        }
+        else {
+            fillListWithOtherList(players.get(0).getHand().getCards(), newCards);
+            for(int i = players.size() - 1; i >= 0; i--){
+                swapHandWithPreviousHand(players.get(i), newCards);
+            }
+        }
+    }
+
     public boolean validPlay(Game game, Player player, Card playedCard){
         Suit suit = playedCard.getSuit();
         Rank rank = playedCard.getRank();
@@ -90,20 +121,7 @@ public class CardRules {
                 break;
             case TEN:
                 // all players give their cards to the player on their left (if clockwise) or their right (if counter-clockwise)
-                List<Player> players = game.getPlayers();
-                List<Card> newCards = new ArrayList<>();
-                if (game.isClockwise()){
-                    fillListWithOtherList(players.get(players.size() - 1).getHand().getCards(), newCards);
-                    for(int i = 0; i < players.size(); i++){
-                        swapHandWithPreviousHand(players.get(i), newCards);
-                    }
-                }
-                else {
-                    fillListWithOtherList(players.get(0).getHand().getCards(), newCards);
-                    for(int i = players.size() - 1; i >= 0; i--){
-                        swapHandWithPreviousHand(players.get(i), newCards);
-                    }
-                }
+                rotateAllHands(game);
                 passTurn(game);
                 break;
             case JACK:
@@ -114,33 +132,12 @@ public class CardRules {
                 boolean doSomething = true;
                 passTurn(game);
                 break;
-            case THREE:
-            case FOUR:
-            case FIVE:
-            case SIX:
-            case NINE:
-            case QUEEN:
-            case KING:
+            default:
                 // nothing special with these ranks
                 passTurn(game);
                 break;
         }
         return true;
-    }
-
-    private void fillListWithOtherList(List<Card> stuffToAdd, List<Card> listToFill){
-        for (int i = 0; i < stuffToAdd.size(); i++){
-            listToFill.add(stuffToAdd.get(i));
-        }
-        stuffToAdd.clear();
-    }
-    private void swapHandWithPreviousHand(Player player, List<Card> newCards){
-        Hand hand = player.getHand();
-        List<Card> oldCards = new ArrayList<>();
-
-        fillListWithOtherList(hand.getCards(), oldCards);
-        fillListWithOtherList(newCards, hand.getCards());
-        fillListWithOtherList(oldCards, newCards);
     }
 
     public void passTurn(Game game){
