@@ -134,16 +134,53 @@ public class GameLogicTest {
         Assertions.assertEquals(oldDeckSize, game.getDeck().size());
     }
 
+    @Test
+    void testEndTurn(){
+        gameLogic.startGame(game);
 
+        // make sure the situation is prepared correctly
+        Assertions.assertTrue(game.isTheirTurn(pOne));
+        Assertions.assertFalse(game.isTheirTurn(pTwo));
+        pOne.setDoneDrawing(true);
+
+        // the actual tests
+        Assertions.assertTrue(gameLogic.endTurn(game, pOne));
+        Assertions.assertFalse(game.isTheirTurn(pOne));
+        Assertions.assertTrue(game.isTheirTurn(pTwo));
+    }
+    @Test
+    void testEndTurnCounterClockwise(){
+        // can't test this yet, because there are only two players in the example...
+        Assertions.fail();
+    }
+    @Test
+    void testEndTurnNotTheirTurn(){
+        gameLogic.startGame(game);
+
+        // make sure the situation is prepared correctly
+        Assertions.assertTrue(game.isTheirTurn(pOne));
+        Assertions.assertFalse(game.isTheirTurn(pTwo));
+
+        // the actual tests
+        Assertions.assertFalse(gameLogic.endTurn(game, pTwo));
+        Assertions.assertTrue(game.isTheirTurn(pOne));
+        Assertions.assertFalse(game.isTheirTurn(pTwo));
+    }
+    @Test
+    void testEndTurnNotDoneDrawing(){
+        gameLogic.startGame(game);
+
+        // make sure the situation is prepared correctly
+        Assertions.assertTrue(game.isTheirTurn(pOne));
+        Assertions.assertFalse(pOne.isDoneDrawing());
+
+        // the actual tests
+        Assertions.assertFalse(gameLogic.endTurn(game, pOne));
+        Assertions.assertTrue(game.isTheirTurn(pOne));
+    }
+
+    // TODO: WRITE TESTS FOR BullyingGameLogic.playCard()
     // TODO: REWORK AND CHECK ALL OLD TESTS WRITTEN BELOW
-
-//    @Test
-//    public void testShuffleCards(){
-//        List<Card> currentDeck = game.getDeck();
-//        gameLogic
-//        List<Card> newDeck = game.getDeck();
-//        Assertions.assertNotEquals(currentDeck, newDeck);
-//    }
 
     // @Test
     void testPlayCardCannotPlayNonBullyingCardOnBullyingCard(){
@@ -154,7 +191,6 @@ public class GameLogicTest {
 
         Assertions.assertFalse(doesAllowCardPlay);
     }
-
     // @Test
     void testPlayCardCannotEndWithBullyCard(){
         gameLogic.startGame(game);
@@ -168,7 +204,13 @@ public class GameLogicTest {
         Assertions.assertFalse(isPlacable);
     }
 
-
+//    @Test
+//    public void testShuffleCards(){
+//        List<Card> currentDeck = game.getDeck();
+//        gameLogic
+//        List<Card> newDeck = game.getDeck();
+//        Assertions.assertNotEquals(currentDeck, newDeck);
+//    }
 //    @Test
 //    public void testPlayCard(){
 //        gameLogic.startGame(game);
@@ -181,6 +223,4 @@ public class GameLogicTest {
 //        Assertions.assertEquals(player1.getHand().getCards().size(), playerCardAmount - 1);
 //        Assertions.assertEquals(game.getDeck().size(), deckCardAmount + 1);
 //    }
-
-
 }
