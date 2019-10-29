@@ -15,8 +15,7 @@ public class CardRules {
 
     public CardRules(){}
 
-    public static CardRules getInstance()
-    {
+    public static CardRules getInstance() {
         if (instance == null)
             instance = new CardRules();
 
@@ -29,6 +28,7 @@ public class CardRules {
         }
         stuffToAdd.clear();
     }
+
     private void swapHandWithPreviousHand(Player player, List<Card> newCards){
         Hand hand = player.getHand();
         List<Card> oldCards = new ArrayList<>();
@@ -37,6 +37,7 @@ public class CardRules {
         fillListWithOtherList(newCards, hand.getCards());
         fillListWithOtherList(oldCards, newCards);
     }
+
     private void rotateAllHands(Game game){
         List<Player> players = game.getPlayers();
         List<Card> newCards = new ArrayList<>();

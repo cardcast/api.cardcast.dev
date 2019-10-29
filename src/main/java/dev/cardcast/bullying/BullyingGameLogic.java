@@ -15,13 +15,14 @@ public class BullyingGameLogic implements IGameLogic {
     private static CardRules rules = new CardRules();
 
     private BullyingGameLogic(){}
-
     public static BullyingGameLogic getInstance() {
         if (instance == null)
             instance = new BullyingGameLogic();
 
         return instance;
     }
+
+    // region private internal functions
 
     private void onDeckEmpty(Game game) {
         List<Card> deck = game.getDeck();
@@ -53,6 +54,10 @@ public class BullyingGameLogic implements IGameLogic {
         }
         game.getStack().add(drawTopCard(game));
     }
+
+    // endregion
+
+    // region public functions from Interface
 
     @Override
     public void startGame(Game game) {
@@ -101,4 +106,6 @@ public class BullyingGameLogic implements IGameLogic {
         rules.passTurn(game);
         return true;
     }
+
+    // endregion
 }

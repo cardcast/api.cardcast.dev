@@ -1,8 +1,6 @@
 package dev.cardcast.bullying.entities;
 
 import dev.cardcast.bullying.entities.card.Card;
-import dev.cardcast.bullying.entities.card.Rank;
-import dev.cardcast.bullying.entities.card.Suit;
 import dev.cardcast.bullying.network.events.EventListener;
 import dev.cardcast.bullying.network.events.annotations.EventHandler;
 import dev.cardcast.bullying.network.events.types.PlayerReadyUpEvent;
@@ -13,21 +11,33 @@ import javax.websocket.Session;
 import java.util.ArrayList;
 import java.util.List;
 
+@Getter
 public class Game implements EventListener {
 
-    @Getter
     private final String token;
-    @Getter
+
     private List<Player> players;
-    @Getter
+
     private List<Card> deck;
-    @Getter
+    public Card getTopCardFromDeck(){
+        return deck.get(deck.size() - 1);
+    }
+
     private List<Card> stack;
-    @Getter @Setter
+    public Card getTopCardFromStack(){
+        return stack.get(stack.size() - 1);
+    }
+
+    @Setter
     private int turnIndex;
-    @Getter @Setter
+    public boolean isTheirTurn(Player player) {
+        return turnIndex == players.indexOf(player);
+    }
+
+    @Setter
     private boolean clockwise;
-    @Getter @Setter
+
+    @Setter
     private int numberToDraw;
 
     public Game(String token) {
@@ -35,18 +45,6 @@ public class Game implements EventListener {
         players = new ArrayList<>();
         deck = new ArrayList<>();
         stack = new ArrayList<>();
-    }
-
-    public boolean isTheirTurn(Player player) {
-        return turnIndex == players.indexOf(player);
-    }
-
-    public Card getTopCardFromDeck(){
-        return deck.get(deck.size() - 1);
-    }
-
-    public Card getTopCardFromStack(){
-        return stack.get(stack.size() - 1);
     }
 
     @EventHandler

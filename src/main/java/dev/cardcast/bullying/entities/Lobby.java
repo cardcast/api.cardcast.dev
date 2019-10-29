@@ -5,22 +5,19 @@ import lombok.Getter;
 
 import java.util.HashMap;
 
+@Getter
 public class Lobby {
-    @Getter
     private String code;
 
-    @Getter
     private HashMap<Player, Boolean> queued = new HashMap<>();
 
-    @Getter
-    private int maxPlayers;
-
-    @Getter
     private boolean isPublic;
 
+    private int maxPlayers;
+
     public Lobby(boolean isPublic, int maxPlayers) {
-        this.maxPlayers = maxPlayers;
         this.isPublic = isPublic;
+        this.maxPlayers = maxPlayers;
         this.code = AccessCodeGenerator.generate();
     }
 
