@@ -11,8 +11,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 public class GameLogicTest {
-    private Player playerOne;
+    private Player playerOne; // these ones are based on addition order
     private Player playerTwo;
+    private Player pOne; // these ones are based on index
+    private Player pTwo;
     private BullyingGameLogic gameLogic;
     private Game game;
 
@@ -32,6 +34,9 @@ public class GameLogicTest {
 
         this.game = gameManager.startGame(lobby);
         this.gameLogic = BullyingGameLogic.getInstance();
+
+        pOne = game.getPlayers().get(0);
+        pTwo = game.getPlayers().get(1);
     }
 
 //    @Test
@@ -55,17 +60,17 @@ public class GameLogicTest {
     @Test
     public void testDrawCard(){
         gameLogic.startGame(game);
-        int oldHandSize = playerOne.getHand().getCards().size();
+        int oldHandSize = pOne.getHand().getCards().size();
         int oldDeckSize = game.getDeck().size();
 
-        // TODO: THIS TEST SOMETIMES FAILS AND SOMETIMES IT DOESN'T. NO REAL IDEA WHY YET.
-        Assertions.assertTrue(game.isTheirTurn(playerOne));
-        Assertions.assertFalse(playerOne.isDoneDrawing());
-        Assertions.assertTrue(gameLogic.drawCard(game, playerOne));
-        Assertions.assertTrue(game.isTheirTurn(playerOne));
-        Assertions.assertTrue(playerOne.isDoneDrawing());
+        // make sure the situation is prepared correctly
+        Assertions.assertTrue(game.isTheirTurn(pOne));
+        Assertions.assertFalse(pOne.isDoneDrawing());
 
-        Assertions.assertEquals(oldHandSize + 1, playerOne.getHand().getCards().size());
+        // the actual tests
+        Assertions.assertTrue(gameLogic.drawCard(game, pOne));
+        Assertions.assertTrue(pOne.isDoneDrawing());
+        Assertions.assertEquals(oldHandSize + 1, pOne.getHand().getCards().size());
         Assertions.assertEquals(oldDeckSize - 1, game.getDeck().size());
     }
 
