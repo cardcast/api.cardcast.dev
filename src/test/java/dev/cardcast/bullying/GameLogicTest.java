@@ -13,15 +13,17 @@ import org.junit.jupiter.api.Test;
 public class GameLogicTest {
     private Player playerOne; // these ones are based on addition order
     private Player playerTwo;
+    private Player playerThree;
     private Player pOne; // these ones are based on index
     private Player pTwo;
+    private Player pThree;
     private BullyingGameLogic gameLogic;
     private Game game;
 
     @BeforeEach
     void beforeEach(){
         GameManager gameManager = new GameManager();
-        Lobby lobby = gameManager.createLobby(true, 2);
+        Lobby lobby = gameManager.createLobby(true, 3);
 
         this.playerOne = new Player(null);
         gameManager.addPlayer(lobby, playerOne);
@@ -29,14 +31,19 @@ public class GameLogicTest {
         this.playerTwo = new Player(null);
         gameManager.addPlayer(lobby, playerTwo);
 
+        this.playerThree = new Player(null);
+        gameManager.addPlayer(lobby, playerThree);
+
         gameManager.playerReadyUp(lobby, playerOne);
         gameManager.playerReadyUp(lobby, playerTwo);
+        gameManager.playerReadyUp(lobby, playerThree);
 
         this.game = gameManager.startGame(lobby);
         this.gameLogic = BullyingGameLogic.getInstance();
 
         pOne = game.getPlayers().get(0);
         pTwo = game.getPlayers().get(1);
+        pThree = game.getPlayers().get(2);
     }
 
     @Test
@@ -46,16 +53,18 @@ public class GameLogicTest {
         int expected = 7;
         int playerOneHandSize = playerOne.getHand().getCards().size();
         int playerTwoHandSize = playerTwo.getHand().getCards().size();
+        int playerThreeHandSize = playerThree.getHand().getCards().size();
 
         Assertions.assertEquals(expected, playerOneHandSize);
         Assertions.assertEquals(expected, playerTwoHandSize);
+        Assertions.assertEquals(expected, playerThreeHandSize);
     }
     @Test
     void testStartGameDeckSize(){
         gameLogic.startGame(game);
 
-        // 54 cards in total on deck minus the cards taken by the players (two times 7) minus the first card put on the stack
-        int expectedAmount = 54 - 7 - 7 - 1;
+        // 54 cards in total on deck minus the cards taken by the players (three times 7) minus the first card put on the stack
+        int expectedAmount = 54 - (3 * 7) - 1;
 
         Assertions.assertEquals(expectedAmount, game.getDeck().size());
     }
@@ -141,17 +150,31 @@ public class GameLogicTest {
         // make sure the situation is prepared correctly
         Assertions.assertTrue(game.isTheirTurn(pOne));
         Assertions.assertFalse(game.isTheirTurn(pTwo));
+        Assertions.assertFalse(game.isTheirTurn(pThree));
         pOne.setDoneDrawing(true);
 
         // the actual tests
         Assertions.assertTrue(gameLogic.endTurn(game, pOne));
         Assertions.assertFalse(game.isTheirTurn(pOne));
         Assertions.assertTrue(game.isTheirTurn(pTwo));
+        Assertions.assertFalse(game.isTheirTurn(pThree));
     }
     @Test
     void testEndTurnCounterClockwise(){
-        // can't test this yet, because there are only two players in the example...
-        Assertions.fail();
+        gameLogic.startGame(game);
+
+        // make sure the situation is prepared correctly
+        Assertions.assertTrue(game.isTheirTurn(pOne));
+        Assertions.assertFalse(game.isTheirTurn(pTwo));
+        Assertions.assertFalse(game.isTheirTurn(pThree));
+        pOne.setDoneDrawing(true);
+        game.setClockwise(false);
+
+        // the actual tests
+        Assertions.assertTrue(gameLogic.endTurn(game, pOne));
+        Assertions.assertFalse(game.isTheirTurn(pOne));
+        Assertions.assertFalse(game.isTheirTurn(pTwo));
+        Assertions.assertTrue(game.isTheirTurn(pThree));
     }
     @Test
     void testEndTurnNotTheirTurn(){
@@ -165,6 +188,7 @@ public class GameLogicTest {
         Assertions.assertFalse(gameLogic.endTurn(game, pTwo));
         Assertions.assertTrue(game.isTheirTurn(pOne));
         Assertions.assertFalse(game.isTheirTurn(pTwo));
+        Assertions.assertFalse(game.isTheirTurn(pThree));
     }
     @Test
     void testEndTurnNotDoneDrawing(){
@@ -177,6 +201,8 @@ public class GameLogicTest {
         // the actual tests
         Assertions.assertFalse(gameLogic.endTurn(game, pOne));
         Assertions.assertTrue(game.isTheirTurn(pOne));
+        Assertions.assertFalse(game.isTheirTurn(pTwo));
+        Assertions.assertFalse(game.isTheirTurn(pThree));
     }
 
     // TODO: WRITE TESTS FOR BullyingGameLogic.playCard()
