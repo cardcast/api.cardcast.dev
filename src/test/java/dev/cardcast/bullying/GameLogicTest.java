@@ -19,7 +19,7 @@ public class GameLogicTest {
     private Game game;
 
     @BeforeEach
-    public void beforeEach(){
+    void beforeEach(){
         GameManager gameManager = new GameManager();
         Lobby lobby = gameManager.createLobby(true, 2);
 
@@ -39,26 +39,37 @@ public class GameLogicTest {
         pTwo = game.getPlayers().get(1);
     }
 
-//    @Test
-//    public void testShuffleCards(){
-//        List<Card> currentDeck = game.getDeck();
-//        gameLogic
-//        List<Card> newDeck = game.getDeck();
-//        Assertions.assertNotEquals(currentDeck, newDeck);
-//    }
-
     @Test
-    public void testDistributeCards(){
+    void testStartGamePlayerHandSize(){
         gameLogic.startGame(game);
 
-        int expected = 7 + 7;
-        int sizeOne = playerOne.getHand().getCards().size();
-        int sizeTwo = playerTwo.getHand().getCards().size();
-        Assertions.assertEquals(expected, sizeOne + sizeTwo);
+        int expected = 7;
+        int playerOneHandSize = playerOne.getHand().getCards().size();
+        int playerTwoHandSize = playerTwo.getHand().getCards().size();
+
+        Assertions.assertEquals(expected, playerOneHandSize);
+        Assertions.assertEquals(expected, playerTwoHandSize);
+    }
+    @Test
+    void testStartGameDeckSize(){
+        gameLogic.startGame(game);
+
+        // 54 cards in total on deck minus the cards taken by the players (two times 7) minus the first card put on the stack
+        int expectedAmount = 54 - 7 - 7 - 1;
+
+        Assertions.assertEquals(expectedAmount, game.getDeck().size());
+    }
+    @Test
+    void testStartGameVariableSetup(){
+        gameLogic.startGame(game);
+
+        Assertions.assertTrue(game.isTheirTurn(pOne));
+        Assertions.assertTrue(game.isClockwise());
+        Assertions.assertEquals(0, game.getNumberToDraw());
     }
 
     @Test
-    public void testDrawCard(){
+    void testDrawCard(){
         gameLogic.startGame(game);
         int oldHandSize = pOne.getHand().getCards().size();
         int oldDeckSize = game.getDeck().size();
@@ -73,7 +84,66 @@ public class GameLogicTest {
         Assertions.assertEquals(oldHandSize + 1, pOne.getHand().getCards().size());
         Assertions.assertEquals(oldDeckSize - 1, game.getDeck().size());
     }
+    @Test
+    void testDrawCardBullied(){
+        gameLogic.startGame(game);
+        int oldHandSize = pOne.getHand().getCards().size();
+        int oldDeckSize = game.getDeck().size();
+        game.setNumberToDraw(4);
 
+        // make sure the situation is prepared correctly
+        Assertions.assertTrue(game.isTheirTurn(pOne));
+        Assertions.assertFalse(pOne.isDoneDrawing());
+
+        // the actual tests
+        Assertions.assertTrue(gameLogic.drawCard(game, pOne));
+        Assertions.assertFalse(pOne.isDoneDrawing());
+        Assertions.assertEquals(oldHandSize + 4, pOne.getHand().getCards().size());
+        Assertions.assertEquals(oldDeckSize - 4, game.getDeck().size());
+    }
+    @Test
+    void testDrawCardNotTheirTurn(){
+        gameLogic.startGame(game);
+        int oldHandSize = pTwo.getHand().getCards().size();
+        int oldDeckSize = game.getDeck().size();
+
+        // make sure the situation is prepared correctly
+        Assertions.assertFalse(game.isTheirTurn(pTwo));
+
+        // the actual tests
+        Assertions.assertFalse(gameLogic.drawCard(game, pTwo));
+        Assertions.assertEquals(oldHandSize, pTwo.getHand().getCards().size());
+        Assertions.assertEquals(oldDeckSize, game.getDeck().size());
+    }
+    @Test
+    void testDrawCardDrawnAlready(){
+        gameLogic.startGame(game);
+
+        // make sure the situation is prepared correctly
+        Assertions.assertTrue(game.isTheirTurn(pOne));
+        Assertions.assertFalse(pOne.isDoneDrawing());
+        Assertions.assertTrue(gameLogic.drawCard(game, pOne));
+        Assertions.assertTrue(pOne.isDoneDrawing());
+
+        int oldHandSize = pOne.getHand().getCards().size();
+        int oldDeckSize = game.getDeck().size();
+
+        // the actual tests
+        Assertions.assertFalse(gameLogic.drawCard(game, pOne));
+        Assertions.assertEquals(oldHandSize, pOne.getHand().getCards().size());
+        Assertions.assertEquals(oldDeckSize, game.getDeck().size());
+    }
+
+
+    // TODO: REWORK AND CHECK ALL OLD TESTS WRITTEN BELOW
+
+//    @Test
+//    public void testShuffleCards(){
+//        List<Card> currentDeck = game.getDeck();
+//        gameLogic
+//        List<Card> newDeck = game.getDeck();
+//        Assertions.assertNotEquals(currentDeck, newDeck);
+//    }
 
     // @Test
     void testPlayCardCannotPlayNonBullyingCardOnBullyingCard(){
@@ -112,26 +182,5 @@ public class GameLogicTest {
 //        Assertions.assertEquals(game.getDeck().size(), deckCardAmount + 1);
 //    }
 
-    @Test
-    void testStartGamePlayerRightCardAmount(){
-        gameLogic.startGame(game);
 
-        int expected = 7;
-        int playerCardAmount = playerOne.getHand().getCards().size();
-
-        Assertions.assertEquals(expected, playerCardAmount);
-    }
-
-    @Test
-    void testStartGameDeckRightCardAmount(){
-        gameLogic.startGame(game);
-        int cardsPlayerOne = playerOne.getHand().getCards().size();
-        int cardsPlayerTwo = playerTwo.getHand().getCards().size();
-
-        // 54 cards in total on deck minus the cards taken by the players minus the first card put on the stack
-        int expectedAmount = 54 - cardsPlayerOne - cardsPlayerTwo - 1;
-        int deckCardAmount = game.getDeck().size();
-
-        Assertions.assertEquals(expectedAmount, deckCardAmount);
-    }
 }
