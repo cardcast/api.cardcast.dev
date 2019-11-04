@@ -93,42 +93,29 @@ public class GameLogicTest {
     // region testPlayCard()
 
     // TODO: WRITE TESTS FOR BullyingGameLogic.playCard()
-    // TODO: REWORK AND CHECK ALL OLD TESTS WRITTEN BELOW
+    /*
+        play a card that you don't have
+        play a card while it is not your turn
+        - it is not a valid play
+            - you are being bullied...
+                but try to play a normal card
+                but try to play a 2 on a joker
+                but try to finish with a joker
+            you try to finish with a freebie (Jack or Joker)
+            the card does not have the same suit or color
+        - it is a valid play
+            BECAUSE you play a Jack
+            BECAUSE you play a Joker
+            it is a two
+            it is a joker
+            it is a seven
+            it is an eight
+            it is an ace
+            it is a ten
+            it is a jack?
+            it is nothing special
+    */
 
-    // @Test
-    void testPlayCardCannotPlayNonBullyingCardOnBullyingCard(){
-        gameLogic.startGame(game);
-
-        gameLogic.playCard(game, playerOne, new Card(Suit.CLUBS, Rank.TWO));
-        boolean doesAllowCardPlay = CardRules.getInstance().validPlay(game, playerTwo, new Card(Suit.SPADES, Rank.THREE));
-
-        Assertions.assertFalse(doesAllowCardPlay);
-    }
-    // @Test
-    void testPlayCardCannotEndWithBullyCard(){
-        gameLogic.startGame(game);
-
-        playerOne.getHand().getCards().clear();
-        Card card = new Card(Suit.JOKER, Rank.JOKER);
-        playerOne.getHand().getCards().add(card);
-
-        boolean isPlacable = gameLogic.playCard(game, playerOne, card);
-
-        Assertions.assertFalse(isPlacable);
-    }
-
-//    @Test
-//    public void testPlayCard(){
-//        gameLogic.startGame(game);
-//        Player player1 = game.getPlayers().get(0);
-//        int playerCardAmount = player.getHand().getCards().size();
-//        int deckCardAmount = game.getDeck().size();
-//
-//        gameLogic.playCard(game, player1, new Card(Suit.CLUBS, Rank.ACE));
-//
-//        Assertions.assertEquals(player1.getHand().getCards().size(), playerCardAmount - 1);
-//        Assertions.assertEquals(game.getDeck().size(), deckCardAmount + 1);
-//    }
 
     // endregion
 
