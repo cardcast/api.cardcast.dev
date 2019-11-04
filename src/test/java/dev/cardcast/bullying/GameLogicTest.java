@@ -25,9 +25,9 @@ public class GameLogicTest {
         GameManager gameManager = new GameManager();
         Lobby lobby = gameManager.createLobby(true, 3);
 
-        this.playerOne = new Player(null);
-        this.playerTwo = new Player(null);
-        this.playerThree = new Player(null);
+        this.playerOne = new Player(null, "Alpha");
+        this.playerTwo = new Player(null, "Beta");
+        this.playerThree = new Player(null, "Charlie");
 
         gameManager.addPlayer(lobby, playerOne);
         gameManager.addPlayer(lobby, playerTwo);

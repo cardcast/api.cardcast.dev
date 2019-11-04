@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class AccessCodeGenerator {
+public abstract class AccessCodeGenerator {
 
     private static List<String> previouslyGeneratedCodes = new ArrayList<String>();
     private static Random random = new Random();

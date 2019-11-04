@@ -3,10 +3,11 @@ package dev.cardcast.bullying.entities;
 import dev.cardcast.bullying.util.AccessCodeGenerator;
 import lombok.Getter;
 
+import java.io.Serializable;
 import java.util.HashMap;
 
 @Getter
-public class Lobby {
+public class Lobby implements Serializable {
     private String code;
 
     private HashMap<Player, Boolean> queued = new HashMap<>();

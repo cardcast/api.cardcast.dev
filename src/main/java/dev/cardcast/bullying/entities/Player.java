@@ -20,8 +20,10 @@ public class Player {
     @Setter
     private boolean doneDrawing;
 
-    public Player(Session session) {
-        uuid = UUID.randomUUID();
+    public Player(Session session, String name) {
+        this.hand = new Hand();
+        this.uuid = UUID.randomUUID();
+        this.name = name;
         this.session = session;
         hand = new Hand();
         doneDrawing = false;

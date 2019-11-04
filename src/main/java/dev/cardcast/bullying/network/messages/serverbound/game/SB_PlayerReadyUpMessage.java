@@ -8,12 +8,15 @@ public class SB_PlayerReadyUpMessage extends ServerBoundWSMessage {
 
     private String name;
 
-    public SB_PlayerReadyUpMessage(String name) {
+    private String token;
+
+    public SB_PlayerReadyUpMessage(String name, String token) {
         this.name = name;
+        this.token = token;
     }
 
     @Override
     public Event getEvent() {
-        return new PlayerReadyUpEvent(this.name);
+        return new PlayerReadyUpEvent(this.name, this.token);
     }
 }
