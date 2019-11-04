@@ -57,8 +57,7 @@ public class GameManager implements IGameManager {
                 return null;
             }
         }
-        Game game = new Game(lobby.getCode());
-        game.getPlayers().addAll(lobby.getQueued().keySet());
+        Game game = new Game(new ArrayList<>(lobby.getQueued().keySet()));
         this.games.add(game);
         lobbies.remove(lobby);
         return game;
