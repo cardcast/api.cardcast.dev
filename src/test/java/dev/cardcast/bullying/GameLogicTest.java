@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import java.util.List;
 
 public class GameLogicTest {
     private Player playerOne; // these ones are based on addition order
@@ -44,6 +45,28 @@ public class GameLogicTest {
         pOne = game.getPlayers().get(0);
         pTwo = game.getPlayers().get(1);
         pThree = game.getPlayers().get(2);
+    }
+
+    void playCardBasicSetup(Card cardOnStack, Card cardToPlay){
+        gameLogic.startGame(game);
+        game.getStack().add(cardOnStack);
+        guaranteeSingleCard(pOne, cardToPlay);
+    }
+
+    boolean checkBasicTurnPassed(){
+        boolean correct;
+        correct = game.isTheirTurn(pTwo);
+        if (correct) correct = !game.isTheirTurn(pOne);
+        if (correct) correct = !game.isTheirTurn(pThree);
+        return correct;
+    }
+
+    void guaranteeSingleCard(Player player, Card card){
+        List<Card> pCards = player.getHand().getCards();
+        if (pCards.contains(card)){
+            pCards.removeIf(card::equals);
+        }
+        pCards.add(card);
     }
 
     @Nested
@@ -85,34 +108,315 @@ public class GameLogicTest {
     @Nested
     class PlayCardTests{
 
-        @Test
-        void DEBUG(){
-            Assertions.assertTrue(true);
-        }
-        // TODO: WRITE TESTS FOR BullyingGameLogic.playCard()
+        @Nested
+        class ValidPlays{
+            @Test
+            void testPlayCardBySuit(){
+                Card newStack = new Card(Suit.CLUBS, Rank.THREE);
+                Card playedCard = new Card(Suit.CLUBS, Rank.SIX);
+                playCardBasicSetup(newStack, playedCard);
 
-        /*
-            - play a card that you don't have
-            - play a card while it is not your turn
-            it is not a valid play
-                you are being bullied...
-                    - but try to play a normal card
-                    - but try to play a 2 on a joker
-                    - but try to finish with a joker
-                - you try to finish with a freebie (Jack or Joker)
-                - the card does not have the same suit or color
-            it is a valid play
-                - BECAUSE you play a Jack
-                - BECAUSE you play a Joker
-                - it is a two
-                - it is a joker
-                - it is a seven
-                - it is an eight
-                - it is an ace
-                - it is a ten
-                - it is a jack?
-                - it is nothing special
-        */
+                Assertions.assertTrue(gameLogic.playCard(game, pOne, playedCard));
+
+                // basic assertions for valid playCard
+                Assertions.assertFalse(pOne.getHand().getCards().contains(playedCard));
+                Assertions.assertEquals(playedCard, game.getTopCardFromStack());
+                Assertions.assertTrue(checkBasicTurnPassed());
+            }
+
+            @Test
+            void testPlayCardByRank(){
+                Card newStack = new Card(Suit.SPADES, Rank.NINE);
+                Card playedCard = new Card(Suit.HEARTS, Rank.NINE);
+                playCardBasicSetup(newStack, playedCard);
+
+                Assertions.assertTrue(gameLogic.playCard(game, pOne, playedCard));
+
+                // basic assertions for valid playCard
+                Assertions.assertFalse(pOne.getHand().getCards().contains(playedCard));
+                Assertions.assertEquals(playedCard, game.getTopCardFromStack());
+                Assertions.assertTrue(checkBasicTurnPassed());
+            }
+
+            @Test
+            void testPlayCardTwo(){
+                Card newStack = new Card(Suit.CLUBS, Rank.THREE);
+                Card playedCard = new Card(Suit.CLUBS, Rank.TWO);
+                playCardBasicSetup(newStack, playedCard);
+
+                Assertions.assertTrue(gameLogic.playCard(game, pOne, playedCard));
+                Assertions.assertEquals(2, game.getNumberToDraw());
+
+                // basic assertions for valid playCard
+                Assertions.assertFalse(pOne.getHand().getCards().contains(playedCard));
+                Assertions.assertEquals(playedCard, game.getTopCardFromStack());
+                Assertions.assertTrue(checkBasicTurnPassed());
+            }
+
+            @Test
+            void testPlayCardJoker(){
+                Card newStack = new Card(Suit.CLUBS, Rank.THREE);
+                Card playedCard = new Card(Suit.JOKER, Rank.JOKER);
+                playCardBasicSetup(newStack, playedCard);
+
+                Assertions.assertTrue(gameLogic.playCard(game, pOne, playedCard));
+                Assertions.assertEquals(5, game.getNumberToDraw());
+
+                // basic assertions for valid playCard
+                Assertions.assertFalse(pOne.getHand().getCards().contains(playedCard));
+                Assertions.assertEquals(playedCard, game.getTopCardFromStack());
+                Assertions.assertTrue(checkBasicTurnPassed());
+            }
+
+            @Test
+            void testPlayCardSeven(){
+                Card newStack = new Card(Suit.CLUBS, Rank.THREE);
+                Card playedCard = new Card(Suit.CLUBS, Rank.SEVEN);
+                playCardBasicSetup(newStack, playedCard);
+
+                Assertions.assertTrue(gameLogic.playCard(game, pOne, playedCard));
+                Assertions.assertFalse(pOne.isDoneDrawing());
+
+                // basic assertions for valid playCard
+                Assertions.assertFalse(pOne.getHand().getCards().contains(playedCard));
+                Assertions.assertEquals(playedCard, game.getTopCardFromStack());
+                Assertions.assertFalse(checkBasicTurnPassed()); // no turn passed!
+            }
+
+            @Test
+            void testPlayCardEight(){
+                Card newStack = new Card(Suit.CLUBS, Rank.THREE);
+                Card playedCard = new Card(Suit.CLUBS, Rank.EIGHT);
+                playCardBasicSetup(newStack, playedCard);
+
+                Assertions.assertTrue(gameLogic.playCard(game, pOne, playedCard));
+
+                // basic assertions for valid playCard
+                Assertions.assertFalse(pOne.getHand().getCards().contains(playedCard));
+                Assertions.assertEquals(playedCard, game.getTopCardFromStack());
+                Assertions.assertFalse(game.isTheirTurn(pOne)); // two turns passed!
+                Assertions.assertFalse(game.isTheirTurn(pTwo));
+                Assertions.assertTrue(game.isTheirTurn(pThree));
+            }
+
+            @Test
+            void testPlayCardAce(){
+                Card newStack = new Card(Suit.CLUBS, Rank.THREE);
+                Card playedCard = new Card(Suit.CLUBS, Rank.ACE);
+                playCardBasicSetup(newStack, playedCard);
+
+                Assertions.assertTrue(gameLogic.playCard(game, pOne, playedCard));
+
+                // basic assertions for valid playCard
+                Assertions.assertFalse(pOne.getHand().getCards().contains(playedCard));
+                Assertions.assertEquals(playedCard, game.getTopCardFromStack());
+                Assertions.assertFalse(game.isClockwise());
+                Assertions.assertFalse(game.isTheirTurn(pOne)); // direction changed!
+                Assertions.assertFalse(game.isTheirTurn(pTwo));
+                Assertions.assertTrue(game.isTheirTurn(pThree));
+            }
+
+            /*
+                // TODO: THE EFFECTS OF A 10 AND A JACK
+
+                @Test
+                void testPlayCardTen(){}
+
+                @Test
+                void testPlayCardJack(){}
+
+                @Test
+                void testPlayCardJackOnOtherSuit(){}
+            */
+
+            @Test
+            void testPlayCardOnOldJoker(){
+                Card newStack = new Card(Suit.JOKER, Rank.JOKER);
+                Card playedCard = new Card(Suit.CLUBS, Rank.THREE);
+                playCardBasicSetup(newStack, playedCard);
+
+                Assertions.assertTrue(gameLogic.playCard(game, pOne, playedCard));
+
+                // basic assertions for valid playCard
+                Assertions.assertFalse(pOne.getHand().getCards().contains(playedCard));
+                Assertions.assertEquals(playedCard, game.getTopCardFromStack());
+                Assertions.assertTrue(checkBasicTurnPassed());
+            }
+
+            @Test
+            void testPlayCardBulliedEqualPlayTwo(){
+                Card newStack = new Card(Suit.CLUBS, Rank.TWO);
+                Card playedCard = new Card(Suit.HEARTS, Rank.TWO);
+                playCardBasicSetup(newStack, playedCard);
+                game.setNumberToDraw(4);
+
+                Assertions.assertTrue(gameLogic.playCard(game, pOne, playedCard));
+                Assertions.assertEquals(6, game.getNumberToDraw());
+
+                // basic assertions for valid playCard
+                Assertions.assertFalse(pOne.getHand().getCards().contains(playedCard));
+                Assertions.assertEquals(playedCard, game.getTopCardFromStack());
+                Assertions.assertTrue(checkBasicTurnPassed());
+            }
+
+            @Test
+            void testPlayCardBulliedEqualPlayJoker(){
+                Card newStack = new Card(Suit.JOKER, Rank.JOKER);
+                Card playedCard = new Card(Suit.JOKER, Rank.JOKER);
+                playCardBasicSetup(newStack, playedCard);
+                game.setNumberToDraw(7);
+
+                Assertions.assertTrue(gameLogic.playCard(game, pOne, playedCard));
+                Assertions.assertEquals(12, game.getNumberToDraw());
+
+                // basic assertions for valid playCard
+                Assertions.assertFalse(pOne.getHand().getCards().contains(playedCard));
+                Assertions.assertEquals(playedCard, game.getTopCardFromStack());
+                Assertions.assertTrue(checkBasicTurnPassed());
+            }
+
+            @Test
+            void testPlayCardBulliedStrongerPlay(){
+                Card newStack = new Card(Suit.CLUBS, Rank.TWO);
+                Card playedCard = new Card(Suit.JOKER, Rank.JOKER);
+                playCardBasicSetup(newStack, playedCard);
+                game.setNumberToDraw(4);
+
+                Assertions.assertTrue(gameLogic.playCard(game, pOne, playedCard));
+                Assertions.assertEquals(9, game.getNumberToDraw());
+
+                // basic assertions for valid playCard
+                Assertions.assertFalse(pOne.getHand().getCards().contains(playedCard));
+                Assertions.assertEquals(playedCard, game.getTopCardFromStack());
+                Assertions.assertTrue(checkBasicTurnPassed());
+            }
+        }
+
+        @Nested
+        class InvalidPlays{
+            @Test
+            void testPlayCardDoNotHaveCard(){
+                Card newStack = new Card(Suit.CLUBS, Rank.THREE);
+                Card playedCard = new Card(Suit.CLUBS, Rank.SIX);
+                playCardBasicSetup(newStack, playedCard);
+                pOne.getHand().getCards().remove(playedCard);
+
+                Assertions.assertFalse(gameLogic.playCard(game, pOne, playedCard));
+
+                // basic assertions for invalid playCard
+                Assertions.assertFalse(pOne.getHand().getCards().contains(playedCard)); // he did not have it!
+                Assertions.assertNotEquals(playedCard, game.getTopCardFromStack());
+                Assertions.assertFalse(checkBasicTurnPassed());
+            }
+
+            @Test
+            void testPlayCardNotYourTurn(){
+                Card newStack = new Card(Suit.CLUBS, Rank.THREE);
+                Card playedCard = new Card(Suit.CLUBS, Rank.SIX);
+                playCardBasicSetup(newStack, playedCard);
+                game.setTurnIndex(1);
+
+                Assertions.assertFalse(gameLogic.playCard(game, pOne, playedCard));
+
+                // basic assertions for invalid playCard
+                Assertions.assertTrue(pOne.getHand().getCards().contains(playedCard));
+                Assertions.assertNotEquals(playedCard, game.getTopCardFromStack());
+                Assertions.assertTrue(checkBasicTurnPassed()); // it was not their turn!
+            }
+
+            @Test
+            void testPlayCardNotSameSuitOrColor(){
+                Card newStack = new Card(Suit.CLUBS, Rank.THREE);
+                Card playedCard = new Card(Suit.HEARTS, Rank.NINE);
+                playCardBasicSetup(newStack, playedCard);
+
+                Assertions.assertFalse(gameLogic.playCard(game, pOne, playedCard));
+
+                // basic assertions for invalid playCard
+                Assertions.assertTrue(pOne.getHand().getCards().contains(playedCard));
+                Assertions.assertNotEquals(playedCard, game.getTopCardFromStack());
+                Assertions.assertFalse(checkBasicTurnPassed());
+            }
+
+            @Test
+            void testPlayCardBulliedNormalCard(){
+                Card newStack = new Card(Suit.CLUBS, Rank.TWO);
+                Card playedCard = new Card(Suit.CLUBS, Rank.SIX);
+                playCardBasicSetup(newStack, playedCard);
+                game.setNumberToDraw(4);
+
+                Assertions.assertFalse(gameLogic.playCard(game, pOne, playedCard));
+
+                // basic assertions for invalid playCard
+                Assertions.assertTrue(pOne.getHand().getCards().contains(playedCard));
+                Assertions.assertNotEquals(playedCard, game.getTopCardFromStack());
+                Assertions.assertFalse(checkBasicTurnPassed());
+            }
+
+            @Test
+            void testPlayCardBulliedWeakerPlay(){
+                Card newStack = new Card(Suit.JOKER, Rank.JOKER);
+                Card playedCard = new Card(Suit.CLUBS, Rank.TWO);
+                playCardBasicSetup(newStack, playedCard);
+                game.setNumberToDraw(7);
+
+                Assertions.assertFalse(gameLogic.playCard(game, pOne, playedCard));
+
+                // basic assertions for invalid playCard
+                Assertions.assertTrue(pOne.getHand().getCards().contains(playedCard));
+                Assertions.assertNotEquals(playedCard, game.getTopCardFromStack());
+                Assertions.assertFalse(checkBasicTurnPassed());
+            }
+
+            @Test
+            void testPlayCardFinishFreebieJack(){
+                Card newStack = new Card(Suit.CLUBS, Rank.THREE);
+                Card playedCard = new Card(Suit.HEARTS, Rank.JACK);
+                playCardBasicSetup(newStack, playedCard);
+                pOne.getHand().getCards().clear();
+                pOne.getHand().getCards().add(playedCard);
+
+                Assertions.assertFalse(gameLogic.playCard(game, pOne, playedCard));
+
+                // basic assertions for invalid playCard
+                Assertions.assertTrue(pOne.getHand().getCards().contains(playedCard));
+                Assertions.assertNotEquals(playedCard, game.getTopCardFromStack());
+                Assertions.assertFalse(checkBasicTurnPassed());
+            }
+
+            @Test
+            void testPlayCardFinishFreebieJoker(){
+                Card newStack = new Card(Suit.CLUBS, Rank.THREE);
+                Card playedCard = new Card(Suit.JOKER, Rank.JOKER);
+                playCardBasicSetup(newStack, playedCard);
+                pOne.getHand().getCards().clear();
+                pOne.getHand().getCards().add(playedCard);
+
+                Assertions.assertFalse(gameLogic.playCard(game, pOne, playedCard));
+
+                // basic assertions for invalid playCard
+                Assertions.assertTrue(pOne.getHand().getCards().contains(playedCard));
+                Assertions.assertNotEquals(playedCard, game.getTopCardFromStack());
+                Assertions.assertFalse(checkBasicTurnPassed());
+            }
+
+            @Test
+            void testPlayCardFinishFreebieBullied(){
+                Card newStack = new Card(Suit.CLUBS, Rank.TWO);
+                Card playedCard = new Card(Suit.JOKER, Rank.JOKER);
+                playCardBasicSetup(newStack, playedCard);
+                pOne.getHand().getCards().clear();
+                pOne.getHand().getCards().add(playedCard);
+                game.setNumberToDraw(2);
+
+                Assertions.assertFalse(gameLogic.playCard(game, pOne, playedCard));
+
+                // basic assertions for invalid playCard
+                Assertions.assertTrue(pOne.getHand().getCards().contains(playedCard));
+                Assertions.assertNotEquals(playedCard, game.getTopCardFromStack());
+                Assertions.assertFalse(checkBasicTurnPassed());
+            }
+        }
     }
 
     @Nested
@@ -201,9 +505,7 @@ public class GameLogicTest {
 
             // the actual tests
             Assertions.assertTrue(gameLogic.endTurn(game, pOne));
-            Assertions.assertFalse(game.isTheirTurn(pOne));
-            Assertions.assertTrue(game.isTheirTurn(pTwo));
-            Assertions.assertFalse(game.isTheirTurn(pThree));
+            Assertions.assertTrue(checkBasicTurnPassed());
         }
 
         @Test
@@ -234,9 +536,7 @@ public class GameLogicTest {
 
             // the actual tests
             Assertions.assertFalse(gameLogic.endTurn(game, pTwo));
-            Assertions.assertTrue(game.isTheirTurn(pOne));
-            Assertions.assertFalse(game.isTheirTurn(pTwo));
-            Assertions.assertFalse(game.isTheirTurn(pThree));
+            Assertions.assertFalse(checkBasicTurnPassed());
         }
 
         @Test
@@ -249,9 +549,7 @@ public class GameLogicTest {
 
             // the actual tests
             Assertions.assertFalse(gameLogic.endTurn(game, pOne));
-            Assertions.assertTrue(game.isTheirTurn(pOne));
-            Assertions.assertFalse(game.isTheirTurn(pTwo));
-            Assertions.assertFalse(game.isTheirTurn(pThree));
+            Assertions.assertFalse(checkBasicTurnPassed());
         }
     }
 }
