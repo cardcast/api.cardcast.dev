@@ -1,13 +1,8 @@
 package dev.cardcast.bullying.entities;
 
 import dev.cardcast.bullying.entities.card.Card;
-import dev.cardcast.bullying.network.events.EventListener;
-import dev.cardcast.bullying.network.events.annotations.EventHandler;
-import dev.cardcast.bullying.network.events.types.PlayerReadyUpEvent;
 import lombok.Getter;
 import lombok.Setter;
-
-import javax.websocket.Session;
 import java.util.ArrayList;
 import java.util.List;
 

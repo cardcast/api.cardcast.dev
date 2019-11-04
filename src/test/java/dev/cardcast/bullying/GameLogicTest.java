@@ -26,8 +26,8 @@ public class GameLogicTest {
         GameManager gameManager = new GameManager();
         Lobby lobby = gameManager.createLobby(true, 3);
 
-        this.playerOne = new Player(null, "Alpha");
-        this.playerTwo = new Player(null, "Beta");
+        this.playerOne = new Player(null, "Alice");
+        this.playerTwo = new Player(null, "Bob");
         this.playerThree = new Player(null, "Charlie");
 
         gameManager.addPlayer(lobby, playerOne);
@@ -82,45 +82,39 @@ public class GameLogicTest {
         }
     }
 
-//    @Test
-//    public void testShuffleCards(){
-//        List<Card> currentDeck = game.getDeck();
-//        gameLogic
-//        List<Card> newDeck = game.getDeck();
-//        Assertions.assertNotEquals(currentDeck, newDeck);
-//    }
+    @Nested
+    class PlayCardTests{
 
+        @Test
+        void DEBUG(){
+            Assertions.assertTrue(true);
+        }
+        // TODO: WRITE TESTS FOR BullyingGameLogic.playCard()
 
-    // region testPlayCard()
+        /*
+            - play a card that you don't have
+            - play a card while it is not your turn
+            it is not a valid play
+                you are being bullied...
+                    - but try to play a normal card
+                    - but try to play a 2 on a joker
+                    - but try to finish with a joker
+                - you try to finish with a freebie (Jack or Joker)
+                - the card does not have the same suit or color
+            it is a valid play
+                - BECAUSE you play a Jack
+                - BECAUSE you play a Joker
+                - it is a two
+                - it is a joker
+                - it is a seven
+                - it is an eight
+                - it is an ace
+                - it is a ten
+                - it is a jack?
+                - it is nothing special
+        */
+    }
 
-    // TODO: WRITE TESTS FOR BullyingGameLogic.playCard()
-    /*
-        play a card that you don't have
-        play a card while it is not your turn
-        - it is not a valid play
-            - you are being bullied...
-                but try to play a normal card
-                but try to play a 2 on a joker
-                but try to finish with a joker
-            you try to finish with a freebie (Jack or Joker)
-            the card does not have the same suit or color
-        - it is a valid play
-            BECAUSE you play a Jack
-            BECAUSE you play a Joker
-            it is a two
-            it is a joker
-            it is a seven
-            it is an eight
-            it is an ace
-            it is a ten
-            it is a jack?
-            it is nothing special
-    */
-
-
-    // endregion
-
-    // region testDrawCard()
     @Nested
     class DrawCardTests{
         @Test
@@ -193,10 +187,6 @@ public class GameLogicTest {
         }
     }
 
-
-    // endregion
-
-    // region testEndTurn()
     @Nested
     class EndTurnTests{
         @Test
@@ -264,7 +254,4 @@ public class GameLogicTest {
             Assertions.assertFalse(game.isTheirTurn(pThree));
         }
     }
-
-
-    // endregion
 }

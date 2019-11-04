@@ -75,6 +75,7 @@ public class BullyingGameLogic implements IGameLogic {
     @Override
     public boolean playCard(Game game, Player player, Card card){
         if (player.getHand().getCards().stream().noneMatch(card1 -> card1.equals(card))) return false;
+        if (!game.isTheirTurn(player)){ return false; }
         return rules.playCard(game, player, card);
     }
 
