@@ -8,6 +8,7 @@ import dev.cardcast.bullying.entities.card.Rank;
 import dev.cardcast.bullying.entities.card.Suit;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 public class GameLogicTest {
@@ -45,39 +46,40 @@ public class GameLogicTest {
         pThree = game.getPlayers().get(2);
     }
 
-    // region testStartGame()
+    @Nested
+    class StartGameTests{
+        @Test
+        void testStartGamePlayerHandSize(){
+            gameLogic.startGame(game);
 
-    @Test
-    void testStartGamePlayerHandSize(){
-        gameLogic.startGame(game);
+            int expected = 7;
+            int playerOneHandSize = playerOne.getHand().getCards().size();
+            int playerTwoHandSize = playerTwo.getHand().getCards().size();
+            int playerThreeHandSize = playerThree.getHand().getCards().size();
 
-        int expected = 7;
-        int playerOneHandSize = playerOne.getHand().getCards().size();
-        int playerTwoHandSize = playerTwo.getHand().getCards().size();
-        int playerThreeHandSize = playerThree.getHand().getCards().size();
+            Assertions.assertEquals(expected, playerOneHandSize);
+            Assertions.assertEquals(expected, playerTwoHandSize);
+            Assertions.assertEquals(expected, playerThreeHandSize);
+        }
 
-        Assertions.assertEquals(expected, playerOneHandSize);
-        Assertions.assertEquals(expected, playerTwoHandSize);
-        Assertions.assertEquals(expected, playerThreeHandSize);
-    }
+        @Test
+        void testStartGameDeckSize(){
+            gameLogic.startGame(game);
 
-    @Test
-    void testStartGameDeckSize(){
-        gameLogic.startGame(game);
+            // 54 cards in total on deck minus the cards taken by the players (three times 7) minus the first card put on the stack
+            int expectedAmount = 54 - (3 * 7) - 1;
 
-        // 54 cards in total on deck minus the cards taken by the players (three times 7) minus the first card put on the stack
-        int expectedAmount = 54 - (3 * 7) - 1;
+            Assertions.assertEquals(expectedAmount, game.getDeck().size());
+        }
 
-        Assertions.assertEquals(expectedAmount, game.getDeck().size());
-    }
+        @Test
+        void testStartGameVariableSetup(){
+            gameLogic.startGame(game);
 
-    @Test
-    void testStartGameVariableSetup(){
-        gameLogic.startGame(game);
-
-        Assertions.assertTrue(game.isTheirTurn(pOne));
-        Assertions.assertTrue(game.isClockwise());
-        Assertions.assertEquals(0, game.getNumberToDraw());
+            Assertions.assertTrue(game.isTheirTurn(pOne));
+            Assertions.assertTrue(game.isClockwise());
+            Assertions.assertEquals(0, game.getNumberToDraw());
+        }
     }
 
 //    @Test
@@ -88,7 +90,6 @@ public class GameLogicTest {
 //        Assertions.assertNotEquals(currentDeck, newDeck);
 //    }
 
-    // endregion
 
     // region testPlayCard()
 
@@ -120,144 +121,150 @@ public class GameLogicTest {
     // endregion
 
     // region testDrawCard()
+    @Nested
+    class DrawCardTests{
+        @Test
+        void testDrawCard(){
+            gameLogic.startGame(game);
+            int oldHandSize = pOne.getHand().getCards().size();
+            int oldDeckSize = game.getDeck().size();
 
-    @Test
-    void testDrawCard(){
-        gameLogic.startGame(game);
-        int oldHandSize = pOne.getHand().getCards().size();
-        int oldDeckSize = game.getDeck().size();
+            // make sure the situation is prepared correctly
+            Assertions.assertTrue(game.isTheirTurn(pOne));
+            Assertions.assertFalse(pOne.isDoneDrawing());
 
-        // make sure the situation is prepared correctly
-        Assertions.assertTrue(game.isTheirTurn(pOne));
-        Assertions.assertFalse(pOne.isDoneDrawing());
+            // the actual tests
+            Assertions.assertTrue(gameLogic.drawCard(game, pOne));
+            Assertions.assertTrue(pOne.isDoneDrawing());
+            Assertions.assertEquals(oldHandSize + 1, pOne.getHand().getCards().size());
+            Assertions.assertEquals(oldDeckSize - 1, game.getDeck().size());
+        }
 
-        // the actual tests
-        Assertions.assertTrue(gameLogic.drawCard(game, pOne));
-        Assertions.assertTrue(pOne.isDoneDrawing());
-        Assertions.assertEquals(oldHandSize + 1, pOne.getHand().getCards().size());
-        Assertions.assertEquals(oldDeckSize - 1, game.getDeck().size());
+        @Test
+        void testDrawCardBullied(){
+            gameLogic.startGame(game);
+            int oldHandSize = pOne.getHand().getCards().size();
+            int oldDeckSize = game.getDeck().size();
+            game.setNumberToDraw(4);
+
+            // make sure the situation is prepared correctly
+            Assertions.assertTrue(game.isTheirTurn(pOne));
+            Assertions.assertFalse(pOne.isDoneDrawing());
+
+            // the actual tests
+            Assertions.assertTrue(gameLogic.drawCard(game, pOne));
+            Assertions.assertFalse(pOne.isDoneDrawing());
+            Assertions.assertEquals(oldHandSize + 4, pOne.getHand().getCards().size());
+            Assertions.assertEquals(oldDeckSize - 4, game.getDeck().size());
+        }
+
+        @Test
+        void testDrawCardNotTheirTurn(){
+            gameLogic.startGame(game);
+            int oldHandSize = pTwo.getHand().getCards().size();
+            int oldDeckSize = game.getDeck().size();
+
+            // make sure the situation is prepared correctly
+            Assertions.assertFalse(game.isTheirTurn(pTwo));
+
+            // the actual tests
+            Assertions.assertFalse(gameLogic.drawCard(game, pTwo));
+            Assertions.assertEquals(oldHandSize, pTwo.getHand().getCards().size());
+            Assertions.assertEquals(oldDeckSize, game.getDeck().size());
+        }
+
+        @Test
+        void testDrawCardDrawnAlready(){
+            gameLogic.startGame(game);
+
+            // make sure the situation is prepared correctly
+            Assertions.assertTrue(game.isTheirTurn(pOne));
+            Assertions.assertFalse(pOne.isDoneDrawing());
+            Assertions.assertTrue(gameLogic.drawCard(game, pOne));
+            Assertions.assertTrue(pOne.isDoneDrawing());
+
+            int oldHandSize = pOne.getHand().getCards().size();
+            int oldDeckSize = game.getDeck().size();
+
+            // the actual tests
+            Assertions.assertFalse(gameLogic.drawCard(game, pOne));
+            Assertions.assertEquals(oldHandSize, pOne.getHand().getCards().size());
+            Assertions.assertEquals(oldDeckSize, game.getDeck().size());
+        }
     }
 
-    @Test
-    void testDrawCardBullied(){
-        gameLogic.startGame(game);
-        int oldHandSize = pOne.getHand().getCards().size();
-        int oldDeckSize = game.getDeck().size();
-        game.setNumberToDraw(4);
-
-        // make sure the situation is prepared correctly
-        Assertions.assertTrue(game.isTheirTurn(pOne));
-        Assertions.assertFalse(pOne.isDoneDrawing());
-
-        // the actual tests
-        Assertions.assertTrue(gameLogic.drawCard(game, pOne));
-        Assertions.assertFalse(pOne.isDoneDrawing());
-        Assertions.assertEquals(oldHandSize + 4, pOne.getHand().getCards().size());
-        Assertions.assertEquals(oldDeckSize - 4, game.getDeck().size());
-    }
-
-    @Test
-    void testDrawCardNotTheirTurn(){
-        gameLogic.startGame(game);
-        int oldHandSize = pTwo.getHand().getCards().size();
-        int oldDeckSize = game.getDeck().size();
-
-        // make sure the situation is prepared correctly
-        Assertions.assertFalse(game.isTheirTurn(pTwo));
-
-        // the actual tests
-        Assertions.assertFalse(gameLogic.drawCard(game, pTwo));
-        Assertions.assertEquals(oldHandSize, pTwo.getHand().getCards().size());
-        Assertions.assertEquals(oldDeckSize, game.getDeck().size());
-    }
-
-    @Test
-    void testDrawCardDrawnAlready(){
-        gameLogic.startGame(game);
-
-        // make sure the situation is prepared correctly
-        Assertions.assertTrue(game.isTheirTurn(pOne));
-        Assertions.assertFalse(pOne.isDoneDrawing());
-        Assertions.assertTrue(gameLogic.drawCard(game, pOne));
-        Assertions.assertTrue(pOne.isDoneDrawing());
-
-        int oldHandSize = pOne.getHand().getCards().size();
-        int oldDeckSize = game.getDeck().size();
-
-        // the actual tests
-        Assertions.assertFalse(gameLogic.drawCard(game, pOne));
-        Assertions.assertEquals(oldHandSize, pOne.getHand().getCards().size());
-        Assertions.assertEquals(oldDeckSize, game.getDeck().size());
-    }
 
     // endregion
 
     // region testEndTurn()
+    @Nested
+    class EndTurnTests{
+        @Test
+        void testEndTurn(){
+            gameLogic.startGame(game);
 
-    @Test
-    void testEndTurn(){
-        gameLogic.startGame(game);
+            // make sure the situation is prepared correctly
+            Assertions.assertTrue(game.isTheirTurn(pOne));
+            Assertions.assertFalse(game.isTheirTurn(pTwo));
+            Assertions.assertFalse(game.isTheirTurn(pThree));
+            pOne.setDoneDrawing(true);
 
-        // make sure the situation is prepared correctly
-        Assertions.assertTrue(game.isTheirTurn(pOne));
-        Assertions.assertFalse(game.isTheirTurn(pTwo));
-        Assertions.assertFalse(game.isTheirTurn(pThree));
-        pOne.setDoneDrawing(true);
+            // the actual tests
+            Assertions.assertTrue(gameLogic.endTurn(game, pOne));
+            Assertions.assertFalse(game.isTheirTurn(pOne));
+            Assertions.assertTrue(game.isTheirTurn(pTwo));
+            Assertions.assertFalse(game.isTheirTurn(pThree));
+        }
 
-        // the actual tests
-        Assertions.assertTrue(gameLogic.endTurn(game, pOne));
-        Assertions.assertFalse(game.isTheirTurn(pOne));
-        Assertions.assertTrue(game.isTheirTurn(pTwo));
-        Assertions.assertFalse(game.isTheirTurn(pThree));
+        @Test
+        void testEndTurnCounterClockwise(){
+            gameLogic.startGame(game);
+
+            // make sure the situation is prepared correctly
+            Assertions.assertTrue(game.isTheirTurn(pOne));
+            Assertions.assertFalse(game.isTheirTurn(pTwo));
+            Assertions.assertFalse(game.isTheirTurn(pThree));
+            pOne.setDoneDrawing(true);
+            game.setClockwise(false);
+
+            // the actual tests
+            Assertions.assertTrue(gameLogic.endTurn(game, pOne));
+            Assertions.assertFalse(game.isTheirTurn(pOne));
+            Assertions.assertFalse(game.isTheirTurn(pTwo));
+            Assertions.assertTrue(game.isTheirTurn(pThree));
+        }
+
+        @Test
+        void testEndTurnNotTheirTurn(){
+            gameLogic.startGame(game);
+
+            // make sure the situation is prepared correctly
+            Assertions.assertTrue(game.isTheirTurn(pOne));
+            Assertions.assertFalse(game.isTheirTurn(pTwo));
+
+            // the actual tests
+            Assertions.assertFalse(gameLogic.endTurn(game, pTwo));
+            Assertions.assertTrue(game.isTheirTurn(pOne));
+            Assertions.assertFalse(game.isTheirTurn(pTwo));
+            Assertions.assertFalse(game.isTheirTurn(pThree));
+        }
+
+        @Test
+        void testEndTurnNotDoneDrawing(){
+            gameLogic.startGame(game);
+
+            // make sure the situation is prepared correctly
+            Assertions.assertTrue(game.isTheirTurn(pOne));
+            Assertions.assertFalse(pOne.isDoneDrawing());
+
+            // the actual tests
+            Assertions.assertFalse(gameLogic.endTurn(game, pOne));
+            Assertions.assertTrue(game.isTheirTurn(pOne));
+            Assertions.assertFalse(game.isTheirTurn(pTwo));
+            Assertions.assertFalse(game.isTheirTurn(pThree));
+        }
     }
 
-    @Test
-    void testEndTurnCounterClockwise(){
-        gameLogic.startGame(game);
-
-        // make sure the situation is prepared correctly
-        Assertions.assertTrue(game.isTheirTurn(pOne));
-        Assertions.assertFalse(game.isTheirTurn(pTwo));
-        Assertions.assertFalse(game.isTheirTurn(pThree));
-        pOne.setDoneDrawing(true);
-        game.setClockwise(false);
-
-        // the actual tests
-        Assertions.assertTrue(gameLogic.endTurn(game, pOne));
-        Assertions.assertFalse(game.isTheirTurn(pOne));
-        Assertions.assertFalse(game.isTheirTurn(pTwo));
-        Assertions.assertTrue(game.isTheirTurn(pThree));
-    }
-
-    @Test
-    void testEndTurnNotTheirTurn(){
-        gameLogic.startGame(game);
-
-        // make sure the situation is prepared correctly
-        Assertions.assertTrue(game.isTheirTurn(pOne));
-        Assertions.assertFalse(game.isTheirTurn(pTwo));
-
-        // the actual tests
-        Assertions.assertFalse(gameLogic.endTurn(game, pTwo));
-        Assertions.assertTrue(game.isTheirTurn(pOne));
-        Assertions.assertFalse(game.isTheirTurn(pTwo));
-        Assertions.assertFalse(game.isTheirTurn(pThree));
-    }
-
-    @Test
-    void testEndTurnNotDoneDrawing(){
-        gameLogic.startGame(game);
-
-        // make sure the situation is prepared correctly
-        Assertions.assertTrue(game.isTheirTurn(pOne));
-        Assertions.assertFalse(pOne.isDoneDrawing());
-
-        // the actual tests
-        Assertions.assertFalse(gameLogic.endTurn(game, pOne));
-        Assertions.assertTrue(game.isTheirTurn(pOne));
-        Assertions.assertFalse(game.isTheirTurn(pTwo));
-        Assertions.assertFalse(game.isTheirTurn(pThree));
-    }
 
     // endregion
 }
