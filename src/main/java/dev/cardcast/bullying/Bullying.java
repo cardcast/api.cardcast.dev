@@ -13,6 +13,4 @@ public class Bullying {
     public Bullying(String[] args) {
         NetworkService networkService = new NetworkService();
     }
-
-
 }

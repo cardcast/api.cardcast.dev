@@ -1,6 +1,5 @@
 package dev.cardcast.bullying.entities.card;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.AllArgsConstructor;
 
@@ -18,5 +17,11 @@ public class Card {
             }
         }
         throw new IllegalArgumentException("NO CARD FOUND BY ID: " + cardString);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        Card cardTwo = (Card) obj;
+        return cardTwo.rank == this.rank && cardTwo.suit == this.suit;
     }
 }
