@@ -13,29 +13,36 @@ import java.util.List;
 
 @Getter
 public class Game {
-    private final String token;
-
     private List<Player> players;
 
     private List<Card> deck;
-    public Card getTopCardFromDeck(){
-        return deck.get(deck.size() - 1);
-    }
 
     private List<Card> stack;
-    public Card getTopCardFromStack(){
-        return stack.get(stack.size() - 1);
-    }
 
     @Setter
     private int turnIndex;
-    public boolean isTheirTurn(Player player) {
-        return turnIndex == players.indexOf(player);
-    }
 
     @Setter
     private boolean clockwise;
 
     @Setter
     private int numberToDraw;
+
+    public Game(List<Player> players){
+        this.players = players;
+        this.deck = new ArrayList<>();
+        this.stack = new ArrayList<>();
+    }
+
+    public boolean isTheirTurn(Player player) {
+        return turnIndex == players.indexOf(player);
+    }
+
+    public Card getTopCardFromDeck(){
+        return deck.get(deck.size() - 1);
+    }
+
+    public Card getTopCardFromStack(){
+        return stack.get(stack.size() - 1);
+    }
 }
