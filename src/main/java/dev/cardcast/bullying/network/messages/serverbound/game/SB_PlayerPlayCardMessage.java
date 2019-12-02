@@ -4,10 +4,12 @@ import dev.cardcast.bullying.entities.card.Card;
 import dev.cardcast.bullying.network.events.Event;
 import dev.cardcast.bullying.network.events.types.PlayerPlayCardEvent;
 import dev.cardcast.bullying.network.messages.serverbound.ServerBoundWSMessage;
+import lombok.Getter;
 
 public class SB_PlayerPlayCardMessage extends ServerBoundWSMessage {
 
-    private Card card;
+    @Getter
+    private String card;
 
     @Override
     public Event getEvent() {
