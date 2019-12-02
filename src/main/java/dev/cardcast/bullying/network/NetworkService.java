@@ -93,6 +93,7 @@ public class NetworkService {
                 if (Arrays.stream(eventMethod.getParameters()).anyMatch(parameter -> parameter.getType() == event.getClass())) {
                     try {
                         eventMethod.invoke(listener, session, event);
+                        Bullying.getLogger().info("NEW INCOMING EVENT: " + event.getClass());
                     } catch (IllegalAccessException | InvocationTargetException e) {
                         e.printStackTrace();
                     }

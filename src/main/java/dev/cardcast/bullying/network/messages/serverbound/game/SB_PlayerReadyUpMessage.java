@@ -17,6 +17,6 @@ public class SB_PlayerReadyUpMessage extends ServerBoundWSMessage {
 
     @Override
     public Event getEvent() {
-        return new PlayerReadyUpEvent(this.name, this.token);
+        return new PlayerReadyUpEvent(this.getTrackingId(), this.name, this.token);
     }
 }

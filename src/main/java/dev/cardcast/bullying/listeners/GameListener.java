@@ -1,6 +1,5 @@
 package dev.cardcast.bullying.listeners;
 
-import dev.cardcast.bullying.Bullying;
 import dev.cardcast.bullying.GameManager;
 import dev.cardcast.bullying.IGameManager;
 import dev.cardcast.bullying.entities.Lobby;
@@ -11,6 +10,7 @@ import dev.cardcast.bullying.network.events.types.HostStartGameEvent;
 import dev.cardcast.bullying.network.events.types.PlayerCreateGameEvent;
 import dev.cardcast.bullying.network.events.types.PlayerPlayCardEvent;
 import dev.cardcast.bullying.network.events.types.PlayerReadyUpEvent;
+import dev.cardcast.bullying.network.messages.clientbound.game.CB_PlayerCreatedGameMessage;
 import dev.cardcast.bullying.util.Utils;
 
 import javax.websocket.Session;
@@ -22,7 +22,7 @@ public class GameListener implements EventListener {
     @EventHandler
     public void readyUp(Session session, PlayerReadyUpEvent event) {
         Lobby lobby = gameManagerLogic.tryJoinLobby(new Player(session, event.getName()), event.getToken());
-        session.getAsyncRemote().sendObject(lobby);
+
     }
 
     @EventHandler
@@ -38,6 +38,6 @@ public class GameListener implements EventListener {
     @EventHandler
     public void createGame(Session session, PlayerCreateGameEvent event) {
         Lobby lobby = gameManagerLogic.createLobby(event.isPublic(), 7);
-        session.getAsyncRemote().sendText(Utils.GSON.toJson(lobby));
+        session.getAsyncRemote().sendText(Utils.GSON.toJson(new CB_PlayerCreatedGameMessage(event.getTrackingId(), lobby)));
     }
 }

@@ -8,5 +8,8 @@ import lombok.Getter;
 public class HostKickPlayerEvent extends Event {
 
     @Getter
+    private final int trackingId;
+
+    @Getter
     private final String playerName;
 }

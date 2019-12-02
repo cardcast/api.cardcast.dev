@@ -8,6 +8,6 @@ public class SB_PlayerDrawCardMessage extends ServerBoundWSMessage {
 
     @Override
     public Event getEvent() {
-        return new PlayerDrawCardEvent();
+        return new PlayerDrawCardEvent(this.getTrackingId());
     }
 }

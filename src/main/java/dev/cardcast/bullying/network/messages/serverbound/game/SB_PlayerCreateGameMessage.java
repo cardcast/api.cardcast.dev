@@ -10,6 +10,6 @@ public class SB_PlayerCreateGameMessage extends ServerBoundWSMessage {
 
     @Override
     public Event getEvent() {
-        return new PlayerCreateGameEvent(this.publik);
+        return new PlayerCreateGameEvent(this.getTrackingId(), this.publik);
     }
 }

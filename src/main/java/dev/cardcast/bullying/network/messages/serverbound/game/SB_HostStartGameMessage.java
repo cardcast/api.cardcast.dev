@@ -8,6 +8,6 @@ public class SB_HostStartGameMessage extends ServerBoundWSMessage {
 
     @Override
     public Event getEvent() {
-        return new HostStartGameEvent();
+        return new HostStartGameEvent(this.getTrackingId());
     }
 }

@@ -10,6 +10,6 @@ public class SB_HostKickPlayerMessage extends ServerBoundWSMessage {
 
     @Override
     public Event getEvent() {
-        return new HostKickPlayerEvent(this.playerName);
+        return new HostKickPlayerEvent(this.getTrackingId(), this.playerName);
     }
 }

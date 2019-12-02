@@ -8,6 +8,9 @@ import lombok.Getter;
 public class PlayerReadyUpEvent extends Event {
 
     @Getter
+    private final int trackingId;
+
+    @Getter
     private final String name;
 
     @Getter
