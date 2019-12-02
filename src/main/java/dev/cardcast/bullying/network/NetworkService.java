@@ -86,10 +86,10 @@ public class NetworkService {
     }
 
     void handleEvent(Session session, ServerBoundWSMessage message) {
-        for (EventListener listener : listeners) {
+        Event event = message.getEvent();
+        for (EventListener listener : this.listeners) {
             List<Method> eventMethods = getEventHandlerMethods(listener.getClass());
             for (Method eventMethod : eventMethods) {
-                Event event = message.getEvent();
                 if (Arrays.stream(eventMethod.getParameters()).anyMatch(parameter -> parameter.getType() == event.getClass())) {
                     try {
                         eventMethod.invoke(listener, session, event);
