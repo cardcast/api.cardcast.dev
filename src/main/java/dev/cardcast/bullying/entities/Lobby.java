@@ -12,11 +12,14 @@ public class Lobby implements Serializable {
 
     private HashMap<Player, Boolean> queued = new HashMap<>();
 
+    private Host host;
+
     private boolean isPublic;
 
     private int maxPlayers;
 
-    public Lobby(boolean isPublic, int maxPlayers) {
+    public Lobby(boolean isPublic, int maxPlayers, Host host) {
+        this.host = host;
         this.isPublic = isPublic;
         this.maxPlayers = maxPlayers;
         this.code = AccessCodeGenerator.generate();

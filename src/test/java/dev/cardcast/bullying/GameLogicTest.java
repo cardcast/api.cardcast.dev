@@ -1,6 +1,7 @@
 package dev.cardcast.bullying;
 
 import dev.cardcast.bullying.entities.Game;
+import dev.cardcast.bullying.entities.Host;
 import dev.cardcast.bullying.entities.Lobby;
 import dev.cardcast.bullying.entities.Player;
 import dev.cardcast.bullying.entities.card.Card;
@@ -25,7 +26,7 @@ public class GameLogicTest {
     @BeforeEach
     void beforeEach(){
         GameManager gameManager = new GameManager();
-        Lobby lobby = gameManager.createLobby(true, 3);
+        Lobby lobby = gameManager.createLobby(true, 3, new Host());
 
         this.playerOne = new Player(null, "Alice");
         this.playerTwo = new Player(null, "Bob");
@@ -39,7 +40,8 @@ public class GameLogicTest {
         gameManager.playerReadyUp(lobby, playerTwo);
         gameManager.playerReadyUp(lobby, playerThree);
 
-        this.game = gameManager.startGame(lobby);
+        gameManager.startGame(lobby);
+        this.game = gameManager.getGames().stream().findFirst().get();
         this.gameLogic = BullyingGameLogic.getInstance();
 
         pOne = game.getPlayers().get(0);

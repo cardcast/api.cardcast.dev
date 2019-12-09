@@ -1,6 +1,7 @@
 package dev.cardcast.bullying;
 
 import dev.cardcast.bullying.entities.Game;
+import dev.cardcast.bullying.entities.Host;
 import dev.cardcast.bullying.entities.Lobby;
 import dev.cardcast.bullying.entities.Player;
 import lombok.Getter;
@@ -10,11 +11,19 @@ import java.util.List;
 
 public class GameManager implements IGameManager {
 
-    @Getter
     private List<Game> games = new ArrayList<>();
 
-    @Getter
     private List<Lobby> lobbies = new ArrayList<>();
+
+    @Override
+    public List<Lobby> getLobbies() {
+        return new ArrayList<>(this.lobbies);
+    }
+
+    @Override
+    public List<Game> getGames() {
+        return new ArrayList<>(this.games);
+    }
 
     @Override
     public Lobby tryJoinLobby(Player player, String code) {
@@ -28,8 +37,8 @@ public class GameManager implements IGameManager {
     }
 
     @Override
-    public Lobby createLobby(boolean isPublic, int maxPlayers) {
-        Lobby lobby = new Lobby(isPublic, maxPlayers);
+    public Lobby createLobby(boolean isPublic, int maxPlayers, Host host) {
+        Lobby lobby = new Lobby(isPublic, maxPlayers, host);
         this.lobbies.add(lobby);
         return lobby;
     }
@@ -51,16 +60,16 @@ public class GameManager implements IGameManager {
     }
 
     @Override
-    public Game startGame(Lobby lobby) {
+    public boolean startGame(Lobby lobby) {
         for (boolean isReady : lobby.getQueued().values()) {
             if (!isReady) {
-                return null;
+                return false;
             }
         }
         Game game = new Game(new ArrayList<>(lobby.getQueued().keySet()));
         this.games.add(game);
         lobbies.remove(lobby);
-        return game;
+        return true;
     }
 }
 
