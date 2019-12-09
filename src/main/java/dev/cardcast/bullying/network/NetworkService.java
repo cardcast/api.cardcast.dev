@@ -36,12 +36,12 @@ public class NetworkService {
         INSTANCE = this;
         Bullying.getLogger().info("STARTED NETWORK SERVICE");
 
-        NetworkService.messages.add(SB_PlayerReadyUpMessage.class);
-        NetworkService.messages.add(SB_PlayerDrawCardMessage.class);
-        NetworkService.messages.add(SB_PlayerPlayCardMessage.class);
-        NetworkService.messages.add(SB_CreateHostGameMessage.class);
-        NetworkService.messages.add(SB_HostKickPlayerMessage.class);
-        NetworkService.messages.add(SB_HostStartGameMessage.class);
+        NetworkService.MESSAGETYPES.add(SB_PlayerReadyUpMessage.class);
+        NetworkService.MESSAGETYPES.add(SB_PlayerDrawCardMessage.class);
+        NetworkService.MESSAGETYPES.add(SB_PlayerPlayCardMessage.class);
+        NetworkService.MESSAGETYPES.add(SB_CreateHostGameMessage.class);
+        NetworkService.MESSAGETYPES.add(SB_HostKickPlayerMessage.class);
+        NetworkService.MESSAGETYPES.add(SB_HostStartGameMessage.class);
 
         Server webSocketServer = new Server();
         ServerConnector connector = new ServerConnector(webSocketServer);
@@ -64,7 +64,7 @@ public class NetworkService {
         }
     }
 
-    private static List<Class<? extends ServerBoundWSMessage>> messages = new ArrayList<>();
+    private static List<Class<? extends ServerBoundWSMessage>> MESSAGETYPES = new ArrayList<>();
 
     public void registerEventListener(EventListener listenerClass) {
         this.listeners.add(listenerClass);
@@ -106,7 +106,7 @@ public class NetworkService {
 
     static Class<? extends ServerBoundWSMessage> getMessageEvent(JsonObject json) {
         String type = json.get("type").getAsString();
-        for (Class<? extends ServerBoundWSMessage> messageType : messages) {
+        for (Class<? extends ServerBoundWSMessage> messageType : MESSAGETYPES) {
             Matcher matcher = messagePattern.matcher(messageType.getSimpleName());
             if (matcher.matches() && matcher.group("messageName").equals(type)) {
                 return messageType;
