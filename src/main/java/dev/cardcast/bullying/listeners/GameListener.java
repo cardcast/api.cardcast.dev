@@ -9,11 +9,11 @@ import dev.cardcast.bullying.entities.Player;
 import dev.cardcast.bullying.network.events.EventListener;
 import dev.cardcast.bullying.network.events.annotations.EventHandler;
 import dev.cardcast.bullying.network.events.types.host.HostStartGameEvent;
-import dev.cardcast.bullying.network.events.types.player.PlayerCreateGameEvent;
+import dev.cardcast.bullying.network.events.types.lobby.UserCreateGameEvent;
 import dev.cardcast.bullying.network.events.types.player.PlayerPlayCardEvent;
 import dev.cardcast.bullying.network.events.types.player.PlayerJoinEvent;
-import dev.cardcast.bullying.network.messages.clientbound.game.CB_HostCreatedGameMessage;
-import dev.cardcast.bullying.network.messages.clientbound.game.CB_PlayerJoinMessage;
+import dev.cardcast.bullying.network.messages.clientbound.lobby.CB_UserCreatedGameMessage;
+import dev.cardcast.bullying.network.messages.clientbound.host.HB_PlayerJoinedGameMessage;
 import dev.cardcast.bullying.util.Utils;
 
 import javax.websocket.Session;
@@ -26,7 +26,7 @@ public class GameListener implements EventListener {
     @EventHandler
     public void readyUp(Session session, PlayerJoinEvent event) {
         Lobby lobby = gameManagerLogic.tryJoinLobby(new Player(session, event.getName()), event.getToken());
-        session.getAsyncRemote().sendText(Utils.GSON.toJson(new CB_PlayerJoinMessage(event.getTrackingId(), lobby)));
+        session.getAsyncRemote().sendText(Utils.GSON.toJson(new HB_PlayerJoinedGameMessage(event.getTrackingId(), lobby)));
     }
 
     @EventHandler
@@ -40,8 +40,8 @@ public class GameListener implements EventListener {
     }
 
     @EventHandler
-    public void createGame(Session session, PlayerCreateGameEvent event) {
+    public void createGame(Session session, UserCreateGameEvent event) {
         Lobby lobby = gameManagerLogic.createLobby(event.isPublic(), 7);
-        session.getAsyncRemote().sendText(Utils.GSON.toJson(new CB_HostCreatedGameMessage(event.getTrackingId(), lobby)));
+        session.getAsyncRemote().sendText(Utils.GSON.toJson(new CB_UserCreatedGameMessage(event.getTrackingId(), lobby)));
     }
 }

@@ -1,13 +1,13 @@
-package dev.cardcast.bullying.network.events.types.player;
+package dev.cardcast.bullying.network.events.types.lobby;
 
 import dev.cardcast.bullying.network.events.Event;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.checkerframework.common.value.qual.ArrayLen;
 
-public class PlayerCreateGameEvent extends Event {
+public class UserCreateGameEvent extends Event {
 
-    public PlayerCreateGameEvent(int trackingId, boolean isPublic) {
+    public UserCreateGameEvent(int trackingId, boolean isPublic) {
         this.trackingId = trackingId;
         this.isPublic = isPublic;
     }

@@ -1,11 +1,11 @@
-package dev.cardcast.bullying.network.messages.clientbound.game;
+package dev.cardcast.bullying.network.messages.clientbound.host;
 
 import dev.cardcast.bullying.entities.Player;
 import dev.cardcast.bullying.entities.card.Card;
 import dev.cardcast.bullying.network.messages.clientbound.ClientBoundWSMessage;
 import lombok.Getter;
 
-public class CB_PlayerPlayedCardMessage extends ClientBoundWSMessage {
+public class HB_PlayerPlayedCardMessage extends ClientBoundWSMessage {
 
     @Getter
     private Player player;

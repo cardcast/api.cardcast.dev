@@ -10,7 +10,7 @@ import dev.cardcast.bullying.network.messages.serverbound.ServerBoundWSMessage;
 
 import javax.websocket.server.ServerContainer;
 
-import dev.cardcast.bullying.network.messages.serverbound.game.host.SB_HostCreateGameMessage;
+import dev.cardcast.bullying.network.messages.serverbound.game.lobby.SB_UserCreateGameMessage;
 import dev.cardcast.bullying.network.messages.serverbound.game.host.SB_HostKickPlayerMessage;
 import dev.cardcast.bullying.network.messages.serverbound.game.host.SB_HostStartGameMessage;
 import dev.cardcast.bullying.network.messages.serverbound.game.player.SB_PlayerDrawCardMessage;
@@ -44,7 +44,7 @@ public class NetworkService {
         NetworkService.MESSAGETYPES.add(SB_PlayerJoinMessage.class);
         NetworkService.MESSAGETYPES.add(SB_PlayerDrawCardMessage.class);
         NetworkService.MESSAGETYPES.add(SB_PlayerPlayCardMessage.class);
-        NetworkService.MESSAGETYPES.add(SB_HostCreateGameMessage.class);
+        NetworkService.MESSAGETYPES.add(SB_UserCreateGameMessage.class);
         NetworkService.MESSAGETYPES.add(SB_HostKickPlayerMessage.class);
         NetworkService.MESSAGETYPES.add(SB_HostStartGameMessage.class);
 
