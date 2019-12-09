@@ -7,10 +7,15 @@ import dev.cardcast.bullying.network.events.Event;
 import dev.cardcast.bullying.network.events.annotations.EventHandler;
 import dev.cardcast.bullying.network.events.EventListener;
 import dev.cardcast.bullying.network.messages.serverbound.ServerBoundWSMessage;
-import dev.cardcast.bullying.network.messages.serverbound.game.*;
 
 import javax.websocket.server.ServerContainer;
 
+import dev.cardcast.bullying.network.messages.serverbound.game.host.SB_HostCreateGameMessage;
+import dev.cardcast.bullying.network.messages.serverbound.game.host.SB_HostKickPlayerMessage;
+import dev.cardcast.bullying.network.messages.serverbound.game.host.SB_HostStartGameMessage;
+import dev.cardcast.bullying.network.messages.serverbound.game.player.SB_PlayerDrawCardMessage;
+import dev.cardcast.bullying.network.messages.serverbound.game.player.SB_PlayerPlayCardMessage;
+import dev.cardcast.bullying.network.messages.serverbound.game.player.SB_PlayerReadyUpMessage;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.servlet.ServletContextHandler;
@@ -39,7 +44,7 @@ public class NetworkService {
         NetworkService.MESSAGETYPES.add(SB_PlayerReadyUpMessage.class);
         NetworkService.MESSAGETYPES.add(SB_PlayerDrawCardMessage.class);
         NetworkService.MESSAGETYPES.add(SB_PlayerPlayCardMessage.class);
-        NetworkService.MESSAGETYPES.add(SB_CreateHostGameMessage.class);
+        NetworkService.MESSAGETYPES.add(SB_HostCreateGameMessage.class);
         NetworkService.MESSAGETYPES.add(SB_HostKickPlayerMessage.class);
         NetworkService.MESSAGETYPES.add(SB_HostStartGameMessage.class);
 

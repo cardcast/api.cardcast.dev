@@ -1,4 +1,4 @@
-package dev.cardcast.bullying.network.events.types;
+package dev.cardcast.bullying.network.events.types.player;
 
 import dev.cardcast.bullying.entities.card.Card;
 import dev.cardcast.bullying.entities.card.Rank;

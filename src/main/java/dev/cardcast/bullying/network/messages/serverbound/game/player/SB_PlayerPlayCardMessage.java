@@ -1,8 +1,7 @@
-package dev.cardcast.bullying.network.messages.serverbound.game;
+package dev.cardcast.bullying.network.messages.serverbound.game.player;
 
-import dev.cardcast.bullying.entities.card.Card;
 import dev.cardcast.bullying.network.events.Event;
-import dev.cardcast.bullying.network.events.types.PlayerPlayCardEvent;
+import dev.cardcast.bullying.network.events.types.player.PlayerPlayCardEvent;
 import dev.cardcast.bullying.network.messages.serverbound.ServerBoundWSMessage;
 import lombok.Getter;
 
