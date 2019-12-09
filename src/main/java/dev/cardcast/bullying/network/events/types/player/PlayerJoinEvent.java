@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @AllArgsConstructor
-public class PlayerReadyUpEvent extends Event {
+public class PlayerJoinEvent extends Event {
 
     @Getter
     private final int trackingId;

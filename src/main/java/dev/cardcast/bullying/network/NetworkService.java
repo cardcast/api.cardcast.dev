@@ -15,7 +15,7 @@ import dev.cardcast.bullying.network.messages.serverbound.game.host.SB_HostKickP
 import dev.cardcast.bullying.network.messages.serverbound.game.host.SB_HostStartGameMessage;
 import dev.cardcast.bullying.network.messages.serverbound.game.player.SB_PlayerDrawCardMessage;
 import dev.cardcast.bullying.network.messages.serverbound.game.player.SB_PlayerPlayCardMessage;
-import dev.cardcast.bullying.network.messages.serverbound.game.player.SB_PlayerReadyUpMessage;
+import dev.cardcast.bullying.network.messages.serverbound.game.player.SB_PlayerJoinMessage;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.servlet.ServletContextHandler;
@@ -41,7 +41,7 @@ public class NetworkService {
         INSTANCE = this;
         Bullying.getLogger().info("STARTED NETWORK SERVICE");
 
-        NetworkService.MESSAGETYPES.add(SB_PlayerReadyUpMessage.class);
+        NetworkService.MESSAGETYPES.add(SB_PlayerJoinMessage.class);
         NetworkService.MESSAGETYPES.add(SB_PlayerDrawCardMessage.class);
         NetworkService.MESSAGETYPES.add(SB_PlayerPlayCardMessage.class);
         NetworkService.MESSAGETYPES.add(SB_HostCreateGameMessage.class);
