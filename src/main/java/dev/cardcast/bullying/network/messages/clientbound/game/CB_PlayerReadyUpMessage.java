@@ -6,9 +6,9 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @AllArgsConstructor
-public class CB_PlayerReadyedUpMessage extends ClientBoundWSMessage {
+public class CB_PlayerReadyUpMessage extends ClientBoundWSMessage {
 
-    public CB_PlayerReadyedUpMessage(int trackingId, Lobby lobby) {
+    public CB_PlayerReadyUpMessage(int trackingId, Lobby lobby) {
         this.setTrackingId(trackingId);
         this.lobby = lobby;
     }

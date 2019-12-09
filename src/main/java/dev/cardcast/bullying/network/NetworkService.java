@@ -39,7 +39,7 @@ public class NetworkService {
         NetworkService.messages.add(SB_PlayerReadyUpMessage.class);
         NetworkService.messages.add(SB_PlayerDrawCardMessage.class);
         NetworkService.messages.add(SB_PlayerPlayCardMessage.class);
-        NetworkService.messages.add(SB_PlayerCreateGameMessage.class);
+        NetworkService.messages.add(SB_CreateHostGameMessage.class);
         NetworkService.messages.add(SB_HostKickPlayerMessage.class);
         NetworkService.messages.add(SB_HostStartGameMessage.class);
 
