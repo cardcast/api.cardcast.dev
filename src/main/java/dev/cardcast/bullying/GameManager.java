@@ -29,7 +29,7 @@ public class GameManager implements IGameManager {
     public Lobby tryJoinLobby(Player player, String code) {
         for (Lobby lobby : this.lobbies) {
             if (lobby.getCode().equals(code)) {
-                lobby.getQueued().put(player, false);
+                lobby.getQueued().add(player);
                 return lobby;
             }
         }
@@ -53,20 +53,10 @@ public class GameManager implements IGameManager {
         lobby.getQueued().remove(player);
     }
 
-    @Override
-    public boolean playerReadyUp(Lobby lobby, Player player) {
-        lobby.getQueued().put(player, true);
-        return lobby.getQueued().get(player);
-    }
 
     @Override
     public boolean startGame(Lobby lobby) {
-        for (boolean isReady : lobby.getQueued().values()) {
-            if (!isReady) {
-                return false;
-            }
-        }
-        Game game = new Game(new ArrayList<>(lobby.getQueued().keySet()));
+        Game game = new Game(lobby.getQueued());
         this.games.add(game);
         lobbies.remove(lobby);
         return true;

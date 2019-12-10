@@ -13,8 +13,10 @@ import dev.cardcast.bullying.network.events.types.host.HostStartGameEvent;
 import dev.cardcast.bullying.network.events.types.lobby.UserCreateGameEvent;
 import dev.cardcast.bullying.network.events.types.player.PlayerPlayCardEvent;
 import dev.cardcast.bullying.network.events.types.player.PlayerJoinEvent;
+import dev.cardcast.bullying.network.messages.clientbound.host.HB_PlayerJoinedGameMessage;
 import dev.cardcast.bullying.network.messages.clientbound.host.HB_PlayerReadyUpMessage;
 import dev.cardcast.bullying.network.messages.clientbound.lobby.CB_UserCreatedGameMessage;
+import dev.cardcast.bullying.network.messages.clientbound.lobby.CB_UserJoinedGameMessage;
 import dev.cardcast.bullying.util.Utils;
 
 import javax.websocket.Session;
@@ -32,26 +34,22 @@ public class GameListener implements EventListener {
      * @param session session given by client
      * @param event event called by client
      */
+
     @EventHandler
-    public void readyUp(Session session, PlayerJoinEvent event) {
-        Lobby readyLobby = null;
-        Player readyPlayer = null;
+    public void joinGame(Session session, PlayerJoinEvent event) {
+        Lobby selectedLobby = null;
+        Player player = new Player(session, event.getName());
 
         for (Lobby lobby : gameManagerLogic.getLobbies()) {
             if(lobby.getCode().equals(event.getToken())){
-                readyLobby = lobby;
-            }
-
-            for (Player player : lobby.getQueued().keySet()) {
-                if(player.getSession().equals(session)){
-                    readyPlayer = player;
-                }
+                selectedLobby = lobby;
+                break;
             }
         }
 
-        if(readyLobby != null && readyPlayer != null){
-            gameManagerLogic.playerReadyUp(readyLobby, readyPlayer);
-            readyLobby.getHost().getSession().getAsyncRemote().sendText(Utils.GSON.toJson(new HB_PlayerReadyUpMessage(event.getTrackingId(), readyPlayer)));
+        if(selectedLobby.addPlayer(player)){
+            session.getAsyncRemote().sendText(Utils.GSON.toJson(new CB_UserJoinedGameMessage(event.getTrackingId(), selectedLobby)));
+            selectedLobby.getHost().getSession().getAsyncRemote().sendText(Utils.GSON.toJson(new HB_PlayerJoinedGameMessage(event.getTrackingId(), player)));
         }
     }
 

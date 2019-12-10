@@ -36,10 +36,6 @@ public class GameLogicTest {
         gameManager.addPlayer(lobby, playerTwo);
         gameManager.addPlayer(lobby, playerThree);
 
-        gameManager.playerReadyUp(lobby, playerOne);
-        gameManager.playerReadyUp(lobby, playerTwo);
-        gameManager.playerReadyUp(lobby, playerThree);
-
         gameManager.startGame(lobby);
         this.game = gameManager.getGames().stream().findFirst().get();
         this.gameLogic = BullyingGameLogic.getInstance();

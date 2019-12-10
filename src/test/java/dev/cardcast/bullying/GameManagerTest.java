@@ -69,19 +69,12 @@ public class GameManagerTest {
         Assertions.assertEquals(lobby2.getQueued().size(), playerCount - 1);
     }
 
-    @Test
-    public void testPlayerReadyUp(){
-        Lobby lobby2 = gameManager.createLobby(true, 2, new Host());
-        gameManager.addPlayer(lobby2, player);
-        boolean isReady = gameManager.playerReadyUp(lobby2, player);
-        Assertions.assertTrue(isReady);
-    }
+
 
     @Test
     public void testStartGame(){
         Lobby lobby2 = gameManager.createLobby(true, 2, new Host());
         gameManager.addPlayer(lobby2, player);
-        gameManager.playerReadyUp(lobby2, player);
         boolean hasGameStarted = gameManager.startGame(lobby2);
         Assertions.assertTrue(hasGameStarted);
     }
