@@ -78,12 +78,4 @@ public class GameManagerTest {
         boolean hasGameStarted = gameManager.startGame(lobby2);
         Assertions.assertTrue(hasGameStarted);
     }
-
-    @Test
-    public void testStartGamePlayerNotReady(){
-        Lobby lobby2 = gameManager.createLobby(true, 2, new Host());
-        gameManager.addPlayer(lobby2, player);
-        boolean hasGameStarted = gameManager.startGame(lobby2);
-        Assertions.assertFalse(hasGameStarted);
-    }
 }
