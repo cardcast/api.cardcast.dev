@@ -7,10 +7,15 @@ import dev.cardcast.bullying.network.events.Event;
 import dev.cardcast.bullying.network.events.annotations.EventHandler;
 import dev.cardcast.bullying.network.events.EventListener;
 import dev.cardcast.bullying.network.messages.serverbound.ServerBoundWSMessage;
-import dev.cardcast.bullying.network.messages.serverbound.game.*;
 
 import javax.websocket.server.ServerContainer;
 
+import dev.cardcast.bullying.network.messages.serverbound.game.lobby.SB_UserCreateGameMessage;
+import dev.cardcast.bullying.network.messages.serverbound.game.host.SB_HostKickPlayerMessage;
+import dev.cardcast.bullying.network.messages.serverbound.game.host.SB_HostStartGameMessage;
+import dev.cardcast.bullying.network.messages.serverbound.game.player.SB_PlayerDrawCardMessage;
+import dev.cardcast.bullying.network.messages.serverbound.game.player.SB_PlayerPlayCardMessage;
+import dev.cardcast.bullying.network.messages.serverbound.game.player.SB_PlayerJoinMessage;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.servlet.ServletContextHandler;
@@ -36,12 +41,12 @@ public class NetworkService {
         INSTANCE = this;
         Bullying.getLogger().info("STARTED NETWORK SERVICE");
 
-        NetworkService.messages.add(SB_PlayerReadyUpMessage.class);
-        NetworkService.messages.add(SB_PlayerDrawCardMessage.class);
-        NetworkService.messages.add(SB_PlayerPlayCardMessage.class);
-        NetworkService.messages.add(SB_PlayerCreateGameMessage.class);
-        NetworkService.messages.add(SB_HostKickPlayerMessage.class);
-        NetworkService.messages.add(SB_HostStartGameMessage.class);
+        NetworkService.MESSAGETYPES.add(SB_PlayerJoinMessage.class);
+        NetworkService.MESSAGETYPES.add(SB_PlayerDrawCardMessage.class);
+        NetworkService.MESSAGETYPES.add(SB_PlayerPlayCardMessage.class);
+        NetworkService.MESSAGETYPES.add(SB_UserCreateGameMessage.class);
+        NetworkService.MESSAGETYPES.add(SB_HostKickPlayerMessage.class);
+        NetworkService.MESSAGETYPES.add(SB_HostStartGameMessage.class);
 
         Server webSocketServer = new Server();
         ServerConnector connector = new ServerConnector(webSocketServer);
@@ -64,7 +69,7 @@ public class NetworkService {
         }
     }
 
-    private static List<Class<? extends ServerBoundWSMessage>> messages = new ArrayList<>();
+    private static List<Class<? extends ServerBoundWSMessage>> MESSAGETYPES = new ArrayList<>();
 
     public void registerEventListener(EventListener listenerClass) {
         this.listeners.add(listenerClass);
@@ -86,13 +91,14 @@ public class NetworkService {
     }
 
     void handleEvent(Session session, ServerBoundWSMessage message) {
-        for (EventListener listener : listeners) {
+        Event event = message.getEvent();
+        for (EventListener listener : this.listeners) {
             List<Method> eventMethods = getEventHandlerMethods(listener.getClass());
             for (Method eventMethod : eventMethods) {
-                Event event = message.getEvent();
                 if (Arrays.stream(eventMethod.getParameters()).anyMatch(parameter -> parameter.getType() == event.getClass())) {
                     try {
                         eventMethod.invoke(listener, session, event);
+                        Bullying.getLogger().info("NEW INCOMING EVENT: " + event.getClass());
                     } catch (IllegalAccessException | InvocationTargetException e) {
                         e.printStackTrace();
                     }
@@ -105,7 +111,7 @@ public class NetworkService {
 
     static Class<? extends ServerBoundWSMessage> getMessageEvent(JsonObject json) {
         String type = json.get("type").getAsString();
-        for (Class<? extends ServerBoundWSMessage> messageType : messages) {
+        for (Class<? extends ServerBoundWSMessage> messageType : MESSAGETYPES) {
             Matcher matcher = messagePattern.matcher(messageType.getSimpleName());
             if (matcher.matches() && matcher.group("messageName").equals(type)) {
                 return messageType;

@@ -27,7 +27,7 @@ public class GameConnector {
     }
 
     @OnMessage
-    public void onMessage(Session session, String message) {
+    public void onMessage(Session session, String message ) {
         JsonParser parser = new JsonParser();
         JsonObject jsonMessage = (JsonObject) parser.parse(message);
         Class<? extends ServerBoundWSMessage> messageType = NetworkService.getMessageEvent(jsonMessage);

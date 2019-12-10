@@ -1,13 +1,12 @@
-package dev.cardcast.bullying.network.events.types;
+package dev.cardcast.bullying.network.events.types.player;
 
 import dev.cardcast.bullying.network.events.Event;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @AllArgsConstructor
-public class PlayerCreateGameEvent extends Event {
+public class PlayerDrawCardEvent extends Event {
 
     @Getter
-    private final boolean isPublic;
-
+    private final int trackingId;
 }

@@ -1,4 +1,4 @@
-package dev.cardcast.bullying.network.events.types;
+package dev.cardcast.bullying.network.events.types.player;
 
 import dev.cardcast.bullying.entities.card.Card;
 import dev.cardcast.bullying.entities.card.Rank;
@@ -9,13 +9,17 @@ import lombok.Getter;
 public class PlayerPlayCardEvent extends Event {
 
     @Getter
+    private final int trackingId;
+
+    @Getter
     private Card card;
 
-    public PlayerPlayCardEvent(String cardString) {
-        this(Card.getCard(cardString));
+    public PlayerPlayCardEvent(int trackingId, String cardString) {
+        this(trackingId, Card.getCard(cardString));
     }
 
-    public PlayerPlayCardEvent(Card card) {
+    public PlayerPlayCardEvent(int trackingId, Card card) {
         this.card = card;
+        this.trackingId = trackingId;
     }
 }

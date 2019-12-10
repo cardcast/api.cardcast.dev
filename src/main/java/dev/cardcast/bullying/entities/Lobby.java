@@ -4,19 +4,23 @@ import dev.cardcast.bullying.util.AccessCodeGenerator;
 import lombok.Getter;
 
 import java.io.Serializable;
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 public class Lobby implements Serializable {
     private String code;
 
-    private HashMap<Player, Boolean> queued = new HashMap<>();
+    private List<Player> queued = new ArrayList<>();
+
+    private transient Host host;
 
     private boolean isPublic;
 
     private int maxPlayers;
 
-    public Lobby(boolean isPublic, int maxPlayers) {
+    public Lobby(boolean isPublic, int maxPlayers, Host host) {
+        this.host = host;
         this.isPublic = isPublic;
         this.maxPlayers = maxPlayers;
         this.code = AccessCodeGenerator.generate();
@@ -27,11 +31,11 @@ public class Lobby implements Serializable {
             return false;
         }
 
-        if(this.queued.get(player) != null){
+        if(this.queued.contains(player)){
             return false;
         }
 
-        this.queued.put(player, false);
+        this.queued.add(player);
         return true;
     }
 }

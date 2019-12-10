@@ -14,7 +14,7 @@ public class BullyingGameLogic implements IGameLogic {
     private static BullyingGameLogic instance = null;
     private static CardRules rules = new CardRules();
 
-    private BullyingGameLogic(){}
+    public BullyingGameLogic(){}
     public static BullyingGameLogic getInstance() {
         if (instance == null)
             instance = new BullyingGameLogic();

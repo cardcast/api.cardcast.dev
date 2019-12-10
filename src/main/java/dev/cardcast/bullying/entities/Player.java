@@ -2,15 +2,17 @@ package dev.cardcast.bullying.entities;
 
 import lombok.Getter;
 import lombok.Setter;
+
 import javax.websocket.Session;
+import java.io.Serializable;
 import java.util.UUID;
 
 @Getter
-public class Player {
+public class Player implements Serializable {
 
     private final UUID uuid;
 
-    private Session session;
+    private transient Session session;
 
     @Setter
     private String name;
