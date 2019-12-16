@@ -126,5 +126,7 @@ public class GameListener implements EventListener {
 
         session.getAsyncRemote().sendText(Utils.GSON.toJson(new CB_PlayerDrawCardsMessage(cards, event.getTrackingId())));
         this.gameLogic.endTurn(game, player);
+        Player nextTurn = game.getPlayers().get(game.getTurnIndex());
+        nextTurn.getSession().getAsyncRemote().sendText(Utils.GSON.toJson(new CB_PlayersTurnMessage()));
     }
 }
