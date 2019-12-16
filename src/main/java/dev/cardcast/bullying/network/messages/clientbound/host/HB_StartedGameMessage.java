@@ -15,4 +15,10 @@ public class HB_StartedGameMessage extends ClientBoundWSMessage {
 
     @Getter
     public ArrayList<Card> stack;
+
+    public HB_StartedGameMessage(Player firstTurn, ArrayList<Card> stack, int trackingId) {
+        this.firstTurn = firstTurn;
+        this.stack = stack;
+        this.setTrackingId(trackingId);
+    }
 }
