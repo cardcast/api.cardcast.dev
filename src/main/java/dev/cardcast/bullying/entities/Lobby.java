@@ -11,7 +11,7 @@ import java.util.List;
 public class Lobby implements Serializable {
     private String code;
 
-    private List<Player> queued = new ArrayList<>();
+    private List<Player> queued;
 
     private transient Host host;
 
@@ -24,14 +24,15 @@ public class Lobby implements Serializable {
         this.isPublic = isPublic;
         this.maxPlayers = maxPlayers;
         this.code = AccessCodeGenerator.generate();
+        this.queued = new ArrayList<>();
     }
 
-    public boolean addPlayer(Player player){
-        if(this.queued.size() >= this.maxPlayers){
+    public boolean addPlayer(Player player) {
+        if (this.queued.size() >= this.maxPlayers) {
             return false;
         }
 
-        if(this.queued.contains(player)){
+        if (this.queued.contains(player)) {
             return false;
         }
 

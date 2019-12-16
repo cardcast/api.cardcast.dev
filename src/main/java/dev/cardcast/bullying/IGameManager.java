@@ -20,5 +20,5 @@ public interface IGameManager {
 
     void removePlayer(Lobby lobby, Player player);
 
-    boolean startGame(Lobby lobby);
+    Game startGame(Lobby lobby);
 }

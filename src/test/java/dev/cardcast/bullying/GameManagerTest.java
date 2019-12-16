@@ -15,14 +15,14 @@ public class GameManagerTest {
     private Player player;
 
     @BeforeEach
-    public void beforeEach(){
+    public void beforeEach() {
         gameManager = new GameManager();
         lobby = gameManager.createLobby(true, 2, new Host());
         player = new Player(null, "Mark");
     }
 
     @Test
-    public void testCreateLobby(){
+    public void testCreateLobby() {
         int maxPlayers = 2;
         Lobby lobby2 = gameManager.createLobby(true, maxPlayers, new Host());
         int playerCount = lobby.getMaxPlayers();
@@ -31,7 +31,7 @@ public class GameManagerTest {
     }
 
     @Test
-    public void testTryJoinLobby(){
+    public void testTryJoinLobby() {
         Lobby lobby2 = gameManager.createLobby(true, 2, new Host());
         gameManager.tryJoinLobby(player, lobby2.getCode());
         int playerCount = lobby.getQueued().size();
@@ -39,13 +39,13 @@ public class GameManagerTest {
     }
 
     @Test
-    public void testTryJoinNonExistingLobby(){
+    public void testTryJoinNonExistingLobby() {
         Lobby lobby2 = gameManager.tryJoinLobby(player, "test");
         Assertions.assertNull(lobby2);
     }
 
     @Test
-    public void testAddPlayer(){
+    public void testAddPlayer() {
         Lobby lobby2 = gameManager.createLobby(true, 2, new Host());
         int playerCount = lobby2.getQueued().size();
         gameManager.addPlayer(lobby2, player);
@@ -53,7 +53,7 @@ public class GameManagerTest {
     }
 
     @Test
-    public void testAddPlayerToFullLobby(){
+    public void testAddPlayerToFullLobby() {
         Lobby lobby2 = gameManager.createLobby(true, 0, new Host());
         int playerCount = lobby2.getQueued().size();
         gameManager.addPlayer(lobby2, player);
@@ -61,7 +61,7 @@ public class GameManagerTest {
     }
 
     @Test
-    public void testRemovePlayer(){
+    public void testRemovePlayer() {
         Lobby lobby2 = gameManager.createLobby(true, 2, new Host());
         gameManager.addPlayer(lobby2, player);
         int playerCount = lobby2.getQueued().size();
@@ -70,12 +70,11 @@ public class GameManagerTest {
     }
 
 
-
     @Test
-    public void testStartGame(){
+    public void testStartGame() {
         Lobby lobby2 = gameManager.createLobby(true, 2, new Host());
         gameManager.addPlayer(lobby2, player);
-        boolean hasGameStarted = gameManager.startGame(lobby2);
-        Assertions.assertTrue(hasGameStarted);
+        Game hasGameStarted = gameManager.startGame(lobby2);
+        Assertions.assertNotNull(hasGameStarted);
     }
 }
