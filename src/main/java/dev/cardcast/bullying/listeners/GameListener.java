@@ -4,6 +4,7 @@ import dev.cardcast.bullying.BullyingGameLogic;
 import dev.cardcast.bullying.GameManager;
 import dev.cardcast.bullying.IGameLogic;
 import dev.cardcast.bullying.IGameManager;
+import dev.cardcast.bullying.entities.Game;
 import dev.cardcast.bullying.entities.Host;
 import dev.cardcast.bullying.entities.Lobby;
 import dev.cardcast.bullying.entities.Player;
@@ -71,7 +72,20 @@ public class GameListener implements EventListener {
 
     @EventHandler
     public void playCard(Session session, PlayerPlayCardEvent event) {
-        this.gameLogic.playCard(null, null, event.getCard());
+        Player player = null;
+        Game game = null;
+        for (Game game1 : gameManagerLogic.getGames()) {
+            for (Player player1 : game1.getPlayers()) {
+                if(player1.getSession().equals(session)){
+                    player = player1;
+                    game = game1;
+                    break;
+                }
+            }
+        }
+
+        this.gameLogic.playCard(game, player, event.getCard());]
+
     }
 
     @EventHandler
