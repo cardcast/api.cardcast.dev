@@ -12,6 +12,7 @@ public class Player implements Serializable {
 
     private final UUID uuid;
 
+    @Setter
     private transient Session session;
 
     @Setter
