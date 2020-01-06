@@ -11,6 +11,15 @@ import java.util.List;
 
 public class GameManager implements IGameManager {
 
+    private static GameManager instance;
+
+    public static GameManager getInstance() {
+        if (instance == null) {
+            instance = new GameManager();
+        }
+        return instance;
+    }
+
     private List<Game> games = new ArrayList<>();
 
     private List<Lobby> lobbies = new ArrayList<>();

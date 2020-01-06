@@ -4,19 +4,12 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
 import dev.cardcast.bullying.Bullying;
-import dev.cardcast.bullying.entities.Game;
-import dev.cardcast.bullying.entities.Player;
+import dev.cardcast.bullying.GameManager;
 import dev.cardcast.bullying.network.messages.serverbound.ServerBoundWSMessage;
 import dev.cardcast.bullying.util.Utils;
 
-import javax.websocket.OnMessage;
-import javax.websocket.OnOpen;
-import javax.websocket.Session;
-import javax.websocket.server.PathParam;
+import javax.websocket.*;
 import javax.websocket.server.ServerEndpoint;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
 
 @ServerEndpoint(value = "/game")
 public class GameConnector {
@@ -43,6 +36,17 @@ public class GameConnector {
             e.printStackTrace();
             System.out.println(message);
         }
+    }
+
+    @OnClose
+    public void onDisconnect(Session session) {
+
+    }
+
+    @OnError
+    public void onError(Session session, Throwable throwable) {
+        System.out.println("ERROR IN SESSION: "  + session.getId());
+        throwable.printStackTrace();
     }
 
 }

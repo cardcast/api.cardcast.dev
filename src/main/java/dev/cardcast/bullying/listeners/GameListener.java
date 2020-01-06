@@ -31,9 +31,9 @@ import java.util.Optional;
 
 public class GameListener implements EventListener {
 
-    private final IGameManager gameManagerLogic = new GameManager();
-    private final IGameLogic gameLogic = new BullyingGameLogic();
+    private GameManager gameManager = GameManager.getInstance();
 
+    private final IGameLogic gameLogic = new BullyingGameLogic();
 
     /**
      * Informs the host of the lobby that the player who calls this
@@ -48,7 +48,7 @@ public class GameListener implements EventListener {
         Lobby selectedLobby = null;
         Player player = new Player(session, event.getName());
 
-        for (Lobby lobby : gameManagerLogic.getLobbies()) {
+        for (Lobby lobby : this.gameManager.getLobbies()) {
             if (lobby.getCode().equals(event.getToken())) {
                 selectedLobby = lobby;
                 break;
@@ -65,14 +65,14 @@ public class GameListener implements EventListener {
     public void startGame(Session session, HostStartGameEvent event) {
         Lobby startingLobby = null;
 
-        for (Lobby lobby : gameManagerLogic.getLobbies()) {
+        for (Lobby lobby : this.gameManager.getLobbies()) {
             if (lobby.getHost().getSession().equals(session)) {
                 startingLobby = lobby;
             }
         }
 
         if (startingLobby != null) {
-            Game game = gameManagerLogic.startGame(startingLobby);
+            Game game = this.gameManager.startGame(startingLobby);
 
             List<Player> queued = startingLobby.getQueued();
 
@@ -91,7 +91,7 @@ public class GameListener implements EventListener {
 
     @EventHandler
     public void playCard(Session session, PlayerPlayCardEvent event) {
-        Game game = this.gameManagerLogic.getGames().stream().filter(filterGame -> {
+        Game game = this.gameManager.getGames().stream().filter(filterGame -> {
             return filterGame.getPlayers().stream().anyMatch(player -> player.getSession().getId().equals(session.getId()));
         }).findFirst().get();
         Player player = game.getPlayers().stream().filter(gamePlayer -> gamePlayer.getSession().getId().equals(session.getId())).findFirst().get();
@@ -111,13 +111,13 @@ public class GameListener implements EventListener {
     public void createGame(Session session, UserCreateGameEvent event) {
         Host host = new Host();
         host.setSession(session);
-        Lobby lobby = gameManagerLogic.createLobby(event.isPublic(), 7, host);
+        Lobby lobby = this.gameManager.createLobby(event.isPublic(), 7, host);
         session.getAsyncRemote().sendText(Utils.GSON.toJson(new CB_UserCreatedGameMessage(event.getTrackingId(), lobby)));
     }
 
     @EventHandler
     public void drawCard(Session session, PlayerDrawCardEvent event) {
-        Game game = this.gameManagerLogic.getGames().stream().filter(filterGame -> {
+        Game game = this.gameManager.getGames().stream().filter(filterGame -> {
             return filterGame.getPlayers().stream().anyMatch(player -> player.getSession().getId().equals(session.getId()));
         }).findFirst().get();
         Player player = game.getPlayers().stream().filter(gamePlayer -> gamePlayer.getSession().getId().equals(session.getId())).findFirst().get();
