@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -29,11 +30,11 @@ public class GameLogicTest {
     @BeforeEach
     void beforeEach() {
         GameManager gameManager = new GameManager();
-        Lobby lobby = gameManager.createLobby(true, 3, new Host());
+        Lobby lobby = gameManager.createLobby(true, 3, new Host(null, UUID.randomUUID()));
 
-        this.playerOne = new Player(null, "Alice");
-        this.playerTwo = new Player(null, "Bob");
-        this.playerThree = new Player(null, "Charlie");
+        this.playerOne = new Player(UUID.randomUUID(), null);
+        this.playerTwo = new Player(UUID.randomUUID(), null);
+        this.playerThree = new Player(UUID.randomUUID(), null);
 
         gameManager.addPlayer(lobby, playerOne);
         gameManager.addPlayer(lobby, playerTwo);

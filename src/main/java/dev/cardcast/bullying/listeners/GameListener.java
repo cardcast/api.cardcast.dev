@@ -3,10 +3,7 @@ package dev.cardcast.bullying.listeners;
 import dev.cardcast.bullying.BullyingGameLogic;
 import dev.cardcast.bullying.GameManager;
 import dev.cardcast.bullying.IGameLogic;
-import dev.cardcast.bullying.entities.Game;
-import dev.cardcast.bullying.entities.Host;
-import dev.cardcast.bullying.entities.Lobby;
-import dev.cardcast.bullying.entities.Player;
+import dev.cardcast.bullying.entities.*;
 import dev.cardcast.bullying.entities.card.Card;
 import dev.cardcast.bullying.network.NetworkService;
 import dev.cardcast.bullying.network.events.EventListener;
@@ -46,11 +43,15 @@ public class GameListener implements EventListener {
     public void joinGame(Session session, PlayerJoinEvent event) {
         Lobby selectedLobby = null;
         Player player = (Player) this.networkService.getDeviceBySession(session);
+        player.setName(event.getName());
 
-        for (Lobby lobby : this.gameManager.getLobbies()) {
-            if (lobby.getCode().equals(event.getToken())) {
-                selectedLobby = lobby;
-                break;
+
+        for (PlayerContainer container : this.gameManager.getContainers()) {
+            if (container instanceof Lobby) {
+                Lobby lobby = (Lobby) container;
+                if (lobby.getCode().equals(event.getToken())) {
+                    selectedLobby = lobby;
+                }
             }
         }
 
@@ -61,7 +62,9 @@ public class GameListener implements EventListener {
 
         if (selectedLobby.addPlayer(player)) {
             session.getAsyncRemote().sendText(Utils.GSON.toJson(new CB_UserJoinedGameMessage(event.getTrackingId(), selectedLobby, player.getUuid())));
-            selectedLobby.getHost().getSession().getAsyncRemote().sendText(Utils.GSON.toJson(new HB_PlayerJoinedGameMessage(event.getTrackingId(), player)));
+
+
+            this.networkService.getDeviceByUuid(selectedLobby.getHost().getUuid()).getSession().getAsyncRemote().sendText(Utils.GSON.toJson(new HB_PlayerJoinedGameMessage(event.getTrackingId(), player)));
         }
     }
 
@@ -69,9 +72,12 @@ public class GameListener implements EventListener {
     public void startGame(Session session, HostStartGameEvent event) {
         Lobby startingLobby = null;
 
-        for (Lobby lobby : this.gameManager.getLobbies()) {
-            if (lobby.getHost().getSession().equals(session)) {
-                startingLobby = lobby;
+        for (PlayerContainer container : this.gameManager.getContainers()) {
+            if (container instanceof Lobby) {
+                Lobby lobby = (Lobby) container;
+                if (lobby.getHost().getSession().equals(session)) {
+                    startingLobby = lobby;
+                }
             }
         }
 
@@ -81,6 +87,7 @@ public class GameListener implements EventListener {
             List<Player> queued = startingLobby.getPlayers();
 
             for (Player player : queued) {
+                player = (Player) this.networkService.getDeviceByUuid(player.getUuid());
                 boolean turn = false;
                 if (game.isTheirTurn(player)) {
                     turn = true;
@@ -96,14 +103,17 @@ public class GameListener implements EventListener {
     @EventHandler
     public void playCard(Session session, PlayerPlayCardEvent event) {
         Player player = (Player) this.networkService.getDeviceBySession(session);
-        Game game = null; //todo
+        Game game = (Game) this.gameManager.findPlayer(player);
 
         boolean wasPlayed = this.gameLogic.playCard(game, player, event.getCard());
         if (wasPlayed) {
             session.getAsyncRemote().sendText(Utils.GSON.toJson(new CB_PlayerPlayedCardMessage(event.getTrackingId())));
-            game.getHost().getSession().getAsyncRemote().sendText(Utils.GSON.toJson(new HB_PlayerPlayedCardMessage(game.getPlayers().get(game.getTurnIndex()), event.getCard())));
+
+            Host host = (Host) this.networkService.getDeviceByUuid(game.getHost().getUuid());
+            host.getSession().getAsyncRemote().sendText(Utils.GSON.toJson(new HB_PlayerPlayedCardMessage(game.getPlayers().get(game.getTurnIndex()), event.getCard())));
+
             Player nextTurn = game.getPlayers().get(game.getTurnIndex());
-            nextTurn.getSession().getAsyncRemote().sendText(Utils.GSON.toJson(new CB_PlayersTurnMessage()));
+            this.networkService.getDeviceByUuid(nextTurn.getUuid()).getSession().getAsyncRemote().sendText(Utils.GSON.toJson(new CB_PlayersTurnMessage()));
         } else {
             session.getAsyncRemote().sendText(Utils.GSON.toJson(new CB_PlayerPlayCardErrorMessage(event.getTrackingId())));
         }
@@ -111,7 +121,12 @@ public class GameListener implements EventListener {
 
     @EventHandler
     public void createGame(Session session, UserCreateGameEvent event) {
-        Host host = (Host) this.networkService.getDeviceBySession(session);
+        Device device = this.networkService.getDeviceBySession(session);
+        Host host = new Host(device.getSession(), device.getUuid());
+
+        this.networkService.getDevices().remove(device);
+        this.networkService.getDevices().add(host);
+
 
         Lobby lobby = this.gameManager.createLobby(event.isPublic(), 7, host);
         session.getAsyncRemote().sendText(Utils.GSON.toJson(new CB_UserCreatedGameMessage(event.getTrackingId(), lobby)));
@@ -120,13 +135,14 @@ public class GameListener implements EventListener {
     @EventHandler
     public void drawCard(Session session, PlayerDrawCardEvent event) {
         Player player = (Player) this.networkService.getDeviceBySession(session);
-        Game game = this.gameManager.findPlayer(player);
+        Game game = (Game) this.gameManager.findPlayer(player);
 
         List<Card> cards = gameLogic.drawCard(game, player);
 
         session.getAsyncRemote().sendText(Utils.GSON.toJson(new CB_PlayerDrawCardsMessage(cards, event.getTrackingId())));
         this.gameLogic.endTurn(game, player);
+
         Player nextTurn = game.getPlayers().get(game.getTurnIndex());
-        nextTurn.getSession().getAsyncRemote().sendText(Utils.GSON.toJson(new CB_PlayersTurnMessage()));
+        this.networkService.getDeviceByUuid(nextTurn.getUuid()).getSession().getAsyncRemote().sendText(Utils.GSON.toJson(new CB_PlayersTurnMessage()));
     }
 }

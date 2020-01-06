@@ -23,25 +23,13 @@ public class GameManager implements IGameManager {
     private List<PlayerContainer> containers = new ArrayList<>();
 
     @Override
-    public List<Lobby> getLobbies() {
-        return this.containers.stream().filter(playerContainer -> playerContainer instanceof Lobby)
-                .map(lobby -> (Lobby) lobby)
-                .collect(Collectors.toList());
-    }
-
-    @Override
-    public List<Game> getGames() {
-        return this.containers.stream().filter(playerContainer -> playerContainer instanceof Game)
-                .map(game -> (Game) game)
-                .collect(Collectors.toList());
-    }
-
-    @Override
     public Lobby tryJoinLobby(Player player, String code) {
-        for (Lobby lobby : this.getLobbies()) {
-            if (lobby.getCode().equals(code)) {
-                lobby.getPlayers().add(player);
-                return lobby;
+        for (PlayerContainer container : this.getContainers()) {
+            if (container instanceof Lobby) {
+                Lobby lobby = (Lobby) container;
+                if (lobby.getCode().equals(code)) {
+                    lobby.getPlayers().add(player);
+                }
             }
         }
         return null;
@@ -75,12 +63,13 @@ public class GameManager implements IGameManager {
     }
 
     @Override
-    public Game findPlayer(Player player) {
+    public PlayerContainer findPlayer(Player player) {
         for (PlayerContainer container : this.containers) {
             if (container.getPlayers().contains(player)) {
-
+                return container;
             }
         }
+        return null;
     }
 }
 

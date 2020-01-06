@@ -8,7 +8,7 @@ import java.io.Serializable;
 import java.util.UUID;
 
 @Getter
-public class Player extends Device implements Serializable {
+public class Player extends Device {
 
     @Setter
     private String name;

@@ -5,14 +5,15 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.websocket.Session;
+import java.io.Serializable;
 import java.util.UUID;
 
 @AllArgsConstructor
-public abstract class Device {
+public abstract class Device implements Serializable {
 
     @Getter
     @Setter
-    private Session session;
+    private transient Session session;
 
     @Getter
     @Setter

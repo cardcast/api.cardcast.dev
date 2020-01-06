@@ -37,6 +37,9 @@ public class NetworkService {
 
     private List<EventListener> listeners = new ArrayList<>();
 
+    @Getter
+    private final List<Device> devices = new ArrayList<>();
+
 
     public NetworkService() {
         INSTANCE = this;
@@ -141,13 +144,5 @@ public class NetworkService {
             }
         }
         return null;
-    }
-
-    public List<Device> getDevices() {
-        List<Device> devices = new ArrayList<>();
-        for (PlayerContainer container : GameManager.getInstance().getContainers()) {
-            devices.addAll(container.getPlayers());
-        }
-        return devices;
     }
 }

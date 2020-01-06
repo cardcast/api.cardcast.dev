@@ -1,17 +1,11 @@
 package dev.cardcast.bullying;
 
-import dev.cardcast.bullying.entities.Game;
-import dev.cardcast.bullying.entities.Host;
-import dev.cardcast.bullying.entities.Lobby;
-import dev.cardcast.bullying.entities.Player;
+import dev.cardcast.bullying.entities.*;
 
 import javax.websocket.Session;
 import java.util.List;
 
 public interface IGameManager {
-    List<Lobby> getLobbies();
-
-    List<Game> getGames();
 
     Lobby tryJoinLobby(Player player, String code);
 
@@ -23,5 +17,5 @@ public interface IGameManager {
 
     Game startGame(Lobby lobby);
 
-    Game findPlayer(Player player);
+    PlayerContainer findPlayer(Player player);
 }
