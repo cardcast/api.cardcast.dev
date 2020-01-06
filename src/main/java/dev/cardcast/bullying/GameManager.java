@@ -15,6 +15,7 @@ public class GameManager implements IGameManager {
 
     private List<Lobby> lobbies = new ArrayList<>();
 
+
     @Override
     public List<Lobby> getLobbies() {
         return new ArrayList<>(this.lobbies);
@@ -55,11 +56,12 @@ public class GameManager implements IGameManager {
 
 
     @Override
-    public boolean startGame(Lobby lobby) {
-        Game game = new Game(lobby.getQueued());
+    public Game startGame(Lobby lobby) {
+        Game game = new Game(lobby.getHost(), lobby.getQueued());
         this.games.add(game);
+        BullyingGameLogic.getInstance().startGame(game);
         lobbies.remove(lobby);
-        return true;
+        return game;
     }
 }
 

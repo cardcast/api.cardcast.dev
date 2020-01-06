@@ -27,7 +27,7 @@ public class GameConnector {
     }
 
     @OnMessage
-    public void onMessage(Session session, String message ) {
+    public void onMessage(Session session, String message) {
         JsonParser parser = new JsonParser();
         JsonObject jsonMessage = (JsonObject) parser.parse(message);
         Class<? extends ServerBoundWSMessage> messageType = NetworkService.getMessageEvent(jsonMessage);
@@ -35,8 +35,14 @@ public class GameConnector {
             Bullying.getLogger().warning("UNKNOWN MESSAGE TYPE FOUND");
             return;
         }
-        ServerBoundWSMessage wbMessage = Utils.GSON.fromJson(message, messageType);
-        NetworkService.INSTANCE.handleEvent(session, wbMessage);
+
+        try {
+            ServerBoundWSMessage wbMessage = Utils.GSON.fromJson(message, messageType);
+            NetworkService.INSTANCE.handleEvent(session, wbMessage);
+        } catch (JsonSyntaxException e) {
+            e.printStackTrace();
+            System.out.println(message);
+        }
     }
 
 }

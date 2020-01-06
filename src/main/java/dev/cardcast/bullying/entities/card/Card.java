@@ -15,13 +15,13 @@ public class Card {
 
         String suitString = cardString.split(" ")[0];
         for (Suit suit : Suit.values()) {
-            if (String.valueOf(suit.getSuit()).equalsIgnoreCase(suitString)) {
+            if (suit.name().equalsIgnoreCase(suitString)) {
                 finalSuit = suit;
             }
         }
         String stringRank = cardString.split(" ")[1];
         for (Rank rank : Rank.values()) {
-            if (String.valueOf(rank.getRank()).equalsIgnoreCase(stringRank)) {
+            if (rank.name().equalsIgnoreCase(stringRank)) {
                 return new Card(finalSuit, rank);
             }
         }

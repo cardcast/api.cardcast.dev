@@ -5,6 +5,7 @@ import dev.cardcast.bullying.entities.Player;
 import dev.cardcast.bullying.entities.card.Card;
 import dev.cardcast.bullying.util.DeckGenerator;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -14,7 +15,9 @@ public class BullyingGameLogic implements IGameLogic {
     private static BullyingGameLogic instance = null;
     private static CardRules rules = new CardRules();
 
-    public BullyingGameLogic(){}
+    public BullyingGameLogic() {
+    }
+
     public static BullyingGameLogic getInstance() {
         if (instance == null)
             instance = new BullyingGameLogic();
@@ -37,7 +40,7 @@ public class BullyingGameLogic implements IGameLogic {
         Collections.shuffle(deck);
     }
 
-    private Card drawTopCard(Game game){
+    private Card drawTopCard(Game game) {
         if (game.getDeck().isEmpty()) {
             onDeckEmpty(game);
         }
@@ -46,7 +49,7 @@ public class BullyingGameLogic implements IGameLogic {
         return topCard;
     }
 
-    private void distributeCardsAtStart(Game game){
+    private void distributeCardsAtStart(Game game) {
         for (Player player : game.getPlayers()) {
             for (int i = 0; i < AMOUNT_OF_CARDS_PER_PLAYER; i++) {
                 player.getHand().getCards().add(drawTopCard(game));
@@ -73,35 +76,41 @@ public class BullyingGameLogic implements IGameLogic {
     }
 
     @Override
-    public boolean playCard(Game game, Player player, Card card){
+    public boolean playCard(Game game, Player player, Card card) {
         if (player.getHand().getCards().stream().noneMatch(card1 -> card1.equals(card))) return false;
-        if (!game.isTheirTurn(player)){ return false; }
+        if (!game.isTheirTurn(player)) {
+            return false;
+        }
         return rules.playCard(game, player, card);
     }
 
     @Override
-    public boolean drawCard(Game game, Player player){
-        if (!game.isTheirTurn(player) || player.isDoneDrawing()){
-            return false; // Drawing cards is not allowed
+    public List<Card> drawCard(Game game, Player player) {
+        List<Card> cards = new ArrayList<>();
+        if (!game.isTheirTurn(player) || player.isDoneDrawing()) {
+            return null; // Drawing cards is not allowed
         }
         if (game.getNumberToDraw() > 0) {
             // The player was bullied, so draw multiple cards
             for (int i = 0; i < game.getNumberToDraw(); i++) {
-                player.getHand().getCards().add(drawTopCard(game));
+                Card fuckyoucard = drawTopCard(game);
+                player.getHand().getCards().add(fuckyoucard);
+                cards.add(fuckyoucard);
             }
             game.setNumberToDraw(0);
-        }
-        else {
+        } else {
             // Just a normal draw
-            player.getHand().getCards().add(drawTopCard(game));
+            Card topCard = drawTopCard(game);
+            player.getHand().getCards().add(topCard);
+            cards.add(topCard);
             player.setDoneDrawing(true);
         }
-        return true;
+        return cards;
     }
 
     @Override
     public boolean endTurn(Game game, Player player) {
-        if (!game.isTheirTurn(player) || !player.isDoneDrawing()){
+        if (!game.isTheirTurn(player) || !player.isDoneDrawing()) {
             return false; // Ending the turn is not allowed
         }
         rules.passTurn(game);
