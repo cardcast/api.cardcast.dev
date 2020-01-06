@@ -23,7 +23,5 @@ public interface IGameManager {
 
     Game startGame(Lobby lobby);
 
-    Player getPlayer(Session session);
-
-    Game getGame(Player player);
+    Game findPlayer(Player player);
 }

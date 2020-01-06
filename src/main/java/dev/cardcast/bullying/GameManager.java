@@ -1,14 +1,11 @@
 package dev.cardcast.bullying;
 
-import dev.cardcast.bullying.entities.Game;
-import dev.cardcast.bullying.entities.Host;
-import dev.cardcast.bullying.entities.Lobby;
-import dev.cardcast.bullying.entities.Player;
+import dev.cardcast.bullying.entities.*;
 import lombok.Getter;
 
-import javax.websocket.Session;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class GameManager implements IGameManager {
 
@@ -22,27 +19,28 @@ public class GameManager implements IGameManager {
     }
 
 
-    private List<PlayerContainer> playerContainers = new ArrayList<>();
-
-    private List<Game> games = new ArrayList<>();
-    private List<Lobby> lobbies = new ArrayList<>();
-
+    @Getter
+    private List<PlayerContainer> containers = new ArrayList<>();
 
     @Override
     public List<Lobby> getLobbies() {
-        return new ArrayList<>(this.lobbies);
+        return this.containers.stream().filter(playerContainer -> playerContainer instanceof Lobby)
+                .map(lobby -> (Lobby) lobby)
+                .collect(Collectors.toList());
     }
 
     @Override
     public List<Game> getGames() {
-        return new ArrayList<>(this.games);
+        return this.containers.stream().filter(playerContainer -> playerContainer instanceof Game)
+                .map(game -> (Game) game)
+                .collect(Collectors.toList());
     }
 
     @Override
     public Lobby tryJoinLobby(Player player, String code) {
-        for (Lobby lobby : this.lobbies) {
+        for (Lobby lobby : this.getLobbies()) {
             if (lobby.getCode().equals(code)) {
-                lobby.getQueued().add(player);
+                lobby.getPlayers().add(player);
                 return lobby;
             }
         }
@@ -52,7 +50,7 @@ public class GameManager implements IGameManager {
     @Override
     public Lobby createLobby(boolean isPublic, int maxPlayers, Host host) {
         Lobby lobby = new Lobby(isPublic, maxPlayers, host);
-        this.lobbies.add(lobby);
+        this.containers.add(lobby);
         return lobby;
     }
 
@@ -63,38 +61,26 @@ public class GameManager implements IGameManager {
 
     @Override
     public void removePlayer(Lobby lobby, Player player) {
-        lobby.getQueued().remove(player);
+        lobby.getPlayers().remove(player);
     }
 
 
     @Override
     public Game startGame(Lobby lobby) {
-        Game game = new Game(lobby.getHost(), lobby.getQueued());
-        this.games.add(game);
+        Game game = new Game(lobby.getHost(), lobby.getPlayers());
+        this.containers.add(game);
         BullyingGameLogic.getInstance().startGame(game);
-        lobbies.remove(lobby);
+        this.containers.remove(lobby);
         return game;
     }
 
     @Override
-    public Player getPlayer(Session session) {
-        Game game = this.getGames().stream().filter(filterGame -> {
-            for (Player player : filterGame.getPlayers()) {
-                if (player.getSession().getId().equals(session.getId())) {
-                    return true;
-                }
-            }
-            return false;
-        }).findFirst().orElse(null);
-        if (game == null) {
-            return null;
-        }
-        return game.getPlayers().stream().filter(gamePlayer -> gamePlayer.getSession().getId().equals(session.getId())).findFirst().orElse(null);
-    }
+    public Game findPlayer(Player player) {
+        for (PlayerContainer container : this.containers) {
+            if (container.getPlayers().contains(player)) {
 
-    @Override
-    public Game getGame(Player player) {
-        return this.getGames().stream().filter(filterGame -> filterGame.getPlayers().stream().anyMatch(gamePlayer -> gamePlayer.getUuid().equals(player.getUuid()))).findFirst().orElse(null);
+            }
+        }
     }
 }
 

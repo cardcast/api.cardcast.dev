@@ -13,7 +13,7 @@ public class CB_UserJoinedGameMessage extends ClientBoundWSMessage {
         this.setTrackingId(trackingId);
         this.uuid = uuid;
         this.lobby = lobby;
-        this.lobby.getQueued().clear();
+        this.lobby.getPlayers().clear();
     }
 
     @Getter

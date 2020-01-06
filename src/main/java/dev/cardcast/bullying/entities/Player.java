@@ -10,8 +10,6 @@ import java.util.UUID;
 @Getter
 public class Player extends Device implements Serializable {
 
-    private transient final UUID uuid;
-
     @Setter
     private String name;
 
@@ -20,12 +18,13 @@ public class Player extends Device implements Serializable {
     @Setter
     private boolean doneDrawing;
 
-    public Player(Session session, String name) {
-        super(session);
+    public Player(UUID uuid, Session session) {
+        super(session, uuid);
         this.hand = new Hand();
-        this.uuid = UUID.randomUUID();
-        this.name = name;
-        hand = new Hand();
-        doneDrawing = false;
+        this.doneDrawing = false;
+    }
+
+    public Player(UUID uuid) {
+        this(uuid, null);
     }
 }

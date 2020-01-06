@@ -2,6 +2,10 @@ package dev.cardcast.bullying.network;
 
 import com.google.gson.JsonObject;
 import dev.cardcast.bullying.Bullying;
+import dev.cardcast.bullying.GameManager;
+import dev.cardcast.bullying.entities.Device;
+import dev.cardcast.bullying.entities.Player;
+import dev.cardcast.bullying.entities.PlayerContainer;
 import dev.cardcast.bullying.listeners.GameListener;
 import dev.cardcast.bullying.network.events.Event;
 import dev.cardcast.bullying.network.events.EventListener;
@@ -13,7 +17,6 @@ import dev.cardcast.bullying.network.messages.serverbound.game.lobby.SB_UserCrea
 import dev.cardcast.bullying.network.messages.serverbound.game.player.SB_PlayerDrawCardMessage;
 import dev.cardcast.bullying.network.messages.serverbound.game.player.SB_PlayerJoinMessage;
 import dev.cardcast.bullying.network.messages.serverbound.game.player.SB_PlayerPlayCardMessage;
-import dev.cardcast.bullying.util.PlayerEntry;
 import lombok.Getter;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
@@ -30,12 +33,9 @@ import java.util.regex.Pattern;
 
 public class NetworkService {
 
-    static NetworkService INSTANCE;
+    public static NetworkService INSTANCE;
 
     private List<EventListener> listeners = new ArrayList<>();
-
-    @Getter
-    private Map<UUID, PlayerEntry> players = new HashMap<>();
 
 
     public NetworkService() {
@@ -121,7 +121,33 @@ public class NetworkService {
         return null;
     }
 
-    public void registerSession(UUID uuid, Session session) {
-        this.players.put(uuid, new PlayerEntry(session, null));
+    public void registerPlayer(UUID uuid, Session session) {
+        this.getDevices().add(new Player(uuid, session));
+    }
+
+    public Device getDeviceByUuid(UUID uuid) {
+        for (Device device : this.getDevices()) {
+            if (device.getUuid().equals(uuid)) {
+                return device;
+            }
+        }
+        return null;
+    }
+
+    public Device getDeviceBySession(Session session) {
+        for (Device device : this.getDevices()) {
+            if (device.getSession().getId().equals(session.getId())) {
+                return device;
+            }
+        }
+        return null;
+    }
+
+    public List<Device> getDevices() {
+        List<Device> devices = new ArrayList<>();
+        for (PlayerContainer container : GameManager.getInstance().getContainers()) {
+            devices.addAll(container.getPlayers());
+        }
+        return devices;
     }
 }

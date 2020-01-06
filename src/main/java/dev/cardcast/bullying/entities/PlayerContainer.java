@@ -5,13 +5,13 @@ import java.util.UUID;
 
 public abstract class PlayerContainer {
 
-    private List<UUID> players;
+    private List<Player> players;
 
-    public PlayerContainer(List<UUID> players) {
+    public PlayerContainer(List<Player> players) {
         this.players = players;
     }
 
-    public List<UUID> getPlayers() {
+    public List<Player> getPlayers() {
         return this.players;
     }
 }

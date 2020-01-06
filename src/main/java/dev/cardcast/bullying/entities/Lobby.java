@@ -8,11 +8,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Getter
-public class Lobby implements Serializable {
-    
-    private String code;
+public class Lobby extends PlayerContainer implements Serializable {
 
-    private List<Player> queued;
+    private String code;
 
     private transient Host host;
 
@@ -21,23 +19,23 @@ public class Lobby implements Serializable {
     private int maxPlayers;
 
     public Lobby(boolean isPublic, int maxPlayers, Host host) {
+        super(new ArrayList<>());
         this.host = host;
         this.isPublic = isPublic;
         this.maxPlayers = maxPlayers;
         this.code = AccessCodeGenerator.generate();
-        this.queued = new ArrayList<>();
     }
 
     public boolean addPlayer(Player player) {
-        if (this.queued.size() >= this.maxPlayers) {
+        if (this.getPlayers().size() >= this.maxPlayers) {
             return false;
         }
 
-        if (this.queued.contains(player)) {
+        if (this.getPlayers().contains(player)) {
             return false;
         }
 
-        this.queued.add(player);
+        this.getPlayers().add(player);
         return true;
     }
 }

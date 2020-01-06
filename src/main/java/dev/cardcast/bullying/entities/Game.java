@@ -7,13 +7,10 @@ import lombok.Setter;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Game {
+public class Game extends PlayerContainer {
 
     @Getter
     private final Host host;
-
-    @Getter
-    private List<Player> players;
 
     @Getter
     private List<Card> deck;
@@ -34,14 +31,14 @@ public class Game {
     private int numberToDraw;
 
     public Game(Host host, List<Player> players) {
+        super(players);
         this.host = host;
-        this.players = players;
         this.deck = new ArrayList<>();
         this.stack = new ArrayList<>();
     }
 
     public boolean isTheirTurn(Player player) {
-        return turnIndex == players.indexOf(player);
+        return turnIndex == this.getPlayers().indexOf(player);
     }
 
     public Card getTopCardFromDeck() {

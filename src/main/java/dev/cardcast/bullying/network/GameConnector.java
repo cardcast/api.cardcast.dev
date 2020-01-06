@@ -4,10 +4,9 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
 import dev.cardcast.bullying.Bullying;
-import dev.cardcast.bullying.GameManager;
+import dev.cardcast.bullying.entities.Device;
 import dev.cardcast.bullying.entities.Player;
 import dev.cardcast.bullying.network.messages.serverbound.ServerBoundWSMessage;
-import dev.cardcast.bullying.util.PlayerEntry;
 import dev.cardcast.bullying.util.Utils;
 
 import javax.websocket.*;
@@ -22,15 +21,15 @@ public class GameConnector {
         Bullying.getLogger().info("New connection: " + session.getId());
         if (session.getRequestURI().getQuery() != null) {
             UUID uuid = UUID.fromString(session.getRequestURI().getQuery());
-            if (NetworkService.INSTANCE.getPlayers().containsKey(uuid)) {
-                PlayerEntry playerEntry = NetworkService.INSTANCE.getPlayers().get(uuid);
-                playerEntry.setSession(session);
-                Bullying.getLogger().info("Old player reconnected, UUID: " + uuid);
+            Device device = NetworkService.INSTANCE.getDeviceByUuid(uuid);
+            if (device != null) {
+                device.setSession(session);
+                Bullying.getLogger().info("Old device reconnected, UUID: " + uuid);
             }
         }
 
         UUID uuid = UUID.randomUUID();
-        NetworkService.INSTANCE.registerSession(uuid, session);
+        NetworkService.INSTANCE.registerPlayer(uuid, session);
         session.getAsyncRemote().sendText(uuid.toString());
     }
 
