@@ -91,10 +91,8 @@ public class GameListener implements EventListener {
 
     @EventHandler
     public void playCard(Session session, PlayerPlayCardEvent event) {
-        Game game = this.gameManager.getGames().stream().filter(filterGame -> {
-            return filterGame.getPlayers().stream().anyMatch(player -> player.getSession().getId().equals(session.getId()));
-        }).findFirst().get();
-        Player player = game.getPlayers().stream().filter(gamePlayer -> gamePlayer.getSession().getId().equals(session.getId())).findFirst().get();
+        Player player = this.gameManager.getPlayer(session);
+        Game game = this.gameManager.getGame(player);
 
         boolean wasPlayed = this.gameLogic.playCard(game, player, event.getCard());
         if (wasPlayed) {

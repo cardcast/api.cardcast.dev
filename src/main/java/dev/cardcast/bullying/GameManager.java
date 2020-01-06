@@ -6,6 +6,7 @@ import dev.cardcast.bullying.entities.Lobby;
 import dev.cardcast.bullying.entities.Player;
 import lombok.Getter;
 
+import javax.websocket.Session;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -71,6 +72,20 @@ public class GameManager implements IGameManager {
         BullyingGameLogic.getInstance().startGame(game);
         lobbies.remove(lobby);
         return game;
+    }
+
+    @Override
+    public Player getPlayer(Session session) {
+        Game game = this.getGames().stream().filter(filterGame -> filterGame.getPlayers().stream().anyMatch(player -> player.getSession().getId().equals(session.getId()))).findFirst().orElse(null);
+        if (game == null) {
+            return null;
+        }
+        return game.getPlayers().stream().filter(gamePlayer -> gamePlayer.getSession().getId().equals(session.getId())).findFirst().orElse(null);
+    }
+
+    @Override
+    public Game getGame(Player player) {
+        return this.getGames().stream().filter(filterGame -> filterGame.getPlayers().stream().anyMatch(gamePlayer -> gamePlayer.getUuid().equals(player.getUuid()))).findFirst().orElse(null);
     }
 }
 

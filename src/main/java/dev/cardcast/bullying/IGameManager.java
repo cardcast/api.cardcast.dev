@@ -5,6 +5,7 @@ import dev.cardcast.bullying.entities.Host;
 import dev.cardcast.bullying.entities.Lobby;
 import dev.cardcast.bullying.entities.Player;
 
+import javax.websocket.Session;
 import java.util.List;
 
 public interface IGameManager {
@@ -21,4 +22,8 @@ public interface IGameManager {
     void removePlayer(Lobby lobby, Player player);
 
     Game startGame(Lobby lobby);
+
+    Player getPlayer(Session session);
+
+    Game getGame(Player player);
 }
