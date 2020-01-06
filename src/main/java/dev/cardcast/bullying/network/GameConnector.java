@@ -24,11 +24,16 @@ public class GameConnector {
         if (session.getRequestURI().getQuery() != null) {
             UUID uuid = UUID.fromString(session.getRequestURI().getQuery());
             if (NetworkService.INSTANCE.getSessions().containsKey(uuid)) {
+                Player oldPlayer = GameManager.getInstance().getPlayer(NetworkService.INSTANCE.getSessions().get(uuid));
                 NetworkService.INSTANCE.getSessions().replace(uuid, session);
-                Game game = GameManager.getInstance().getGames().stream().filter(filterGame -> filterGame.getPlayers().stream().anyMatch(player -> player.getSession().getId().equals(session.getId()))).findFirst().orElse(null);
-                if (game != null) {
-                    game.getPlayers().stream().filter(gamePlayer -> gamePlayer.getSession().getId().equals(session.getId())).findFirst().ifPresent(player -> player.setSession(session));
-                }
+                System.out.println("Old user has reconnected with session: " + session.getId());
+                GameManager.getInstance().getGames().stream().filter(filterGame -> filterGame.getPlayers().stream().anyMatch(player -> {
+                    return player.getSession().getId().equals(session.getId());
+                })).findFirst().flatMap(game -> game.getPlayers().stream().filter(gamePlayer -> {
+                    return gamePlayer.getSession().getId().equals(session.getId());
+                }).findFirst()).ifPresent(player -> {
+                    player.setSession(session);
+                });
             }
         }
 
@@ -58,13 +63,21 @@ public class GameConnector {
 
     @OnClose
     public void onDisconnect(Session session) {
-
+        Player player = GameManager.getInstance().getPlayer(session);
+        if (player == null) {
+            System.out.println("User was not in game");
+            return;
+        }
+        System.out.println("Player " + player.getName() + " has disconnected");
     }
 
     @OnError
     public void onError(Session session, Throwable throwable) {
-        System.out.println("ERROR IN SESSION: " + session.getId());
         throwable.printStackTrace();
+//        Player player = GameManager.getInstance().getPlayer(session);
+//
+//        System.out.println("ERROR IN SESSION: " + session.getId() + " for player: " + player.getName());
+//        throwable.printStackTrace();
     }
 
 }

@@ -22,7 +22,6 @@ public class GameManager implements IGameManager {
     }
 
     private List<Game> games = new ArrayList<>();
-
     private List<Lobby> lobbies = new ArrayList<>();
 
 
@@ -76,7 +75,14 @@ public class GameManager implements IGameManager {
 
     @Override
     public Player getPlayer(Session session) {
-        Game game = this.getGames().stream().filter(filterGame -> filterGame.getPlayers().stream().anyMatch(player -> player.getSession().getId().equals(session.getId()))).findFirst().orElse(null);
+        Game game = this.getGames().stream().filter(filterGame -> {
+            for (Player player : filterGame.getPlayers()) {
+                if (player.getSession().getId().equals(session.getId())) {
+                    return true;
+                }
+            }
+            return false;
+        }).findFirst().orElse(null);
         if (game == null) {
             return null;
         }

@@ -9,6 +9,7 @@ import java.util.List;
 
 @Getter
 public class Lobby implements Serializable {
+    
     private String code;
 
     private List<Player> queued;

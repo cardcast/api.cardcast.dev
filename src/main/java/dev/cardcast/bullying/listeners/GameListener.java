@@ -107,18 +107,15 @@ public class GameListener implements EventListener {
 
     @EventHandler
     public void createGame(Session session, UserCreateGameEvent event) {
-        Host host = new Host();
-        host.setSession(session);
+        Host host = new Host(session);
         Lobby lobby = this.gameManager.createLobby(event.isPublic(), 7, host);
         session.getAsyncRemote().sendText(Utils.GSON.toJson(new CB_UserCreatedGameMessage(event.getTrackingId(), lobby)));
     }
 
     @EventHandler
     public void drawCard(Session session, PlayerDrawCardEvent event) {
-        Game game = this.gameManager.getGames().stream().filter(filterGame -> {
-            return filterGame.getPlayers().stream().anyMatch(player -> player.getSession().getId().equals(session.getId()));
-        }).findFirst().get();
-        Player player = game.getPlayers().stream().filter(gamePlayer -> gamePlayer.getSession().getId().equals(session.getId())).findFirst().get();
+        Player player = this.gameManager.getPlayer(session);
+        Game game = this.gameManager.getGame(player);
 
         List<Card> cards = gameLogic.drawCard(game, player);
 
