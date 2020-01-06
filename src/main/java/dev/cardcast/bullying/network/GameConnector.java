@@ -1,5 +1,6 @@
 package dev.cardcast.bullying.network;
 
+import com.google.common.graph.Network;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
@@ -10,6 +11,7 @@ import dev.cardcast.bullying.util.Utils;
 
 import javax.websocket.*;
 import javax.websocket.server.ServerEndpoint;
+import java.util.UUID;
 
 @ServerEndpoint(value = "/game")
 public class GameConnector {
@@ -17,6 +19,16 @@ public class GameConnector {
     @OnOpen
     public void onConnect(Session session) {
         Bullying.getLogger().info("New connection: " + session.getId());
+        if (session.getRequestURI().getQuery() != null) {
+            UUID uuid = UUID.fromString(session.getRequestURI().getQuery());
+            if (NetworkService.INSTANCE.getSessions().containsKey(uuid)) {
+                NetworkService.INSTANCE.getSessions().replace(uuid, session);
+                return;
+            }
+        }
+        UUID uuid = UUID.randomUUID();
+        NetworkService.INSTANCE.registerSession(session, uuid);
+        session.getAsyncRemote().sendText(uuid.toString());
     }
 
     @OnMessage
@@ -45,7 +57,7 @@ public class GameConnector {
 
     @OnError
     public void onError(Session session, Throwable throwable) {
-        System.out.println("ERROR IN SESSION: "  + session.getId());
+        System.out.println("ERROR IN SESSION: " + session.getId());
         throwable.printStackTrace();
     }
 

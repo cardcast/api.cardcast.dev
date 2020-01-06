@@ -16,6 +16,7 @@ import dev.cardcast.bullying.network.messages.serverbound.game.host.SB_HostStart
 import dev.cardcast.bullying.network.messages.serverbound.game.player.SB_PlayerDrawCardMessage;
 import dev.cardcast.bullying.network.messages.serverbound.game.player.SB_PlayerPlayCardMessage;
 import dev.cardcast.bullying.network.messages.serverbound.game.player.SB_PlayerJoinMessage;
+import lombok.Getter;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.servlet.ServletContextHandler;
@@ -23,11 +24,10 @@ import org.eclipse.jetty.websocket.jsr356.server.deploy.WebSocketServerContainer
 
 
 import javax.websocket.Session;
+import java.awt.datatransfer.SystemFlavorMap;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -36,6 +36,9 @@ public class NetworkService {
     static NetworkService INSTANCE;
 
     private List<EventListener> listeners = new ArrayList<>();
+
+    @Getter
+    private Map<UUID, Session> sessions = new HashMap<>();
 
     public NetworkService() {
         INSTANCE = this;
@@ -118,5 +121,9 @@ public class NetworkService {
             }
         }
         return null;
+    }
+
+    public void registerSession(Session session, UUID randomUUID) {
+        this.sessions.put(randomUUID, session );
     }
 }
