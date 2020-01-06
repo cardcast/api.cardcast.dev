@@ -10,7 +10,7 @@ import java.util.UUID;
 @Getter
 public class Player extends Device implements Serializable {
 
-    private final UUID uuid;
+    private transient final UUID uuid;
 
     @Setter
     private String name;

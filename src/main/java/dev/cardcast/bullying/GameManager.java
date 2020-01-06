@@ -21,6 +21,9 @@ public class GameManager implements IGameManager {
         return instance;
     }
 
+
+    private List<PlayerContainer> playerContainers = new ArrayList<>();
+
     private List<Game> games = new ArrayList<>();
     private List<Lobby> lobbies = new ArrayList<>();
 

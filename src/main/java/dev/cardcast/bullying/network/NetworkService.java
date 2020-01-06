@@ -4,27 +4,24 @@ import com.google.gson.JsonObject;
 import dev.cardcast.bullying.Bullying;
 import dev.cardcast.bullying.listeners.GameListener;
 import dev.cardcast.bullying.network.events.Event;
-import dev.cardcast.bullying.network.events.annotations.EventHandler;
 import dev.cardcast.bullying.network.events.EventListener;
+import dev.cardcast.bullying.network.events.annotations.EventHandler;
 import dev.cardcast.bullying.network.messages.serverbound.ServerBoundWSMessage;
-
-import javax.websocket.server.ServerContainer;
-
-import dev.cardcast.bullying.network.messages.serverbound.game.lobby.SB_UserCreateGameMessage;
 import dev.cardcast.bullying.network.messages.serverbound.game.host.SB_HostKickPlayerMessage;
 import dev.cardcast.bullying.network.messages.serverbound.game.host.SB_HostStartGameMessage;
+import dev.cardcast.bullying.network.messages.serverbound.game.lobby.SB_UserCreateGameMessage;
 import dev.cardcast.bullying.network.messages.serverbound.game.player.SB_PlayerDrawCardMessage;
-import dev.cardcast.bullying.network.messages.serverbound.game.player.SB_PlayerPlayCardMessage;
 import dev.cardcast.bullying.network.messages.serverbound.game.player.SB_PlayerJoinMessage;
+import dev.cardcast.bullying.network.messages.serverbound.game.player.SB_PlayerPlayCardMessage;
+import dev.cardcast.bullying.util.PlayerEntry;
 import lombok.Getter;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.websocket.jsr356.server.deploy.WebSocketServerContainerInitializer;
 
-
 import javax.websocket.Session;
-import java.awt.datatransfer.SystemFlavorMap;
+import javax.websocket.server.ServerContainer;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.*;
@@ -38,7 +35,8 @@ public class NetworkService {
     private List<EventListener> listeners = new ArrayList<>();
 
     @Getter
-    private Map<UUID, Session> sessions = new HashMap<>();
+    private Map<UUID, PlayerEntry> players = new HashMap<>();
+
 
     public NetworkService() {
         INSTANCE = this;
@@ -123,7 +121,7 @@ public class NetworkService {
         return null;
     }
 
-    public void registerSession(Session session, UUID randomUUID) {
-        this.sessions.put(randomUUID, session );
+    public void registerSession(UUID uuid, Session session) {
+        this.players.put(uuid, new PlayerEntry(session, null));
     }
 }
