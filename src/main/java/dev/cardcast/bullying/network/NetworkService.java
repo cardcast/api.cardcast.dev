@@ -16,6 +16,7 @@ import dev.cardcast.bullying.network.messages.serverbound.game.host.SB_HostStart
 import dev.cardcast.bullying.network.messages.serverbound.game.lobby.SB_UserCreateGameMessage;
 import dev.cardcast.bullying.network.messages.serverbound.game.player.SB_PlayerDrawCardMessage;
 import dev.cardcast.bullying.network.messages.serverbound.game.player.SB_PlayerJoinMessage;
+import dev.cardcast.bullying.network.messages.serverbound.game.player.SB_PlayerPassTurnMessage;
 import dev.cardcast.bullying.network.messages.serverbound.game.player.SB_PlayerPlayCardMessage;
 import lombok.Getter;
 import org.eclipse.jetty.server.Server;
@@ -51,6 +52,7 @@ public class NetworkService {
         NetworkService.MESSAGETYPES.add(SB_UserCreateGameMessage.class);
         NetworkService.MESSAGETYPES.add(SB_HostKickPlayerMessage.class);
         NetworkService.MESSAGETYPES.add(SB_HostStartGameMessage.class);
+        NetworkService.MESSAGETYPES.add(SB_PlayerPassTurnMessage.class);
 
         Server webSocketServer = new Server();
         ServerConnector connector = new ServerConnector(webSocketServer);

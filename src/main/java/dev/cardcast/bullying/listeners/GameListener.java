@@ -1,5 +1,6 @@
 package dev.cardcast.bullying.listeners;
 
+import dev.cardcast.bullying.Bullying;
 import dev.cardcast.bullying.BullyingGameLogic;
 import dev.cardcast.bullying.GameManager;
 import dev.cardcast.bullying.IGameLogic;
@@ -12,6 +13,7 @@ import dev.cardcast.bullying.network.events.types.host.HostStartGameEvent;
 import dev.cardcast.bullying.network.events.types.lobby.UserCreateGameEvent;
 import dev.cardcast.bullying.network.events.types.player.PlayerDrawCardEvent;
 import dev.cardcast.bullying.network.events.types.player.PlayerJoinEvent;
+import dev.cardcast.bullying.network.events.types.player.PlayerPassTurnEvent;
 import dev.cardcast.bullying.network.events.types.player.PlayerPlayCardEvent;
 import dev.cardcast.bullying.network.messages.clientbound.client.*;
 import dev.cardcast.bullying.network.messages.clientbound.host.HB_PlayerJoinedGameMessage;
@@ -23,6 +25,7 @@ import dev.cardcast.bullying.network.messages.clientbound.lobby.CB_UserJoinedGam
 import dev.cardcast.bullying.util.Utils;
 
 import javax.websocket.Session;
+import java.util.ArrayList;
 import java.util.List;
 
 public class GameListener implements EventListener {
@@ -42,16 +45,27 @@ public class GameListener implements EventListener {
 
     @EventHandler
     public void joinGame(Session session, PlayerJoinEvent event) {
-        Player player = (Player) this.networkService.getDeviceBySession(session);
+        Device device = this.networkService.getDeviceBySession(session);
+        Player player;
+        if (device instanceof Host) {
+            player = new Player(device.getUuid(), session);
+
+            this.networkService.getDevices().remove(device);
+            this.networkService.getDevices().add(player);
+        } else {
+            player = (Player) this.networkService.getDeviceBySession(session);
+        }
+
         player.setName(event.getName());
 
 
         for (PlayerContainer container : this.gameManager.getContainers()) {
             if (container instanceof Lobby) {
-                if (((Lobby) container).getCode().equals(event.getToken())) {
-                    if (((Lobby) container).addPlayer(player)) {
-                        session.getAsyncRemote().sendText(Utils.GSON.toJson(new CB_UserJoinedGameMessage(event.getTrackingId(), ((Lobby) container), player.getUuid())));
-                        this.networkService.getDeviceByUuid(((Lobby) container).getHost().getUuid()).getSession().getAsyncRemote().sendText(Utils.GSON.toJson(new HB_PlayerJoinedGameMessage(event.getTrackingId(), player)));
+                Lobby lobby = ((Lobby) container);
+                if (lobby.getCode().equals(event.getToken())) {
+                    if (lobby.addPlayer(player)) {
+                        session.getAsyncRemote().sendText(Utils.GSON.toJson(new CB_UserJoinedGameMessage(event.getTrackingId(), lobby, player.getUuid())));
+                        lobby.getHost().getSession().getAsyncRemote().sendText(Utils.GSON.toJson(new HB_PlayerJoinedGameMessage(event.getTrackingId(), player)));
                     }
                     break;
                 }
@@ -118,6 +132,7 @@ public class GameListener implements EventListener {
             host.getSession().getAsyncRemote().sendText(Utils.GSON.toJson(new HB_PlayerWinMessage(event.getTrackingId(), player)));
         } else {
             session.getAsyncRemote().sendText(Utils.GSON.toJson(new CB_PlayerPlayCardErrorMessage(event.getTrackingId())));
+
         }
     }
 
@@ -142,9 +157,24 @@ public class GameListener implements EventListener {
         List<Card> cards = gameLogic.drawCard(game, player);
 
         session.getAsyncRemote().sendText(Utils.GSON.toJson(new CB_PlayerDrawCardsMessage(cards, event.getTrackingId())));
-        this.gameLogic.endTurn(game, player);
+
 
         Player nextTurn = game.getPlayers().get(game.getTurnIndex());
         this.networkService.getDeviceByUuid(nextTurn.getUuid()).getSession().getAsyncRemote().sendText(Utils.GSON.toJson(new CB_PlayersTurnMessage()));
+        game.getHost().getSession().getAsyncRemote().sendText(Utils.GSON.toJson(new HB_PlayerPlayedCardMessage(nextTurn, null)));
+
+    }
+
+    @EventHandler
+    public void passTurn(Session session, PlayerPassTurnEvent event) {
+        Player player = (Player) this.networkService.getDeviceBySession(session);
+        Game game = (Game) this.gameManager.findPlayer(player);
+
+        if(gameLogic.endTurn(game, player)){
+            session.getAsyncRemote().sendText(Utils.GSON.toJson(new CB_PlayerDrawCardsMessage(new ArrayList<Card>(), event.getTrackingId())));
+
+            Player nextTurn = game.getPlayers().get(game.getTurnIndex());
+            this.networkService.getDeviceByUuid(nextTurn.getUuid()).getSession().getAsyncRemote().sendText(Utils.GSON.toJson(new CB_PlayersTurnMessage()));
+        }
     }
 }

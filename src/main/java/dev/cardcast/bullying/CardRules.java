@@ -140,6 +140,7 @@ public class CardRules {
                 passTurn(game);
                 break;
         }
+        Bullying.getLogger().info(String.format("'%s', played card: '%s'", player.getName(), playedCard));
         return true;
     }
 
