@@ -1,5 +1,6 @@
 package dev.cardcast.bullying.entities;
 
+import dev.cardcast.bullying.Bullying;
 import dev.cardcast.bullying.util.AccessCodeGenerator;
 import lombok.Getter;
 
@@ -35,6 +36,7 @@ public class Lobby extends PlayerContainer implements Serializable {
             return false;
         }
 
+        Bullying.getLogger().info(String.format("%s has joined game: %s", player.getName(), this.getCode()));
         this.getPlayers().add(player);
         return true;
     }

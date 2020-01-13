@@ -27,4 +27,9 @@ public class Player extends Device {
     public Player(UUID uuid) {
         this(uuid, null);
     }
+
+    @Override
+    public String toString() {
+        return this.getName();
+    }
 }
