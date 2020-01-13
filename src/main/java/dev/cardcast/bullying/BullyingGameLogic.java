@@ -125,7 +125,7 @@ public class BullyingGameLogic implements IGameLogic {
             return false; // Ending the turn is not allowed
         }
         rules.passTurn(game);
-        Bullying.getLogger().info(String.format("'%s' passed their turn to '%s'", player.getName(), game.getPlayers().get(game.getTurnIndex())));
+        Bullying.getLogger().info(String.format("'%s' passed their turn to '%s'", player.getName(), game.getPlayers().get(game.getTurnIndex()).getName()));
 
         return true;
     }

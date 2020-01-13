@@ -142,6 +142,7 @@ public class GameListener implements EventListener {
 
         Player nextTurn = game.getPlayers().get(game.getTurnIndex());
         this.networkService.getDeviceByUuid(nextTurn.getUuid()).getSession().getAsyncRemote().sendText(Utils.GSON.toJson(new CB_PlayersTurnMessage()));
+        game.getHost().getSession().getAsyncRemote().sendText(Utils.GSON.toJson(new HB_PlayerPlayedCardMessage(nextTurn, null)));
 
     }
 }

@@ -33,4 +33,9 @@ public class Card {
         Card cardTwo = (Card) obj;
         return cardTwo.rank == this.rank && cardTwo.suit == this.suit;
     }
+
+    @Override
+    public String toString() {
+        return String.format("%s %s", this.suit, this.rank);
+    }
 }
