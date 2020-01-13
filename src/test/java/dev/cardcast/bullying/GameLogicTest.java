@@ -1,9 +1,6 @@
 package dev.cardcast.bullying;
 
-import dev.cardcast.bullying.entities.Game;
-import dev.cardcast.bullying.entities.Host;
-import dev.cardcast.bullying.entities.Lobby;
-import dev.cardcast.bullying.entities.Player;
+import dev.cardcast.bullying.entities.*;
 import dev.cardcast.bullying.entities.card.Card;
 import dev.cardcast.bullying.entities.card.Rank;
 import dev.cardcast.bullying.entities.card.Suit;
@@ -13,6 +10,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -29,18 +27,22 @@ public class GameLogicTest {
     @BeforeEach
     void beforeEach() {
         GameManager gameManager = new GameManager();
-        Lobby lobby = gameManager.createLobby(true, 3, new Host());
+        Lobby lobby = gameManager.createLobby(true, 3, new Host(null, UUID.randomUUID()));
 
-        this.playerOne = new Player(null, "Alice");
-        this.playerTwo = new Player(null, "Bob");
-        this.playerThree = new Player(null, "Charlie");
+        this.playerOne = new Player(UUID.randomUUID(), null);
+        this.playerTwo = new Player(UUID.randomUUID(), null);
+        this.playerThree = new Player(UUID.randomUUID(), null);
 
         gameManager.addPlayer(lobby, playerOne);
         gameManager.addPlayer(lobby, playerTwo);
         gameManager.addPlayer(lobby, playerThree);
 
         gameManager.startGame(lobby);
-        this.game = gameManager.getGames().stream().findFirst().get();
+        for (PlayerContainer container : gameManager.getContainers()) {
+            if (container instanceof Game) {
+                this.game = (Game) container;
+            }
+        }
         this.gameLogic = BullyingGameLogic.getInstance();
 
         pOne = game.getPlayers().get(0);

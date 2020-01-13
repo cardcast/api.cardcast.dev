@@ -2,40 +2,44 @@ package dev.cardcast.bullying.network;
 
 import com.google.gson.JsonObject;
 import dev.cardcast.bullying.Bullying;
+import dev.cardcast.bullying.GameManager;
+import dev.cardcast.bullying.entities.Device;
+import dev.cardcast.bullying.entities.Player;
+import dev.cardcast.bullying.entities.PlayerContainer;
 import dev.cardcast.bullying.listeners.GameListener;
 import dev.cardcast.bullying.network.events.Event;
-import dev.cardcast.bullying.network.events.annotations.EventHandler;
 import dev.cardcast.bullying.network.events.EventListener;
+import dev.cardcast.bullying.network.events.annotations.EventHandler;
 import dev.cardcast.bullying.network.messages.serverbound.ServerBoundWSMessage;
-
-import javax.websocket.server.ServerContainer;
-
-import dev.cardcast.bullying.network.messages.serverbound.game.lobby.SB_UserCreateGameMessage;
 import dev.cardcast.bullying.network.messages.serverbound.game.host.SB_HostKickPlayerMessage;
 import dev.cardcast.bullying.network.messages.serverbound.game.host.SB_HostStartGameMessage;
+import dev.cardcast.bullying.network.messages.serverbound.game.lobby.SB_UserCreateGameMessage;
 import dev.cardcast.bullying.network.messages.serverbound.game.player.SB_PlayerDrawCardMessage;
-import dev.cardcast.bullying.network.messages.serverbound.game.player.SB_PlayerPlayCardMessage;
 import dev.cardcast.bullying.network.messages.serverbound.game.player.SB_PlayerJoinMessage;
+import dev.cardcast.bullying.network.messages.serverbound.game.player.SB_PlayerPlayCardMessage;
+import lombok.Getter;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.websocket.jsr356.server.deploy.WebSocketServerContainerInitializer;
 
-
 import javax.websocket.Session;
+import javax.websocket.server.ServerContainer;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class NetworkService {
 
-    static NetworkService INSTANCE;
+    public static NetworkService INSTANCE;
 
     private List<EventListener> listeners = new ArrayList<>();
+
+    @Getter
+    private final List<Device> devices = new ArrayList<>();
+
 
     public NetworkService() {
         INSTANCE = this;
@@ -115,6 +119,28 @@ public class NetworkService {
             Matcher matcher = messagePattern.matcher(messageType.getSimpleName());
             if (matcher.matches() && matcher.group("messageName").equals(type)) {
                 return messageType;
+            }
+        }
+        return null;
+    }
+
+    public void registerPlayer(UUID uuid, Session session) {
+        this.getDevices().add(new Player(uuid, session));
+    }
+
+    public Device getDeviceByUuid(UUID uuid) {
+        for (Device device : this.getDevices()) {
+            if (device.getUuid().equals(uuid)) {
+                return device;
+            }
+        }
+        return null;
+    }
+
+    public Device getDeviceBySession(Session session) {
+        for (Device device : this.getDevices()) {
+            if (device.getSession().getId().equals(session.getId())) {
+                return device;
             }
         }
         return null;

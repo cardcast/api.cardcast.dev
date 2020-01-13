@@ -1,11 +1,11 @@
 package dev.cardcast.bullying.entities;
 
-import lombok.Getter;
-import lombok.Setter;
-
 import javax.websocket.Session;
+import java.util.UUID;
 
-public class Host {
-    @Getter @Setter
-    private Session session;
+public class Host extends Device {
+
+    public Host(Session session, UUID uuid) {
+        super(session, uuid);
+    }
 }
