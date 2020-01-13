@@ -171,11 +171,14 @@ public class GameListener implements EventListener {
         Game game = (Game) this.gameManager.findPlayer(player);
 
         if (gameLogic.endTurn(game, player)) {
-            session.getAsyncRemote().sendText(Utils.GSON.toJson(new CB_PlayerDrawCardsMessage(new ArrayList<>(), event.getTrackingId())));
+
+            session.getAsyncRemote().sendText(Utils.GSON.toJson(new CB_PlayerPassedTurn(event.getTrackingId())));
+
             Player nextTurn = game.getPlayers().get(game.getTurnIndex());
 
-            this.networkService.getDeviceByUuid(game.getHost().getUuid()).getSession().getAsyncRemote().sendText(Utils.GSON.toJson(new HB_PlayerPlayedCardMessage(nextTurn, null)))
             this.networkService.getDeviceByUuid(nextTurn.getUuid()).getSession().getAsyncRemote().sendText(Utils.GSON.toJson(new CB_PlayersTurnMessage()));
+            this.networkService.getDeviceByUuid(game.getHost().getUuid()).getSession().getAsyncRemote().sendText(Utils.GSON.toJson(new HB_PlayerPlayedCardMessage(nextTurn, null)));
+
         }
     }
 }
