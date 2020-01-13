@@ -44,7 +44,17 @@ public class GameListener implements EventListener {
 
     @EventHandler
     public void joinGame(Session session, PlayerJoinEvent event) {
-        Player player = (Player) this.networkService.getDeviceBySession(session);
+        Device device = this.networkService.getDeviceBySession(session);
+        Player player;
+        if (device instanceof Host) {
+            player = new Player(device.getUuid(), session);
+
+            this.networkService.getDevices().remove(device);
+            this.networkService.getDevices().add(player);
+        } else {
+            player = (Player) this.networkService.getDeviceBySession(session);
+        }
+
         player.setName(event.getName());
 
 
