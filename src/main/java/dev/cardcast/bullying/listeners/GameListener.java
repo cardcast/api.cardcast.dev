@@ -1,5 +1,6 @@
 package dev.cardcast.bullying.listeners;
 
+import dev.cardcast.bullying.Bullying;
 import dev.cardcast.bullying.BullyingGameLogic;
 import dev.cardcast.bullying.GameManager;
 import dev.cardcast.bullying.IGameLogic;
@@ -47,10 +48,11 @@ public class GameListener implements EventListener {
 
         for (PlayerContainer container : this.gameManager.getContainers()) {
             if (container instanceof Lobby) {
-                if (((Lobby) container).getCode().equals(event.getToken())) {
-                    if (((Lobby) container).addPlayer(player)) {
-                        session.getAsyncRemote().sendText(Utils.GSON.toJson(new CB_UserJoinedGameMessage(event.getTrackingId(), ((Lobby) container), player.getUuid())));
-                        this.networkService.getDeviceByUuid(((Lobby) container).getHost().getUuid()).getSession().getAsyncRemote().sendText(Utils.GSON.toJson(new HB_PlayerJoinedGameMessage(event.getTrackingId(), player)));
+                Lobby lobby = ((Lobby) container);
+                if (lobby.getCode().equals(event.getToken())) {
+                    if (lobby.addPlayer(player)) {
+                        session.getAsyncRemote().sendText(Utils.GSON.toJson(new CB_UserJoinedGameMessage(event.getTrackingId(), lobby, player.getUuid())));
+                        lobby.getHost().getSession().getAsyncRemote().sendText(Utils.GSON.toJson(new HB_PlayerJoinedGameMessage(event.getTrackingId(), player)));
                     }
                     break;
                 }
@@ -107,8 +109,10 @@ public class GameListener implements EventListener {
 
             Player nextTurn = game.getPlayers().get(game.getTurnIndex());
             this.networkService.getDeviceByUuid(nextTurn.getUuid()).getSession().getAsyncRemote().sendText(Utils.GSON.toJson(new CB_PlayersTurnMessage()));
+
         } else {
             session.getAsyncRemote().sendText(Utils.GSON.toJson(new CB_PlayerPlayCardErrorMessage(event.getTrackingId())));
+
         }
     }
 
@@ -135,7 +139,9 @@ public class GameListener implements EventListener {
         session.getAsyncRemote().sendText(Utils.GSON.toJson(new CB_PlayerDrawCardsMessage(cards, event.getTrackingId())));
         this.gameLogic.endTurn(game, player);
 
+
         Player nextTurn = game.getPlayers().get(game.getTurnIndex());
         this.networkService.getDeviceByUuid(nextTurn.getUuid()).getSession().getAsyncRemote().sendText(Utils.GSON.toJson(new CB_PlayersTurnMessage()));
+
     }
 }

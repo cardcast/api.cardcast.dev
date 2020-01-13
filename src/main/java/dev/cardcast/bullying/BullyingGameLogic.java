@@ -73,14 +73,22 @@ public class BullyingGameLogic implements IGameLogic {
         game.setTurnIndex(0);
         game.setClockwise(true);
         game.setNumberToDraw(0);
+        Bullying.getLogger().info("A new has started");
     }
 
     @Override
     public boolean playCard(Game game, Player player, Card card) {
-        if (player.getHand().getCards().stream().noneMatch(card1 -> card1.equals(card))) return false;
-        if (!game.isTheirTurn(player)) {
+
+        if (player.getHand().getCards().stream().noneMatch(card1 -> card1.equals(card))) {
+            Bullying.getLogger().warning(String.format("'%s', tries playing card: '%s', which they do not have", player.getName(), card));
             return false;
         }
+        if (!game.isTheirTurn(player)) {
+            Bullying.getLogger().warning(String.format("'%s', tried playing card: '%s', but failed because it is not their turn", player.getName(), card));
+            return false;
+        }
+        Bullying.getLogger().info(String.format("'%s', tries playing card: '%s'", player.getName(), card));
+
         return rules.playCard(game, player, card);
     }
 
@@ -105,15 +113,20 @@ public class BullyingGameLogic implements IGameLogic {
             cards.add(topCard);
             player.setDoneDrawing(true);
         }
+
+        Bullying.getLogger().info(String.format("'%s' has drawn a new card(s): %s", player.getName(), cards.toString()));
         return cards;
     }
 
     @Override
     public boolean endTurn(Game game, Player player) {
         if (!game.isTheirTurn(player) || !player.isDoneDrawing()) {
+            Bullying.getLogger().warning(String.format("'%s' could not end turn, it is not allowed", player.getName()));
             return false; // Ending the turn is not allowed
         }
         rules.passTurn(game);
+        Bullying.getLogger().info(String.format("'%s' passed their turn to '%s'", player.getName(), game.getPlayers().get(game.getTurnIndex())));
+
         return true;
     }
 
