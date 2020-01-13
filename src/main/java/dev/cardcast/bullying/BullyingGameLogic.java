@@ -93,6 +93,12 @@ public class BullyingGameLogic implements IGameLogic {
     }
 
     @Override
+    public boolean playerWon(Game game, Player player) {
+        return player.getHand().getCards().isEmpty();
+    }
+
+
+    @Override
     public List<Card> drawCard(Game game, Player player) {
         List<Card> cards = new ArrayList<>();
         if (!game.isTheirTurn(player) || player.isDoneDrawing()) {
@@ -129,6 +135,5 @@ public class BullyingGameLogic implements IGameLogic {
 
         return true;
     }
-
     // endregion
 }

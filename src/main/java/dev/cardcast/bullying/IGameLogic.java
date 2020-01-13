@@ -15,4 +15,5 @@ public interface IGameLogic {
 
     boolean endTurn(Game game, Player player);
 
+    boolean playerWon(Game game, Player player);
 }
