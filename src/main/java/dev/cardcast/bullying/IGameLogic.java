@@ -14,4 +14,6 @@ public interface IGameLogic {
     List<Card> drawCard(Game game, Player player);
 
     boolean endTurn(Game game, Player player);
+
+    boolean playerWon(Game game, Player player);
 }

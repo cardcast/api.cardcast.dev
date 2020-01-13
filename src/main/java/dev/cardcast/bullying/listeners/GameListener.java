@@ -16,6 +16,7 @@ import dev.cardcast.bullying.network.events.types.player.PlayerPlayCardEvent;
 import dev.cardcast.bullying.network.messages.clientbound.client.*;
 import dev.cardcast.bullying.network.messages.clientbound.host.HB_PlayerJoinedGameMessage;
 import dev.cardcast.bullying.network.messages.clientbound.host.HB_PlayerPlayedCardMessage;
+import dev.cardcast.bullying.network.messages.clientbound.host.HB_PlayerWinMessage;
 import dev.cardcast.bullying.network.messages.clientbound.host.HB_StartedGameMessage;
 import dev.cardcast.bullying.network.messages.clientbound.lobby.CB_UserCreatedGameMessage;
 import dev.cardcast.bullying.network.messages.clientbound.lobby.CB_UserJoinedGameMessage;
@@ -99,6 +100,8 @@ public class GameListener implements EventListener {
         Game game = (Game) this.gameManager.findPlayer(player);
 
         boolean wasPlayed = this.gameLogic.playCard(game, player, event.getCard());
+        boolean playerWon = this.gameLogic.playerWon(game, player);
+
         if (wasPlayed) {
             session.getAsyncRemote().sendText(Utils.GSON.toJson(new CB_PlayerPlayedCardMessage(event.getTrackingId())));
 
@@ -107,6 +110,12 @@ public class GameListener implements EventListener {
 
             Player nextTurn = game.getPlayers().get(game.getTurnIndex());
             this.networkService.getDeviceByUuid(nextTurn.getUuid()).getSession().getAsyncRemote().sendText(Utils.GSON.toJson(new CB_PlayersTurnMessage()));
+        }
+        if (playerWon) {
+            session.getAsyncRemote().sendText(Utils.GSON.toJson(new CB_PlayerWinMessage(event.getTrackingId())));
+
+            Host host = (Host) this.networkService.getDeviceByUuid(game.getHost().getUuid());
+            host.getSession().getAsyncRemote().sendText(Utils.GSON.toJson(new HB_PlayerWinMessage(event.getTrackingId(), player)));
         } else {
             session.getAsyncRemote().sendText(Utils.GSON.toJson(new CB_PlayerPlayCardErrorMessage(event.getTrackingId())));
         }
