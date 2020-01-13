@@ -60,6 +60,7 @@ public class GameListener implements EventListener {
 
     }
 
+
     @EventHandler
     public void startGame(Session session, HostStartGameEvent event) {
         Lobby startingLobby = null;
