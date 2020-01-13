@@ -12,6 +12,7 @@ import dev.cardcast.bullying.network.events.types.host.HostStartGameEvent;
 import dev.cardcast.bullying.network.events.types.lobby.UserCreateGameEvent;
 import dev.cardcast.bullying.network.events.types.player.PlayerDrawCardEvent;
 import dev.cardcast.bullying.network.events.types.player.PlayerJoinEvent;
+import dev.cardcast.bullying.network.events.types.player.PlayerPassTurnEvent;
 import dev.cardcast.bullying.network.events.types.player.PlayerPlayCardEvent;
 import dev.cardcast.bullying.network.messages.clientbound.client.*;
 import dev.cardcast.bullying.network.messages.clientbound.host.HB_PlayerJoinedGameMessage;
@@ -22,6 +23,7 @@ import dev.cardcast.bullying.network.messages.clientbound.lobby.CB_UserJoinedGam
 import dev.cardcast.bullying.util.Utils;
 
 import javax.websocket.Session;
+import java.util.ArrayList;
 import java.util.List;
 
 public class GameListener implements EventListener {
@@ -133,9 +135,21 @@ public class GameListener implements EventListener {
         List<Card> cards = gameLogic.drawCard(game, player);
 
         session.getAsyncRemote().sendText(Utils.GSON.toJson(new CB_PlayerDrawCardsMessage(cards, event.getTrackingId())));
-        this.gameLogic.endTurn(game, player);
 
         Player nextTurn = game.getPlayers().get(game.getTurnIndex());
         this.networkService.getDeviceByUuid(nextTurn.getUuid()).getSession().getAsyncRemote().sendText(Utils.GSON.toJson(new CB_PlayersTurnMessage()));
+    }
+
+    @EventHandler
+    public void passTurn(Session session, PlayerPassTurnEvent event) {
+        Player player = (Player) this.networkService.getDeviceBySession(session);
+        Game game = (Game) this.gameManager.findPlayer(player);
+
+        if(gameLogic.endTurn(game, player)){
+            session.getAsyncRemote().sendText(Utils.GSON.toJson(new CB_PlayerDrawCardsMessage(new ArrayList<Card>(), event.getTrackingId())));
+
+            Player nextTurn = game.getPlayers().get(game.getTurnIndex());
+            this.networkService.getDeviceByUuid(nextTurn.getUuid()).getSession().getAsyncRemote().sendText(Utils.GSON.toJson(new CB_PlayersTurnMessage()));
+        }
     }
 }
