@@ -1,9 +1,6 @@
 package dev.cardcast.bullying;
 
-import dev.cardcast.bullying.entities.Game;
-import dev.cardcast.bullying.entities.Host;
-import dev.cardcast.bullying.entities.Lobby;
-import dev.cardcast.bullying.entities.Player;
+import dev.cardcast.bullying.entities.*;
 import dev.cardcast.bullying.entities.card.Card;
 import dev.cardcast.bullying.entities.card.Rank;
 import dev.cardcast.bullying.entities.card.Suit;
@@ -41,7 +38,11 @@ public class GameLogicTest {
         gameManager.addPlayer(lobby, playerThree);
 
         gameManager.startGame(lobby);
-        this.game = gameManager.getGames().stream().findFirst().get();
+        for (PlayerContainer container : gameManager.getContainers()) {
+            if (container instanceof Game) {
+                this.game = (Game) container;
+            }
+        }
         this.gameLogic = BullyingGameLogic.getInstance();
 
         pOne = game.getPlayers().get(0);

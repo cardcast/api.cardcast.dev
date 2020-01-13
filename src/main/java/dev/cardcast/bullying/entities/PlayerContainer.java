@@ -1,7 +1,8 @@
 package dev.cardcast.bullying.entities;
 
+import lombok.Getter;
+
 import java.util.List;
-import java.util.UUID;
 
 public abstract class PlayerContainer {
 
@@ -14,4 +15,5 @@ public abstract class PlayerContainer {
     public List<Player> getPlayers() {
         return this.players;
     }
+
 }

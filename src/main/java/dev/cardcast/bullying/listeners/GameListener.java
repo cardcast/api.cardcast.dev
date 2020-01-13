@@ -41,31 +41,23 @@ public class GameListener implements EventListener {
 
     @EventHandler
     public void joinGame(Session session, PlayerJoinEvent event) {
-        Lobby selectedLobby = null;
         Player player = (Player) this.networkService.getDeviceBySession(session);
         player.setName(event.getName());
 
 
         for (PlayerContainer container : this.gameManager.getContainers()) {
             if (container instanceof Lobby) {
-                Lobby lobby = (Lobby) container;
-                if (lobby.getCode().equals(event.getToken())) {
-                    selectedLobby = lobby;
+                if (((Lobby) container).getCode().equals(event.getToken())) {
+                    if (((Lobby) container).addPlayer(player)) {
+                        session.getAsyncRemote().sendText(Utils.GSON.toJson(new CB_UserJoinedGameMessage(event.getTrackingId(), ((Lobby) container), player.getUuid())));
+                        this.networkService.getDeviceByUuid(((Lobby) container).getHost().getUuid()).getSession().getAsyncRemote().sendText(Utils.GSON.toJson(new HB_PlayerJoinedGameMessage(event.getTrackingId(), player)));
+                    }
+                    break;
                 }
             }
         }
 
-        if (selectedLobby == null) {
-            System.out.println("LOL U FUCKED UP");
-            return;
-        }
 
-        if (selectedLobby.addPlayer(player)) {
-            session.getAsyncRemote().sendText(Utils.GSON.toJson(new CB_UserJoinedGameMessage(event.getTrackingId(), selectedLobby, player.getUuid())));
-
-
-            this.networkService.getDeviceByUuid(selectedLobby.getHost().getUuid()).getSession().getAsyncRemote().sendText(Utils.GSON.toJson(new HB_PlayerJoinedGameMessage(event.getTrackingId(), player)));
-        }
     }
 
     @EventHandler
@@ -95,7 +87,7 @@ public class GameListener implements EventListener {
 
                 player.getSession().getAsyncRemote().sendText(Utils.GSON.toJson(new CB_HostStartGameMessage(player.getHand().getCards(), turn)));
             }
-            startingLobby.getHost().getSession().getAsyncRemote().sendText(Utils.GSON.toJson(new HB_StartedGameMessage(queued.get(0), game.getStack(), event.getTrackingId())));
+            startingLobby.getHost().getSession().getAsyncRemote().sendText(Utils.GSON.toJson(new HB_StartedGameMessage(game.getPlayers().get(0), game.getStack(), event.getTrackingId())));
         }
 
     }
