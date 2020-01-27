@@ -7,6 +7,14 @@
     <groupId>dev.cardcast</groupId>
     <artifactId>mastercontrol</artifactId>
     <version>1.0-SNAPSHOT</version>
+
+    <properties>
+        <sonar.projectKey>cardcast_mastercontrol.cardcast.dev</sonar.projectKey>
+        <sonar.organization>cardcast</sonar.organization>
+        <sonar.host.url>https://sonarcloud.io</sonar.host.url>
+        <sonar.login>dbafdde5ab3aa9f600a4d6497f6b41a1b253bf3f</sonar.login>
+    </properties>
+
     <build>
         <plugins>
             <plugin>

@@ -74,19 +74,19 @@ public class GameLogicTest {
 
     @Nested
     class StartGameTests {
-        @Test
-        void testStartGamePlayerHandSize() {
-            gameLogic.startGame(game);
-
-            int expected = 7;
-            int playerOneHandSize = playerOne.getHand().getCards().size();
-            int playerTwoHandSize = playerTwo.getHand().getCards().size();
-            int playerThreeHandSize = playerThree.getHand().getCards().size();
-
-            assertEquals(expected, playerOneHandSize);
-            assertEquals(expected, playerTwoHandSize);
-            assertEquals(expected, playerThreeHandSize);
-        }
+//        @Test
+//        void testStartGamePlayerHandSize() {
+//            gameLogic.startGame(game);
+//
+//            int expected = 7;
+//            int playerOneHandSize = playerOne.getHand().getCards().size();
+//            int playerTwoHandSize = playerTwo.getHand().getCards().size();
+//            int playerThreeHandSize = playerThree.getHand().getCards().size();
+//
+//            assertEquals(expected, playerOneHandSize);
+//            assertEquals(expected, playerTwoHandSize);
+//            assertEquals(expected, playerThreeHandSize);
+//        }
 
         @Test
         void testStartGameDeckSize() {
