@@ -2,7 +2,7 @@
 
 CardCast 
 ====================
-[![Build Status](https://semaphoreci.com/api/v1/alonewitness/mastercontrol-cardcast-dev/branches/algoritme/badge.svg)](https://semaphoreci.com/alonewitness/mastercontrol-cardcast-dev)
+![Java CI](https://github.com/cardcast/mastercontrol.cardcast.dev/workflows/Java%20CI/badge.svg)
 
 Wat is CardCast?
 -------------------
